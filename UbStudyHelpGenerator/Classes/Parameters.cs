@@ -20,12 +20,24 @@ namespace UbStudyHelpGenerator.Classes
         /// </summary>
         public string RepositoryOutputFolder { get; set; } = "";
 
+        /// <summary>
+        /// Input folder for html files to be converted into UbStudyHelp translations files
+        /// </summary>
         public string InputHtmlFilesPath { get; set; } = "";
+
+        /// <summary>
+        /// Sql Server connection string fore input translations
+        /// </summary>
+        public string SqlConnectionString { get; set; } = "";
+
+        /// <summary>
+        /// Location for downloaded index files from UF web site
+        /// </summary>
+        public string IndexDownloadedFiles { get; set; } = "";
 
 
         public string OutputHtmlFilesPathFromSql { get; set; } = "";
 
-        public string IndexDownloadedFiles { get; set; } = "";
 
         public string IndexOutputFilesPath { get; set; } = "";
 

@@ -56,8 +56,10 @@ namespace UbStudyHelpGenerator
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+            txRepositoryOutputFolder.Text = Program.ParametersData.RepositoryOutputFolder;
             txHtmlFilesPath.Text = Program.ParametersData.InputHtmlFilesPath;
-            txRepositoryOutputFolder.Text= Program.ParametersData.RepositoryOutputFolder;
+            txSqlConnectionString.Text = Program.ParametersData.SqlConnectionString;
+            txUfIndexDownloadeFiles.Text = Program.ParametersData.IndexDownloadedFiles;
         }
 
         #region Get folders
@@ -96,14 +98,6 @@ namespace UbStudyHelpGenerator
             Program.ParametersData.InputHtmlFilesPath = folder;
         }
 
-        private void btOutputFilesFromSqlServer_Click(object sender, EventArgs e)
-        {
-            string folder = Program.ParametersData.OutputHtmlFilesPathFromSql;
-            GetFolder(txOutputHttmlFilesFromSqlServer, ref folder);
-            Program.ParametersData.OutputHtmlFilesPathFromSql = folder;
-        }
-
-
 
         private void btUfIndexDownloadedFiles_Click(object sender, EventArgs e)
         {
@@ -114,9 +108,6 @@ namespace UbStudyHelpGenerator
 
         private void btUfIndexOutputFiles_Click(object sender, EventArgs e)
         {
-            string folder = Program.ParametersData.IndexOutputFilesPath;
-            GetFolder(txUfIndexOutputFolder, ref folder);
-            Program.ParametersData.IndexOutputFilesPath = folder;
         }
 
 
@@ -200,5 +191,10 @@ namespace UbStudyHelpGenerator
 
         }
 
+        private void btGenerateFromSql_Click(object sender, EventArgs e)
+        {
+            Program.ParametersData.SqlConnectionString = txSqlConnectionString.Text;
+            // 
+        }
     }
 }

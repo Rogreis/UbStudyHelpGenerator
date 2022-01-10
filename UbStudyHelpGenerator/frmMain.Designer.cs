@@ -41,17 +41,15 @@ namespace UbStudyHelpGenerator
             this.textBoxFromHtml = new System.Windows.Forms.TextBox();
             this.tabPageFromSqlServer = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.btOutputFilesFromSqlServer = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.txOutputHttmlFilesFromSqlServer = new System.Windows.Forms.TextBox();
+            this.txSqlConnectionString = new System.Windows.Forms.TextBox();
             this.btGenerateFromSql = new System.Windows.Forms.Button();
             this.textBoxFromSqlServer = new System.Windows.Forms.TextBox();
             this.tabPageUbIndex = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.btUfIndexDownload = new System.Windows.Forms.Button();
-            this.btUfIndexOutputFiles = new System.Windows.Forms.Button();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txUfIndexOutputFolder = new System.Windows.Forms.TextBox();
             this.btUfIndex = new System.Windows.Forms.Button();
             this.btUfIndexDownloadedFiles = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
@@ -61,6 +59,7 @@ namespace UbStudyHelpGenerator
             this.label4 = new System.Windows.Forms.Label();
             this.txRepositoryOutputFolder = new System.Windows.Forms.TextBox();
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
+            this.label5 = new System.Windows.Forms.Label();
             this.tabControlMain.SuspendLayout();
             this.tabPageFromHtml.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerFromHtml)).BeginInit();
@@ -101,7 +100,7 @@ namespace UbStudyHelpGenerator
             this.tabControlMain.Location = new System.Drawing.Point(0, 0);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(1737, 947);
+            this.tabControlMain.Size = new System.Drawing.Size(1737, 979);
             this.tabControlMain.TabIndex = 1;
             // 
             // tabPageFromHtml
@@ -110,7 +109,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromHtml.Location = new System.Drawing.Point(4, 25);
             this.tabPageFromHtml.Name = "tabPageFromHtml";
             this.tabPageFromHtml.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageFromHtml.Size = new System.Drawing.Size(1729, 918);
+            this.tabPageFromHtml.Size = new System.Drawing.Size(1729, 950);
             this.tabPageFromHtml.TabIndex = 0;
             this.tabPageFromHtml.Text = "From HTML";
             this.tabPageFromHtml.UseVisualStyleBackColor = true;
@@ -134,7 +133,7 @@ namespace UbStudyHelpGenerator
             // splitContainerFromHtml.Panel2
             // 
             this.splitContainerFromHtml.Panel2.Controls.Add(this.textBoxFromHtml);
-            this.splitContainerFromHtml.Size = new System.Drawing.Size(1723, 912);
+            this.splitContainerFromHtml.Size = new System.Drawing.Size(1723, 944);
             this.splitContainerFromHtml.SplitterDistance = 163;
             this.splitContainerFromHtml.TabIndex = 0;
             // 
@@ -194,7 +193,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromHtml.Multiline = true;
             this.textBoxFromHtml.Name = "textBoxFromHtml";
             this.textBoxFromHtml.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromHtml.Size = new System.Drawing.Size(1723, 745);
+            this.textBoxFromHtml.Size = new System.Drawing.Size(1723, 777);
             this.textBoxFromHtml.TabIndex = 0;
             // 
             // tabPageFromSqlServer
@@ -203,7 +202,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromSqlServer.Location = new System.Drawing.Point(4, 25);
             this.tabPageFromSqlServer.Name = "tabPageFromSqlServer";
             this.tabPageFromSqlServer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageFromSqlServer.Size = new System.Drawing.Size(1180, 871);
+            this.tabPageFromSqlServer.Size = new System.Drawing.Size(1729, 950);
             this.tabPageFromSqlServer.TabIndex = 1;
             this.tabPageFromSqlServer.Text = "From Sql Server";
             this.tabPageFromSqlServer.UseVisualStyleBackColor = true;
@@ -218,53 +217,61 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.btOutputFilesFromSqlServer);
+            this.splitContainer1.Panel1.Controls.Add(this.label3);
+            this.splitContainer1.Panel1.Controls.Add(this.comboBox1);
             this.splitContainer1.Panel1.Controls.Add(this.label1);
-            this.splitContainer1.Panel1.Controls.Add(this.txOutputHttmlFilesFromSqlServer);
+            this.splitContainer1.Panel1.Controls.Add(this.txSqlConnectionString);
             this.splitContainer1.Panel1.Controls.Add(this.btGenerateFromSql);
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBoxFromSqlServer);
-            this.splitContainer1.Size = new System.Drawing.Size(1174, 865);
+            this.splitContainer1.Size = new System.Drawing.Size(1723, 944);
             this.splitContainer1.SplitterDistance = 163;
             this.splitContainer1.TabIndex = 1;
             // 
-            // btOutputFilesFromSqlServer
+            // label3
             // 
-            this.btOutputFilesFromSqlServer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btOutputFilesFromSqlServer.Location = new System.Drawing.Point(1100, 25);
-            this.btOutputFilesFromSqlServer.Name = "btOutputFilesFromSqlServer";
-            this.btOutputFilesFromSqlServer.Size = new System.Drawing.Size(59, 45);
-            this.btOutputFilesFromSqlServer.TabIndex = 3;
-            this.btOutputFilesFromSqlServer.Text = "...";
-            this.btOutputFilesFromSqlServer.UseVisualStyleBackColor = true;
-            this.btOutputFilesFromSqlServer.Click += new System.EventHandler(this.btOutputFilesFromSqlServer_Click);
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(15, 71);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(86, 17);
+            this.label3.TabIndex = 5;
+            this.label3.Text = "Translations";
+            // 
+            // comboBox1
+            // 
+            this.comboBox1.FormattingEnabled = true;
+            this.comboBox1.Location = new System.Drawing.Point(18, 91);
+            this.comboBox1.Name = "comboBox1";
+            this.comboBox1.Size = new System.Drawing.Size(306, 24);
+            this.comboBox1.TabIndex = 4;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(15, 16);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(149, 17);
+            this.label1.Size = new System.Drawing.Size(144, 17);
             this.label1.TabIndex = 2;
-            this.label1.Text = "Output Html Files Path";
+            this.label1.Text = "Sql Connection String";
             // 
-            // txOutputHttmlFilesFromSqlServer
+            // txSqlConnectionString
             // 
-            this.txOutputHttmlFilesFromSqlServer.Location = new System.Drawing.Point(15, 39);
-            this.txOutputHttmlFilesFromSqlServer.Name = "txOutputHttmlFilesFromSqlServer";
-            this.txOutputHttmlFilesFromSqlServer.Size = new System.Drawing.Size(1079, 22);
-            this.txOutputHttmlFilesFromSqlServer.TabIndex = 1;
+            this.txSqlConnectionString.Location = new System.Drawing.Point(15, 39);
+            this.txSqlConnectionString.Name = "txSqlConnectionString";
+            this.txSqlConnectionString.Size = new System.Drawing.Size(1079, 22);
+            this.txSqlConnectionString.TabIndex = 1;
             // 
             // btGenerateFromSql
             // 
-            this.btGenerateFromSql.Location = new System.Drawing.Point(15, 81);
+            this.btGenerateFromSql.Location = new System.Drawing.Point(340, 78);
             this.btGenerateFromSql.Name = "btGenerateFromSql";
             this.btGenerateFromSql.Size = new System.Drawing.Size(112, 48);
             this.btGenerateFromSql.TabIndex = 0;
             this.btGenerateFromSql.Text = "Generate";
             this.btGenerateFromSql.UseVisualStyleBackColor = true;
+            this.btGenerateFromSql.Click += new System.EventHandler(this.btGenerateFromSql_Click);
             // 
             // textBoxFromSqlServer
             // 
@@ -274,7 +281,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromSqlServer.Multiline = true;
             this.textBoxFromSqlServer.Name = "textBoxFromSqlServer";
             this.textBoxFromSqlServer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromSqlServer.Size = new System.Drawing.Size(1174, 698);
+            this.textBoxFromSqlServer.Size = new System.Drawing.Size(1723, 777);
             this.textBoxFromSqlServer.TabIndex = 0;
             // 
             // tabPageUbIndex
@@ -282,7 +289,7 @@ namespace UbStudyHelpGenerator
             this.tabPageUbIndex.Controls.Add(this.splitContainer2);
             this.tabPageUbIndex.Location = new System.Drawing.Point(4, 25);
             this.tabPageUbIndex.Name = "tabPageUbIndex";
-            this.tabPageUbIndex.Size = new System.Drawing.Size(1180, 871);
+            this.tabPageUbIndex.Size = new System.Drawing.Size(1729, 950);
             this.tabPageUbIndex.TabIndex = 2;
             this.tabPageUbIndex.Text = "UB Index";
             this.tabPageUbIndex.UseVisualStyleBackColor = true;
@@ -297,10 +304,8 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.label5);
             this.splitContainer2.Panel1.Controls.Add(this.btUfIndexDownload);
-            this.splitContainer2.Panel1.Controls.Add(this.btUfIndexOutputFiles);
-            this.splitContainer2.Panel1.Controls.Add(this.label3);
-            this.splitContainer2.Panel1.Controls.Add(this.txUfIndexOutputFolder);
             this.splitContainer2.Panel1.Controls.Add(this.btUfIndex);
             this.splitContainer2.Panel1.Controls.Add(this.btUfIndexDownloadedFiles);
             this.splitContainer2.Panel1.Controls.Add(this.label2);
@@ -309,7 +314,7 @@ namespace UbStudyHelpGenerator
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.txUbIndexMessages);
-            this.splitContainer2.Size = new System.Drawing.Size(1180, 871);
+            this.splitContainer2.Size = new System.Drawing.Size(1729, 950);
             this.splitContainer2.SplitterDistance = 188;
             this.splitContainer2.TabIndex = 1;
             // 
@@ -322,33 +327,6 @@ namespace UbStudyHelpGenerator
             this.btUfIndexDownload.Text = "Download";
             this.btUfIndexDownload.UseVisualStyleBackColor = true;
             this.btUfIndexDownload.Click += new System.EventHandler(this.btDownload_Click);
-            // 
-            // btUfIndexOutputFiles
-            // 
-            this.btUfIndexOutputFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btUfIndexOutputFiles.Location = new System.Drawing.Point(1100, 74);
-            this.btUfIndexOutputFiles.Name = "btUfIndexOutputFiles";
-            this.btUfIndexOutputFiles.Size = new System.Drawing.Size(59, 45);
-            this.btUfIndexOutputFiles.TabIndex = 7;
-            this.btUfIndexOutputFiles.Text = "...";
-            this.btUfIndexOutputFiles.UseVisualStyleBackColor = true;
-            this.btUfIndexOutputFiles.Click += new System.EventHandler(this.btUfIndexOutputFiles_Click);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 65);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(91, 17);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Output folder";
-            // 
-            // txUfIndexOutputFolder
-            // 
-            this.txUfIndexOutputFolder.Location = new System.Drawing.Point(15, 88);
-            this.txUfIndexOutputFolder.Name = "txUfIndexOutputFolder";
-            this.txUfIndexOutputFolder.Size = new System.Drawing.Size(1079, 22);
-            this.txUfIndexOutputFolder.TabIndex = 5;
             // 
             // btUfIndex
             // 
@@ -395,7 +373,7 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.Multiline = true;
             this.txUbIndexMessages.Name = "txUbIndexMessages";
             this.txUbIndexMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txUbIndexMessages.Size = new System.Drawing.Size(1180, 679);
+            this.txUbIndexMessages.Size = new System.Drawing.Size(1729, 758);
             this.txUbIndexMessages.TabIndex = 0;
             // 
             // btGetRepositoryOutputFolder
@@ -443,8 +421,17 @@ namespace UbStudyHelpGenerator
             // 
             this.splitContainerMain.Panel2.Controls.Add(this.tabControlMain);
             this.splitContainerMain.Size = new System.Drawing.Size(1737, 1060);
-            this.splitContainerMain.SplitterDistance = 109;
+            this.splitContainerMain.SplitterDistance = 77;
             this.splitContainerMain.TabIndex = 2;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(18, 80);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(396, 17);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "Url\'s for index files are hard coded inside the application code";
             // 
             // frmMain
             // 
@@ -503,9 +490,8 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.Button btSpanish;
         private System.Windows.Forms.Button btUfIndex;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.Button btOutputFilesFromSqlServer;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txOutputHttmlFilesFromSqlServer;
+        private System.Windows.Forms.TextBox txSqlConnectionString;
         private System.Windows.Forms.Button btGenerateFromSql;
         private System.Windows.Forms.TextBox textBoxFromSqlServer;
         private System.Windows.Forms.TabPage tabPageUbIndex;
@@ -514,15 +500,15 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txUfIndexDownloadeFiles;
         private System.Windows.Forms.TextBox txUbIndexMessages;
-        private System.Windows.Forms.Button btUfIndexOutputFiles;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox txUfIndexOutputFolder;
         private System.Windows.Forms.Button btUfIndexDownload;
         private System.Windows.Forms.Button btSpanishDownload;
         private System.Windows.Forms.Button btGetRepositoryOutputFolder;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox txRepositoryOutputFolder;
         private System.Windows.Forms.SplitContainer splitContainerMain;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.Label label5;
     }
 }
 
