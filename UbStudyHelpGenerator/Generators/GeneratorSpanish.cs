@@ -5,13 +5,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UbStudyHelpGenerator.Classes;
 using static UbStudyHelpGenerator.Classes.EventsControl;
 
-namespace UbStudyHelpGenerator.Classes
+namespace UbStudyHelpGenerator.Generators
 {
-    public class UrantiaSpanish
+    public class GeneratorSpanish : Generator
     {
-        public event ShowMessageDelegate ShowMessage = null;
 
         private enum enHtmlType
         {
@@ -60,7 +60,7 @@ namespace UbStudyHelpGenerator.Classes
 
         private void GetData(string filePath)
         {
-            ShowMessage?.Invoke(filePath);
+            EventsControl.FireShowMessage(filePath);
             var uri = new Uri(filePath);
             var converted = uri.AbsoluteUri;
 
@@ -87,14 +87,17 @@ namespace UbStudyHelpGenerator.Classes
 
                 Paragraph par = new Paragraph(attribute.Value, node.InnerHtml);
                 paper.Paragraphs.Add(par);
-                ShowMessage?.Invoke(par.ToString());
+                EventsControl.FireShowMessage(par.ToString());
             }
 
 
         }
 
-
-        public void ProcessFiles(string filesPath)
+        /// <summary>
+        /// Process the3 several index files to generate UbStudyHelp Index json format
+        /// </summary>
+        /// <param name="filesPath"></param>
+        public override void Generate(string filesPath, string outputFiles)
         {
             int cont = 0;
             foreach (string filePath in Directory.GetFiles(filesPath, "*.html"))

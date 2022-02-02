@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
 using UbStudyHelpGenerator.Classes;
+using UbStudyHelpGenerator.Generators;
+using UbStudyHelpGenerator.Generators.Classes;
 
 namespace UbStudyHelpGenerator
 {
@@ -16,7 +13,9 @@ namespace UbStudyHelpGenerator
         public frmMain()
         {
             InitializeComponent();
+            EventsControl.ShowMessage += ShowMessage;
         }
+
 
         /// <summary>
         /// Show a message in the visible textbox
@@ -60,6 +59,8 @@ namespace UbStudyHelpGenerator
             txHtmlFilesPath.Text = Program.ParametersData.InputHtmlFilesPath;
             txSqlConnectionString.Text = Program.ParametersData.SqlConnectionString;
             txUfIndexDownloadeFiles.Text = Program.ParametersData.IndexDownloadedFiles;
+
+            tabControlMain.Enabled = !string.IsNullOrWhiteSpace(Program.ParametersData.RepositoryOutputFolder);
         }
 
         #region Get folders
@@ -89,6 +90,7 @@ namespace UbStudyHelpGenerator
             string folder = Program.ParametersData.RepositoryOutputFolder;
             GetFolder(txRepositoryOutputFolder, ref folder);
             Program.ParametersData.RepositoryOutputFolder = folder;
+            tabControlMain.Enabled = !string.IsNullOrWhiteSpace(Program.ParametersData.RepositoryOutputFolder);
         }
 
         private void btHtmlFilesPath_Click(object sender, EventArgs e)
@@ -114,58 +116,23 @@ namespace UbStudyHelpGenerator
         #endregion
 
 
+        #region Spanish
         private void btSpanish_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(Program.ParametersData.InputHtmlFilesPath))
+            if (!Directory.Exists(Program.ParametersData.InputHtmlFilesPath))
             {
-                MessageBox.Show("Choose a folder for html files first.");
+                MessageBox.Show($"Error: non exitinting folcer: {Program.ParametersData.InputHtmlFilesPath}");
                 return;
             }
 
-            if (MessageBox.Show("Are you sure to process all downloaded spanish html file?",
+            if (MessageBox.Show("Are you sure to generate Spanish translation?",
                         "Confirmation",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 ShowMessage(null);
-                UrantiaSpanish spanish = new UrantiaSpanish();
-                spanish.ShowMessage += ShowMessage;
-                spanish.ProcessFiles(Program.ParametersData.InputHtmlFilesPath);
-            }
-
-
-        }
-
-        private void btUfIndex_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Are you sure that want to regenerate the UB Index?",
-                        "Confirmation",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                string localPath = @"C:\Urantia\Index\Originais";
-                string outputFiles = @"C:\Urantia\Index\Originais";
-
-                UrantiaIndex index = new UrantiaIndex();
-                index.ShowMessage += ShowMessage;
-                index.GetIndex(localPath, outputFiles);
-            }
-        }
-
-        private void btDownload_Click(object sender, EventArgs e)
-        {
-            if (MessageBox.Show("Are you sure to download and regenerate the UB Index?",
-                        "Confirmation",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question) == DialogResult.Yes)
-            {
-                ShowMessage(null);
-                string localPath = @"C:\Urantia\Index\Originais";
-                string outputFiles = @"C:\Urantia\Index\Originais";
-
-                UrantiaIndex index = new UrantiaIndex();
-                index.ShowMessage += ShowMessage;
-                index.GetIndex(localPath, outputFiles);
+                GeneratorSpanish spanish = new GeneratorSpanish();
+                spanish.Generate(Program.ParametersData.InputHtmlFilesPath, Program.ParametersData.RepositoryOutputFolder);
             }
         }
 
@@ -183,18 +150,88 @@ namespace UbStudyHelpGenerator
                         MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 ShowMessage(null);
-                UrantiaSpanish spanish = new UrantiaSpanish();
-                spanish.ShowMessage += ShowMessage;
-                spanish.ProcessFiles(Program.ParametersData.InputHtmlFilesPath);
+                GeneratorSpanish spanish = new GeneratorSpanish();
+                spanish.Generate(Program.ParametersData.InputHtmlFilesPath, Program.ParametersData.RepositoryOutputFolder);
             }
+        }
+        #endregion
 
+
+        private void btUfIndex_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure that want to regenerate the UB Index?",
+                        "Confirmation",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                GeneratorIndex index = new GeneratorIndex();
+                index.Generate(Program.ParametersData.InputHtmlFilesPath, Program.ParametersData.RepositoryOutputFolder);
+            }
+        }
+
+        private void btDownload_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("Are you sure to download and regenerate the UB Index?",
+                        "Confirmation",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                ShowMessage(null);
+                 GeneratorIndex index = new GeneratorIndex();
+                index.Generate(Program.ParametersData.InputHtmlFilesPath, Program.ParametersData.RepositoryOutputFolder);
+            }
+        }
+
+        #region Sql Server
+
+        private void txSqlConnectionString_TextChanged(object sender, EventArgs e)
+        {
+            Program.ParametersData.SqlConnectionString = txSqlConnectionString.Text;
+        }
+
+        /// <summary>
+        /// Load translations from sql server
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btTranslationsFromSqlServer_Click(object sender, EventArgs e)
+        {
 
         }
+
+
 
         private void btGenerateFromSql_Click(object sender, EventArgs e)
         {
-            Program.ParametersData.SqlConnectionString = txSqlConnectionString.Text;
+            if (string.IsNullOrEmpty(Program.ParametersData.SqlConnectionString))
+            {
+                MessageBox.Show("A connection string must be provided",
+                        "Warning",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                return;
+            }
+
+            GenerateFromDatabaseSqlServer generator = new GenerateFromDatabaseSqlServer(Program.ParametersData.SqlConnectionString);
+
+            string xxx= generator.GetAvailableTranslations();
+
+            List<Paragraph> list = new List<Paragraph>();
+            generator.GetPaper(2, 1, ref list);
+
             // 
         }
+
+
+        private void btLoadTranslations_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void btGenerateOneTranslation_Click(object sender, EventArgs e)
+        {
+
+        }
+        #endregion
     }
 }

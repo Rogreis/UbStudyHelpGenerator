@@ -81,14 +81,21 @@
   <ItemGroup>
     <Compile Include="Classes\EventsControl.cs" />
     <Compile Include="Classes\Parameters.cs" />
-    <Compile Include="Classes\UrantiaIndex.cs" />
-    <Compile Include="Classes\UrantiaSpanish.cs" />
+    <Compile Include="Classes\TextWork.cs" />
+    <Compile Include="Generators\Classes\Paragraph.cs" />
+    <Compile Include="Generators\Classes\Translation.cs" />
+    <Compile Include="Generators\Classes\TubIndexEntry.cs" />
+    <Compile Include="Generators\GenerateFromDatabase.cs" />
+    <Compile Include="Generators\GenerateFromDatabaseSqlServer.cs" />
+    <Compile Include="Generators\GeneratorIndex.cs" />
+    <Compile Include="Generators\GeneratorSpanish.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="frmMain.Designer.cs">
       <DependentUpon>frmMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Generators\Generator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="frmMain.resx">

@@ -49,6 +49,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromSqlServer = new System.Windows.Forms.TextBox();
             this.tabPageUbIndex = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.label5 = new System.Windows.Forms.Label();
             this.btUfIndexDownload = new System.Windows.Forms.Button();
             this.btUfIndex = new System.Windows.Forms.Button();
             this.btUfIndexDownloadedFiles = new System.Windows.Forms.Button();
@@ -59,7 +60,9 @@ namespace UbStudyHelpGenerator
             this.label4 = new System.Windows.Forms.Label();
             this.txRepositoryOutputFolder = new System.Windows.Forms.TextBox();
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
-            this.label5 = new System.Windows.Forms.Label();
+            this.btTranslationsFromSqlServer = new System.Windows.Forms.Button();
+            this.btLoadTranslations = new System.Windows.Forms.Button();
+            this.btGenerateOneTranslation = new System.Windows.Forms.Button();
             this.tabControlMain.SuspendLayout();
             this.tabPageFromHtml.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerFromHtml)).BeginInit();
@@ -217,6 +220,9 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.btGenerateOneTranslation);
+            this.splitContainer1.Panel1.Controls.Add(this.btLoadTranslations);
+            this.splitContainer1.Panel1.Controls.Add(this.btTranslationsFromSqlServer);
             this.splitContainer1.Panel1.Controls.Add(this.label3);
             this.splitContainer1.Panel1.Controls.Add(this.comboBox1);
             this.splitContainer1.Panel1.Controls.Add(this.label1);
@@ -233,7 +239,7 @@ namespace UbStudyHelpGenerator
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(15, 71);
+            this.label3.Location = new System.Drawing.Point(173, 78);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(86, 17);
             this.label3.TabIndex = 5;
@@ -242,7 +248,7 @@ namespace UbStudyHelpGenerator
             // comboBox1
             // 
             this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(18, 91);
+            this.comboBox1.Location = new System.Drawing.Point(176, 105);
             this.comboBox1.Name = "comboBox1";
             this.comboBox1.Size = new System.Drawing.Size(306, 24);
             this.comboBox1.TabIndex = 4;
@@ -262,14 +268,15 @@ namespace UbStudyHelpGenerator
             this.txSqlConnectionString.Name = "txSqlConnectionString";
             this.txSqlConnectionString.Size = new System.Drawing.Size(1079, 22);
             this.txSqlConnectionString.TabIndex = 1;
+            this.txSqlConnectionString.TextChanged += new System.EventHandler(this.txSqlConnectionString_TextChanged);
             // 
             // btGenerateFromSql
             // 
-            this.btGenerateFromSql.Location = new System.Drawing.Point(340, 78);
+            this.btGenerateFromSql.Location = new System.Drawing.Point(807, 81);
             this.btGenerateFromSql.Name = "btGenerateFromSql";
-            this.btGenerateFromSql.Size = new System.Drawing.Size(112, 48);
+            this.btGenerateFromSql.Size = new System.Drawing.Size(145, 48);
             this.btGenerateFromSql.TabIndex = 0;
-            this.btGenerateFromSql.Text = "Generate";
+            this.btGenerateFromSql.Text = "Generate All Translations Json";
             this.btGenerateFromSql.UseVisualStyleBackColor = true;
             this.btGenerateFromSql.Click += new System.EventHandler(this.btGenerateFromSql_Click);
             // 
@@ -317,6 +324,15 @@ namespace UbStudyHelpGenerator
             this.splitContainer2.Size = new System.Drawing.Size(1729, 950);
             this.splitContainer2.SplitterDistance = 188;
             this.splitContainer2.TabIndex = 1;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(18, 80);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(396, 17);
+            this.label5.TabIndex = 9;
+            this.label5.Text = "Url\'s for index files are hard coded inside the application code";
             // 
             // btUfIndexDownload
             // 
@@ -424,14 +440,35 @@ namespace UbStudyHelpGenerator
             this.splitContainerMain.SplitterDistance = 77;
             this.splitContainerMain.TabIndex = 2;
             // 
-            // label5
+            // btTranslationsFromSqlServer
             // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(18, 80);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(396, 17);
-            this.label5.TabIndex = 9;
-            this.label5.Text = "Url\'s for index files are hard coded inside the application code";
+            this.btTranslationsFromSqlServer.Location = new System.Drawing.Point(15, 81);
+            this.btTranslationsFromSqlServer.Name = "btTranslationsFromSqlServer";
+            this.btTranslationsFromSqlServer.Size = new System.Drawing.Size(145, 48);
+            this.btTranslationsFromSqlServer.TabIndex = 6;
+            this.btTranslationsFromSqlServer.Text = "Get Translations From Sql Server";
+            this.btTranslationsFromSqlServer.UseVisualStyleBackColor = true;
+            this.btTranslationsFromSqlServer.Click += new System.EventHandler(this.btTranslationsFromSqlServer_Click);
+            // 
+            // btLoadTranslations
+            // 
+            this.btLoadTranslations.Location = new System.Drawing.Point(505, 81);
+            this.btLoadTranslations.Name = "btLoadTranslations";
+            this.btLoadTranslations.Size = new System.Drawing.Size(145, 48);
+            this.btLoadTranslations.TabIndex = 7;
+            this.btLoadTranslations.Text = "Load Repository Translations";
+            this.btLoadTranslations.UseVisualStyleBackColor = true;
+            this.btLoadTranslations.Click += new System.EventHandler(this.btLoadTranslations_Click);
+            // 
+            // btGenerateOneTranslation
+            // 
+            this.btGenerateOneTranslation.Location = new System.Drawing.Point(656, 81);
+            this.btGenerateOneTranslation.Name = "btGenerateOneTranslation";
+            this.btGenerateOneTranslation.Size = new System.Drawing.Size(145, 48);
+            this.btGenerateOneTranslation.TabIndex = 8;
+            this.btGenerateOneTranslation.Text = "Generate One Translation";
+            this.btGenerateOneTranslation.UseVisualStyleBackColor = true;
+            this.btGenerateOneTranslation.Click += new System.EventHandler(this.btGenerateOneTranslation_Click);
             // 
             // frmMain
             // 
@@ -509,6 +546,9 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button btGenerateOneTranslation;
+        private System.Windows.Forms.Button btLoadTranslations;
+        private System.Windows.Forms.Button btTranslationsFromSqlServer;
     }
 }
 

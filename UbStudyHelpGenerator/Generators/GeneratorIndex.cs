@@ -2,18 +2,17 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using UbStudyHelpGenerator.Generators;
+using UbStudyHelpGenerator.Generators.Classes;
 using static UbStudyHelpGenerator.Classes.EventsControl;
 
 namespace UbStudyHelpGenerator.Classes
 {
-    public class UrantiaIndex
+    public class GeneratorIndex : Generator
     {
-        public event ShowMessageDelegate ShowMessage = null;
 
         private class indextPage
         {
@@ -28,8 +27,50 @@ namespace UbStudyHelpGenerator.Classes
             }
         }
 
+        private void Download(indextPage index)
+        {
+            HtmlWeb web = new HtmlWeb();
+            HtmlDocument doc = web.Load(index.Url);
+            string pathFile = @"C:\Urantia\Index\Originais\" + index.FileName + ".htm";
+            System.IO.File.WriteAllText(pathFile, doc.Text);
+        }
 
-        public void SplitIndexEntry()
+
+        private List<indextPage> GetList()
+        {
+            List<indextPage> list = new List<indextPage>();
+
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/aa-az", "Aa - Az", "aa-az"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ba-bz", "Ba - Bz", "ba-bz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ca-cz", "Ca - Cz", "ca-cz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/da-dz", "Da - Dz", "da-dz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ea-ez", "Ea - Ez", "ea-ez"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/fa-fz", "Fa - Fz", "fa-fz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ga-gz", "Ga - Gz", "ga-gz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ha-hz", "Ha - Hz", "ha-hz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ia-iz", "Ia - Iz", "ia-iz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ja-jz", "Ja - Jz", "ja-jz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ka-kz", "Ka - Kz", "ka-kz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/la-lz", "La - Lz", "la-lz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ma-mz", "Ma - Mz", "ma-mz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/na-nz", "Na - Nz", "na-nz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/oa-oz", "Oa - Oz", "oa-oz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/pa-pz", "Pa - Pz", "pa-pz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/qa-qz", "Qa - Qz", "qa-qz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ra-rz", "Ra - Rz", "ra-rz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/sa-sz", "Sa - Sz", "sa-sz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ta-tz", "Ta - Tz", "ta-tz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ua-uz", "Ua - Uz", "ua-uz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/va-vz", "Va - Vz", "va-vz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/wa-wz", "Wa - Wz", "wa-wz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/xa-xz", "Xa - Xz", "xa-xz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ya-yz", "Ya - Yz", "ya-yz"));
+            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/za-zz", "Za - Zz", "za-zz"));
+            return list;
+        }
+
+
+        public void TestSplitIndexEntry()
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<p><strong>Zacharias</strong> death of, <a href=\"https://www.urantia.org/urantia-book-standardized/paper-135-john-baptist#U135_2_0\">135:2.0</a> (1497.3&#8211;6)<br /> ");
@@ -84,94 +125,22 @@ namespace UbStudyHelpGenerator.Classes
 
         }
 
-        private void Download(indextPage index)
-        {
-            HtmlWeb web = new HtmlWeb();
-            HtmlDocument doc = web.Load(index.Url);
-            string pathFile = @"C:\Urantia\Index\Originais\" + index.FileName + ".htm";
-            System.IO.File.WriteAllText(pathFile, doc.Text);
-        }
-
-
-        private List<indextPage> GetList()
-        {
-            List<indextPage> list = new List<indextPage>();
-
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/aa-az", "Aa - Az", "aa-az"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ba-bz", "Ba - Bz", "ba-bz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ca-cz", "Ca - Cz", "ca-cz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/da-dz", "Da - Dz", "da-dz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ea-ez", "Ea - Ez", "ea-ez"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/fa-fz", "Fa - Fz", "fa-fz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ga-gz", "Ga - Gz", "ga-gz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ha-hz", "Ha - Hz", "ha-hz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ia-iz", "Ia - Iz", "ia-iz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ja-jz", "Ja - Jz", "ja-jz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ka-kz", "Ka - Kz", "ka-kz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/la-lz", "La - Lz", "la-lz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ma-mz", "Ma - Mz", "ma-mz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/na-nz", "Na - Nz", "na-nz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/oa-oz", "Oa - Oz", "oa-oz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/pa-pz", "Pa - Pz", "pa-pz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/qa-qz", "Qa - Qz", "qa-qz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ra-rz", "Ra - Rz", "ra-rz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/sa-sz", "Sa - Sz", "sa-sz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ta-tz", "Ta - Tz", "ta-tz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ua-uz", "Ua - Uz", "ua-uz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/va-vz", "Va - Vz", "va-vz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/wa-wz", "Wa - Wz", "wa-wz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/xa-xz", "Xa - Xz", "xa-xz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/ya-yz", "Ya - Yz", "ya-yz"));
-            list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/za-zz", "Za - Zz", "za-zz"));
-            return list;
-        }
-
-
-        public class Detail
-        {
-            public int DetailType { get; set; }
-            public string Text { get; set; } = "";
-            public List<string> Links { get; set; } = new List<string>();
-
-        }
-
-        public class TubIndexEntry
-        {
-            public string Title { get; set; }
-            public List<Detail> Details { get; set; } = new List<Detail>();
-            public override string ToString()
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine(Title);
-                foreach (Detail detail in Details)
-                {
-                    sb.AppendLine($"   {detail.DetailType}  {detail.Text}");
-                    foreach (string link in detail.Links)
-                    {
-                        sb.AppendLine("      " + link);
-                    }
-                }
-                sb.AppendLine("");
-                return sb.ToString();
-            }
-
-        }
 
 
         /// <summary>
         /// Download and process each TUB file index
         /// </summary>
         /// <param name="localHtmlIndexFiles"></param>
-        /// <param name="outputJsonIndexFiles"></param>
-        public void GetIndex(string localHtmlIndexFiles, string outputJsonIndexFiles)
+        /// <param name="outputFiles"></param>
+        public override void Generate(string localHtmlIndexFiles, string outputFiles)
         {
-            ShowMessage(null);
+            FireShowMessage(null);
 
             List<TubIndexEntry> tubIndexEntries = new List<TubIndexEntry>();
 
             foreach (indextPage index in GetList())
             {
-                ShowMessage(index.FileName);
+                FireShowMessage(index.FileName);
                 HtmlWeb web = new HtmlWeb();
 
                 string pathIndex = Path.Combine(localHtmlIndexFiles, index.FileName + ".htm");
@@ -252,15 +221,10 @@ namespace UbStudyHelpGenerator.Classes
                 }
             }
 
-            string pathJsonIndex = Path.Combine(outputJsonIndexFiles, "tubIndex_000.json");
+            string pathJsonIndex = Path.Combine(outputFiles, "tubIndex_000.json");
             string jsonString = JsonSerializer.Serialize<List<TubIndexEntry>>(tubIndexEntries);
             File.WriteAllText(pathJsonIndex, jsonString);
-
         }
 
-        private void JobCheckingSelenium_ShowMessage(string mensagem, bool Grave)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
