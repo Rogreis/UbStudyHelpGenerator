@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.32002.261
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UbStudyHelpGenerator", "UbStudyHelpGenerator\UbStudyHelpGenerator.csproj", "{1B17E209-D777-4E09-B37F-289EBA9182AA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UbStandardObjects", "..\UbStudyHelp\UbStandardObjects\UbStandardObjects.csproj", "{886C4BC9-EDD0-4823-B540-1644044C5E2A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{1B17E209-D777-4E09-B37F-289EBA9182AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1B17E209-D777-4E09-B37F-289EBA9182AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1B17E209-D777-4E09-B37F-289EBA9182AA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{886C4BC9-EDD0-4823-B540-1644044C5E2A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{886C4BC9-EDD0-4823-B540-1644044C5E2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{886C4BC9-EDD0-4823-B540-1644044C5E2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{886C4BC9-EDD0-4823-B540-1644044C5E2A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

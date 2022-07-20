@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
+using UbStandardObjects;
 
 namespace UbStudyHelpGenerator.Classes
 {
@@ -13,32 +14,19 @@ namespace UbStudyHelpGenerator.Classes
     /// Parameters using new MS Json
     /// <see href="https://devblogs.microsoft.com/dotnet/try-the-new-system-text-json-apis/"/>
     /// </summary>
-    public class Parameters
+    public class ParametersGenerator : Parameters
     {
-        /// <summary>
-        /// Git associated repository folder
-        /// </summary>
-        public string RepositoryOutputFolder { get; set; } = "";
-
-        public string InputHtmlFilesPath { get; set; } = "";
-
-
-        public string OutputHtmlFilesPathFromSql { get; set; } = "";
-
-        public string IndexDownloadedFiles { get; set; } = "";
-
-        public string IndexOutputFilesPath { get; set; } = "";
 
         /// <summary>
         /// Serialize the parameters instance
         /// </summary>
         /// <param name="p"></param>
         /// <param name="pathParameters"></param>
-        public static void Serialize(Parameters p, string pathParameters)
+        public static void Serialize(ParametersGenerator p, string pathParameters)
         {
             try
             {
-                string jsonString = JsonSerializer.Serialize<Parameters>(p);
+                string jsonString = JsonSerializer.Serialize<ParametersGenerator>(p);
                 File.WriteAllText(pathParameters, jsonString);
             }
             catch { }
@@ -49,7 +37,7 @@ namespace UbStudyHelpGenerator.Classes
         /// </summary>
         /// <param name="pathParameters"></param>
         /// <returns></returns>
-        public static Parameters Deserialize(string pathParameters)
+        public static ParametersGenerator Deserialize(string pathParameters)
         {
             try
             {
@@ -59,11 +47,11 @@ namespace UbStudyHelpGenerator.Classes
                 {
                     AllowTrailingCommas = true
                 };
-                return JsonSerializer.Deserialize<Parameters>(jsonString, options);
+                return JsonSerializer.Deserialize<ParametersGenerator>(jsonString, options);
             }
             catch
             {
-                return new Parameters();
+                return new ParametersGenerator();
             }
         }
 

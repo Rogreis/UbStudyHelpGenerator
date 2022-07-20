@@ -1,10 +1,12 @@
 ﻿using HtmlAgilityPack;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UbStudyHelpGenerator.Database;
 using static UbStudyHelpGenerator.Classes.EventsControl;
 
 namespace UbStudyHelpGenerator.Classes
@@ -56,57 +58,137 @@ namespace UbStudyHelpGenerator.Classes
             public string Title { get; set; }
         }
 
-
-
-        private void GetData(string filePath)
+        private Dictionary<string, string> DictionaryInvalidXmlCharacters()
         {
+            return new Dictionary<string, string>()
+                 {
+                     {"&",  "&amp;"},  // must be the first
+	                 {"<",  "&lt;"},
+                     {">",  "&gt;"},
+                     {"\"",  "&quot;"},
+                     {"'", "&apos;"}
+                 };
+        }
+
+        protected string XmlEncodeString(string xmlIn)
+        {
+            foreach (KeyValuePair<string, string> pair in DictionaryInvalidXmlCharacters())
+                xmlIn = xmlIn.Replace(pair.Key, pair.Value);
+            return xmlIn;
+        }
+
+
+        private void SplitHtml(string id, string html, ref short paper, ref short section, ref short paragraphNo, ref short page, ref short line, ref string text)
+        {
+            // <small>0:12.11 (16.8)</small>   
+            // <small>0:8.10 (12.1)</small> 
+            // <small>1:0.4 (22.1)</small> Este magnífico mandato universal de esforzarse por alcanzar la perfección de la divinidad es el primer deber, y debería ser la más alta aspiración, de toda la creación de criaturas luchadoras del Dios de perfección. Esta posibilidad de lograr la perfección divina es el destino final y cierto de todo progreso espiritual eterno del hombre.
+
+
+            html = html.Replace("«", "\"").Replace("»", "\"");
+            text = html.Replace(id, "");
+            text = XmlEncodeString(text);
+
+            if (id.EndsWith("F"))
+            { 
+                id = id.Replace("F", "");
+                page = line = 0;
+                return;
+            }
+            string[] sepId = { "U", "_" };
+            string[] parts = id.Split(sepId, StringSplitOptions.RemoveEmptyEntries);
+            paper = Convert.ToInt16(parts[0]);
+            section = Convert.ToInt16(parts[1]);
+            paragraphNo = Convert.ToInt16(parts[2]);
+
+            if (paragraphNo == 0)
+            {
+                page = line = 0;
+                return;
+            }
+
+            int indSmallClose= html.IndexOf("</small>");
+            if (indSmallClose == -1)
+            {
+                page = line = 0;
+                return;
+            }
+            text = XmlEncodeString(html.Remove(0, indSmallClose + 8));
+
+
+            string[] sep2 = { "<small>", "</small>", ":", ".", "(", ")" };
+            string[] parts2 = html.Split(sep2, StringSplitOptions.RemoveEmptyEntries);
+            if (parts2.Length < 6)
+            {
+                page = line = 0;
+                return;
+            }
+            page = Convert.ToInt16(parts2[3]);
+            line = Convert.ToInt16(parts2[4]);
+        }
+
+        private void GetData(UbtDatabaseSqlServer server, string filePath)
+        {
+
             ShowMessage?.Invoke(filePath);
             var uri = new Uri(filePath);
             var converted = uri.AbsoluteUri;
 
             Paper paper = new Paper();
-
             HtmlWeb web = new HtmlWeb();
+
             HtmlDocument htmlDoc = web.Load(uri);
 
-            //IEnumerable<HtmlNode> listDivContainer = htmlDoc.DocumentNode.ChildNodes.Descendants("h1").Where(n => n.HasClass("container"));
-            List<HtmlNode> nodes = htmlDoc.DocumentNode.ChildNodes.Descendants("h1").ToList();
-            HtmlNode nodeTitle = nodes[0];
-            HtmlAttribute attributeTitle = nodeTitle.Attributes.ToList().Find(a => a.Name == "id");
-            paper.Title = nodeTitle.InnerText;
-            paper.Paragraphs.Add(new Paragraph(attributeTitle.Value, nodeTitle.InnerText));
-
-            List<HtmlNode> paragraphNodes = htmlDoc.DocumentNode.ChildNodes.Descendants("p").Where(n => n.HasClass("btn")).ToList();
-            foreach (HtmlNode node in paragraphNodes)
+            List<HtmlNode> divContaineres = htmlDoc.DocumentNode.Descendants("div").Where(n => n.HasClass("container")).ToList();
+            if (divContaineres == null || divContaineres.Count == 0 || divContaineres.Count > 1)
             {
-                HtmlAttribute attribute = node.Attributes.ToList().Find(a => a.Name == "id");
-
-                // <small>0:12.11 (16.8)</small>   
-                // <small>0:8.10 (12.1)</small> 
-
-
-                Paragraph par = new Paragraph(attribute.Value, node.InnerHtml);
-                paper.Paragraphs.Add(par);
-                ShowMessage?.Invoke(par.ToString());
+                ShowMessage?.Invoke("ERROR: Invalid number of divs");
+                return;
             }
+            HtmlNode divContainer = divContaineres.FirstOrDefault();
+
+            int count = 0;
+            int found = 0, errors = 0;
+            foreach (HtmlNode node in divContainer.ChildNodes)
+            {
+                if (!string.IsNullOrEmpty(node.Id))
+                {
+                    short paperNo = 0, section = 0, paragraphNo = 0, page = 0, line = 0;
+                    string text = "";
+                    SplitHtml(node.Id, node.InnerHtml, ref paperNo, ref section, ref paragraphNo, ref page, ref line, ref text);
+                    //string textToPrint = text; // text.Length > 40 ? text.Substring(0, 40) : text;
+                    //ShowMessage?.Invoke($"{paperNo} {section} {paragraphNo} {page} {line} {textToPrint}");
+                    string pk_seq = $"[dbo].[PK_Seq]({paperNo}, {section}, {paragraphNo})";
+                    string command = $"INSERT INTO [dbo].[TextImport]([Paper],[Section],[Paragraph],[Page],[Line],[Text],[PK_Seq]) VALUES({paperNo}, {section}, {paragraphNo}, {page}, {line}, '{text}', {pk_seq})";
+                    count = server.RunCommand(command);
+                    if (count < 1)
+                    {
+                        errors++;
+                        ShowMessage($"{command}");
+                    }
+                    found++;
+                }
+            }
+            return;
 
 
         }
 
 
-        public void ProcessFiles(string filesPath)
+        internal void ProcessFiles(UbtDatabaseSqlServer server, string filesPath)
         {
-            int cont = 0;
-            foreach (string filePath in Directory.GetFiles(filesPath, "*.html"))
-            {
-                if (filePath.Contains("Documento"))
-                {
-                    GetData(filePath);
-                }
-                cont++;
-                if (cont == 5)
-                    return;
-            }
+            string filePath = @"C:\Urantia\Textos\Espanhol2021\04-Documento000.html";
+            GetData(server, filePath);
+
+            //int cont = 0;
+            //foreach (string filePath in Directory.GetFiles(filesPath, "*.html"))
+            //{
+            //    if (filePath.Contains("Documento"))
+            //    {
+            //        GetData(server, filePath);
+            //    }
+            //    cont++;
+            //}
 
 
         }

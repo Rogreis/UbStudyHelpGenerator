@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using static UbStudyHelpGenerator.Classes.EventsControl;
 
@@ -93,6 +94,9 @@ namespace UbStudyHelpGenerator.Classes
         }
 
 
+        #region Download Index
+        //private ChromeDriver driver = null;
+
         private List<indextPage> GetList()
         {
             List<indextPage> list = new List<indextPage>();
@@ -125,6 +129,125 @@ namespace UbStudyHelpGenerator.Classes
             list.Add(new indextPage("https://www.urantia.org/urantia-foundations-first-index-urantia-book/za-zz", "Za - Zz", "za-zz"));
             return list;
         }
+
+
+        //private class IndexDetails
+        //{
+        //    public string Text { get; set; }
+
+        //    public string Details { get; set; }
+
+        //    public List<string> References { get; set; } = new List<string>();
+        //}
+
+        //private class IndexTexts
+        //{
+        //    public List<IndexDetails> Details { get; set; } = new List<IndexDetails>();
+        //}
+
+        //public string GetUbIndex(string url)
+        //{
+        //    try
+        //    {
+        //        IndexTexts indexTexts = new IndexTexts();
+
+        //        //FireShowMessage(null);
+        //        //FireShowMessage("Getting UB Index");
+
+        //        driver.Url = url;
+        //        Thread.Sleep(5000);
+
+        //        IWebElement hmtl = driver.FindElement(By.TagName("html"));
+
+        //        string x = hmtl.Text;
+
+
+        //        IWebElement body = driver.FindElement(By.ClassName("node-inner"));
+        //        IWebElement content = body.FindElement(By.ClassName("content"));
+
+
+        //        foreach (IWebElement p in content.FindElements(By.TagName("p")))
+        //        {
+        //            // <strong>Sabbath</strong>
+        //            IWebElement strong = p.FindElement(By.TagName("strong"));
+        //            ReadOnlyCollection<IWebElement> links = p.FindElements(By.TagName("a"));
+        //            if (links != null && links.Count > 0)
+        //            {
+        //                string strongText = "";
+        //                List<string> references = new List<string>();
+        //                string parText = p.Text;
+        //                foreach (IWebElement elem in p.FindElements(By.XPath(".//*")))
+        //                {
+        //                    /*
+        //                        <strong>Sabbath</strong>
+        //                        afternoon walks, of Joseph and Jesus, 
+        //                        (1363.5)
+        //                        <a href="https://www.urantia.org/urantia-book-standardized/paper-123-early-childhood-jesus#U123_5_12">123:5.12</a>
+        //                        <br>
+
+        //                        Sabbath afternoon walks, of Joseph and Jesus, 123:5.12 (1363.5)
+        //                             at Bethany, 172:1.0 (1878.4–1880.1)
+        //                             breaking, Josiah and Jesus charged with, 164:4.8 (1814.4)
+        //                                  Pharisees’ accusations of Jesus’, 169:0.6 (1850.6)
+        //                                       attempts to entrap Jesus into, 147:6.3 (1654.2), 148:7.2 (1665.1)
+        //                                       hypocrisy about, 164:4.1 (1813.4)
+        //                             day, Jesus’ query about healing on the, 167:1.4 (1834.2)
+        //                                  Jewish rulers’ activities vs. those of Jesus on the, 162:2.2 (1790.5)
+        //                             -day tradition, origin of, 74:4.6 (832.6)
+        //                             day’s journey, legal length of, 147:6.3 (1654.2)
+        //                             Jewish, a day of rest and worship, 185:2.7 (1990.3)
+        //                             Jewish attitude toward play on the, 123:4.3 (1361.3)
+        //                             Nazareth’s liberal-mindedness as to the, 123:5.12 (1363.5)
+        //                             at the pool of Bethesda, 147:3.1 (1649.1)
+        //                             preaching of Jesus in the Jewish synagogues on the, 146:4.1 (1643.2)
+        //                             query of the man with the withered hand as to legality of being healed on the, 148:7.2 (1665.1)
+        //                             rites, Jesus’ inquiry into the meaning of, 123:3.5 (1359.6)
+        //                             services, Jesus’ reading of the scriptures at the, 123:5.4 (1362.5)
+        //                             Son of Man lord of the, 147:6.4 (1654.3)
+        //                             at Tiberias, 150:3.0 (1680.3–1681.7)
+        //                             was made for man and not man for the Sabbath, 147:6.4 (1654.3)
+
+
+        //                    */
+        //                    if (elem.TagName == "strong")
+        //                    {
+        //                        strongText = elem.Text;
+        //                    }
+        //                    if (elem.TagName == "a")
+        //                    {
+        //                        references.Add(elem.Text);
+        //                    }
+        //                }
+
+        //                FireShowMessage("");
+        //                FireShowMessage(strongText);
+
+        //                IndexDetails indexDetails = new IndexDetails()
+        //                {
+        //                    Text = strongText,
+        //                    References = references,
+        //                    Details = parText,
+        //                };
+
+        //                indexTexts.Details.Add(indexDetails);
+
+        //            }
+
+        //        }
+
+        //        return JsonConvert.SerializeObject(indexTexts);
+
+
+        //    }
+        //    catch
+        //    {
+        //        return null;
+        //    }
+        //}
+
+        #endregion
+
+
 
 
         public class Detail
