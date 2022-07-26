@@ -1,15 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Text.Json;
-using System.Drawing;
-using UbStandardObjects.Objects;
-using System.Text;
-using UbStudyHelpGenerator.Database;
+﻿using Microsoft.Office.Interop.Word;
+using System;
 using System.Collections.Generic;
-using UBT_Tools_WorkLib;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using UbStandardObjects;
-using Xceed.Words.NET;
-using Xceed.Document.NET;
+using UbStandardObjects.Objects;
+using UbStudyHelpGenerator.Database;
+using UBT_Tools_WorkLib;
+//using Xceed.Words.NET;
+//using Xceed.Document.NET;
 
 namespace UbStudyHelpGenerator.Classes
 {
@@ -24,66 +24,39 @@ namespace UbStudyHelpGenerator.Classes
     public class PT_AlternativeRecord
     {
         public int IndexWorK { get; set; }
-        public int TranslationID { get; set; }
-        public int Paper { get; set; }
-        public int PK_Seq { get; set; }
-        public int Section { get; set; }
-        public int ParagraphNo { get; set; }
-        public int Page { get; set; }
-        public int Line { get; set; }
-        public int FormatInt { get; set; }
+        public string Identity { get; set; }
+        public short Paper { get; set; }
+        public short PK_Seq { get; set; }
+        public short Section { get; set; }
+        public short ParagraphNo { get; set; }
         public string Text { get; set; }
-        public int Status { get; set; }
-        public string English { get; set; }
-        public string Portugues2007 { get; set; }
 
         public string Identification
         {
             get
             {
-                return string.Format("{0}:{1}-{2} ({3}.{4})", Paper, Section, ParagraphNo, Page, Line); ;
+                return Identity;
             }
         }
 
-        public string AName
+        public string Key
         {
             get
             {
-                return string.Format("U{0}_{1}_{2}", Paper, Section, ParagraphNo); ;
+                return $"{IndexWorK}";
             }
         }
 
-        public bool IsPaperTitle
+
+
+        public string FileName
         {
             get
             {
-                return Section == 0 && ParagraphNo == 0;
+                return $"Par_{Paper:000}_{Section:000}_{ParagraphNo:000}.md";
             }
         }
 
-        public bool IsSectionTitle
-        {
-            get
-            {
-                return ParagraphNo == 0;
-            }
-        }
-
-        public string ParaIdent
-        {
-            get
-            {
-                return Paper.ToString("000") + PK_Seq.ToString("000");
-            }
-        }
-
-        public ParagraphStatus TranslationStatus
-        {
-            get
-            {
-                return (ParagraphStatus)Status;
-            }
-        }
 
 
     }
@@ -10438,6 +10411,8 @@ namespace UbStudyHelpGenerator.Classes
 
         public event ShowPaperNumber ShowPaperNumber = null;
 
+        public event ShowStatusMessage ShowStatusMessage = null;
+
         public PTAlternative()
         {
             htmlGenerator.ShowMessage += HtmlGenerator_ShowMessage;
@@ -10447,6 +10422,11 @@ namespace UbStudyHelpGenerator.Classes
         private void FireShowMessage(string message)
         {
             ShowMessage?.Invoke(message);
+        }
+
+        private void FireShowStatusMessage(string message)
+        {
+            ShowStatusMessage?.Invoke(message);
         }
 
         private void FireShowPaperNumber(short paperNo)
@@ -10465,17 +10445,17 @@ namespace UbStudyHelpGenerator.Classes
         }
 
 
-        private Xceed.Document.NET.Paragraph CreateWordParagraph(Cell cell, string text)
-        {
-            Xceed.Document.NET.Paragraph p = cell.InsertParagraph(text);
-            p.Font(new Xceed.Document.NET.Font("Verdana"))
-                  .FontSize(10)
-                  .Italic()
-                  .Spacing(5)
-                  .SpacingLine(22)
-                  .SpacingAfter(5);
-            return p;
-        }
+        //private Xceed.Document.NET.Paragraph CreateWordParagraph(Cell cell, string text)
+        //{
+        //    Xceed.Document.NET.Paragraph p = cell.InsertParagraph(text);
+        //    p.Font(new Xceed.Document.NET.Font("Verdana"))
+        //          .FontSize(10)
+        //          .Italic()
+        //          .Spacing(5)
+        //          .SpacingLine(22)
+        //          .SpacingAfter(5);
+        //    return p;
+        //}
 
         public bool ExportTranslationAlternative()
         {
@@ -10512,5 +10492,400 @@ namespace UbStudyHelpGenerator.Classes
                 return false;
             }
         }
+
+        private void removeTags(StringBuilder sb, string startTag, string endTag)
+        {
+            int indStart = sb.ToString().IndexOf(startTag);
+            if (indStart < 0)
+                return;
+            do
+            {
+                int indEnd = sb.ToString().IndexOf(endTag);
+                if (indEnd < 0)
+                    return;
+                indEnd += endTag.Length;
+                sb.Remove(indStart, indEnd - indStart);
+                indStart = sb.ToString().IndexOf(startTag);
+            } while (indStart >= 0);
+            string xxx = sb.ToString();
+        }
+
+        private void replaceTags(StringBuilder sb, string startTag, string endTag, string startReplaceTag, string endReplaceTag)
+        {
+            sb.Replace(startTag, startReplaceTag);
+            sb.Replace(endTag, endReplaceTag);
+        }
+
+        private void RemoveExemplarTags(StringBuilder sb)
+        {
+            // Text Standardization 
+            removeTags(sb, "{x{x{", "}x}x}");
+            // SCaps tag
+            removeTags(sb, "{k{k{", "}k}k}");
+            removeTags(sb, "{r{r{", "}r}r}");
+            // Html comment
+            removeTags(sb, "{c{c{", "}c}c}");
+            removeTags(sb, "{z{z{", "}z}z}");
+            // Bold
+            removeTags(sb, "{b{b{", "}b}b}");
+            // Tags just removed
+            // Comments
+            removeTags(sb, "{c{c{", "}c}c}");
+            removeTags(sb, "{u{u{", "}u}u}");
+            removeTags(sb, "{f{f{", "}s}s}");
+
+            // Replacements
+            sb.Replace("{img_1}", "<img src=\"urantia_logo.gif\" alt=\"concentric circles, TM, CR\" width=\"110\" height=\"110\" />");
+            sb.Replace("{img_2}", "<img src=\"urantia_logo2.gif\" alt=\"concentric circles, TM\" width=\"110\" height=\"82\" />");
+            sb.Replace("{img_3}", "<img src=\"urantia_logo3.gif\" alt=\"tiny concentric circles\" width=\"23\" height=\"21\" />");
+            sb.Replace("&apos", "");
+            sb.Replace("&nbsp;", " ");
+            // 
+
+            sb.Replace("{{{br}}}", "\\n");
+            sb.Replace("{br}", "\\n");
+            sb.Replace("{n{n{", "");
+        }
+
+
+        private void ToMarkdown(StringBuilder sb)
+        {
+            RemoveExemplarTags(sb);
+            // Italics
+            replaceTags(sb, "{i{i{", "}i}i}", "*", "*");
+            replaceTags(sb, "{d{d{", "}d}d}", "*", "*");
+            replaceTags(sb, "<i>", "</i>", "*", "*");
+
+
+            // Sup (bold in markdown)
+            replaceTags(sb, "{h{h{", "}h}h}", "__", "__>");
+        }
+
+        private void ToHtml(StringBuilder sb)
+        {
+            RemoveExemplarTags(sb);
+            // Italics
+            replaceTags(sb, "{i{i{", "}i}i}", "<i>", "</i>");
+            replaceTags(sb, "{d{d{", "}d}d}", "<i>", "</i>");
+
+            // Superscript
+            replaceTags(sb, "{h{h{", "}h}h}", "<sup>", "</sup>");
+        }
+
+        public bool ExportRepository()
+        {
+
+            string pathDest = @"C:\ProgramData\UbStudyHelp\Repo\PtAlternative";
+
+            ExportToWord word = new ExportToWord();
+
+            try
+            {
+                for (short paperNo = 0; paperNo < 197; paperNo++)
+                {
+                    FireShowMessage($"Exporting paper {paperNo}");
+                    string pathPaperFolder = Path.Combine(pathDest, $"Doc{paperNo:000}");
+                    Directory.CreateDirectory(pathPaperFolder);
+                    FireShowPaperNumber((short)paperNo);
+                    FireShowMessage($"Generating paper {paperNo}");
+                    List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
+                    foreach (PT_AlternativeRecord record in list)
+                    {
+                        string pathParagraphFile = Path.Combine(pathPaperFolder, record.FileName);
+                        StringBuilder sb = new StringBuilder(record.Text);
+                        ToMarkdown(sb);
+                        string text = sb.ToString();
+                        File.WriteAllText(pathParagraphFile, text, Encoding.UTF8);
+                    }
+                }
+                FireShowMessage("Finished");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FireShowMessage($"Exporting translation alternative {ex.Message}");
+                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+                return false;
+            }
+        }
+
+
+        public enum TextTag
+        {
+            Normal,
+            Bold,
+            Italic,
+            Superscript
+        }
+
+
+
+        private class UbTextTag
+        {
+            public TextTag Tag { get; set; } = TextTag.Normal;
+            public string Text { get; set; } = "";
+            public UbTextTag(TextTag tag, string text)
+            {
+                Tag = tag;
+                Text = text;
+            }
+        }
+
+        private class HtmlTag
+        {
+            public const string markWithoutTag = "|~S~|";
+            public const string indicatorTag = "|~I~|";
+
+            public static string[] Separators = { markWithoutTag };
+
+            public string Start { get; set; }
+            public string End { get; set; }
+            public TextTag Tag { get; set; }
+
+            public string MarkStart
+            {
+                get
+                {
+                    return markWithoutTag + indicatorTag + ((int)Tag).ToString("00");
+                }
+            }
+
+            public string MarkEnd
+            {
+                get
+                {
+                    return markWithoutTag;
+                }
+            }
+
+            public HtmlTag(string start, string end, TextTag tag)
+            {
+                Start = start;
+                End = end;
+                Tag = tag;
+            }
+
+        }
+
+        private List<HtmlTag> HtmlTags = new List<HtmlTag>()
+        {
+            new HtmlTag("<b>", "</b>",  TextTag.Bold),
+            new HtmlTag("<em>", "</em>",  TextTag.Italic),
+            new HtmlTag("<i>", "</i>",  TextTag.Italic),
+            new HtmlTag("<I>", "</I>",  TextTag.Italic),
+            new HtmlTag("<sup>", "</sup>",  TextTag.Superscript),
+        };
+
+
+        /// <summary>
+        /// Returns the text split in identifies parts to create a WPF Inline
+        /// </summary>
+        /// <returns></returns>
+        private List<UbTextTag> Tags(string text)
+        {
+            List<UbTextTag> list = new List<UbTextTag>();
+            foreach (HtmlTag tag in HtmlTags)
+            {
+                //text = Regex.Replace(text, "\\b" + string.Join("\\b|\\b", tag) + "\\b", highStart + tag + highEnd);
+                text = Regex.Replace(text, tag.Start, tag.MarkStart);
+                text = Regex.Replace(text, tag.End, tag.MarkEnd);
+            }
+            string[] parts = text.Split(HtmlTag.Separators, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string part in parts)
+            {
+                text = part;
+                if (text.StartsWith(HtmlTag.indicatorTag))
+                {
+                    text = text.Replace(HtmlTag.indicatorTag, "");
+                    TextTag textTag = (TextTag)Convert.ToInt32(text.Substring(0, 2));
+                    list.Add(new UbTextTag(textTag, text.Remove(0, 2)));
+                }
+                else
+                {
+                    list.Add(new UbTextTag(TextTag.Normal, text));
+                }
+            }
+            return list;
+        }
+
+
+        private void FormatParagraph(Microsoft.Office.Interop.Word.Paragraph paraInserted, PT_AlternativeRecord record)
+        {
+            Range range = paraInserted.Range;
+            range.Font.Bold = 1;
+            range.Text = $"{record.Identity}-{record.IndexWorK}:   ";
+            range.SetRange(range.End, range.End);
+            range.Font.Italic = 0;
+            range.Font.Bold = 0;
+            range.Font.Superscript = 0;
+
+            foreach (UbTextTag textTag in Tags(record.Text))
+            {
+                range.SetRange(range.End, range.End);
+                range.Text = textTag.Text;
+                range.SetRange(range.Start, range.Start + textTag.Text.Length);
+                range.Font.ColorIndex = WdColorIndex.wdBlack;
+                range.Font.Italic = 0;
+                range.Font.Bold = 0;
+                range.Font.Superscript = 0;
+                switch (textTag.Tag)
+                {
+                    case TextTag.Italic:
+                        range.Font.Italic = 1;
+                        range.Font.ColorIndex = WdColorIndex.wdBlue;
+                        break;
+                    case TextTag.Bold:
+                        range.Font.Bold = 1;
+                        break;
+                    case TextTag.Superscript:
+                        range.Font.Superscript = 1;
+                        break;
+                }
+            }
+        }
+
+
+        public void ExportPaperToDocx(List<PT_AlternativeRecord> list, string pathDocx)
+        {
+            try
+            {
+                if (list == null || list.Count == 0)
+                {
+                    FireShowMessage("*** Error: No records");
+                    return;
+                }
+                int paperNo = list[0].Paper;
+                //Create an instance for word app  
+                Microsoft.Office.Interop.Word.Application winword = new Microsoft.Office.Interop.Word.Application();
+
+                //Set animation status for word application  
+                winword.ShowAnimation = false;
+
+                //Set status for word application is to be visible or not.  
+                winword.Visible = false;
+
+                //Create a missing variable for missing value  
+                object missing = System.Reflection.Missing.Value;
+
+                //Create a new document  
+                Microsoft.Office.Interop.Word.Document document = winword.Documents.Add(ref missing, ref missing, ref missing, ref missing);
+
+                //Add header into the document  
+                foreach (Microsoft.Office.Interop.Word.Section section in document.Sections)
+                {
+                    //Get the header range and add the header details.  
+                    Microsoft.Office.Interop.Word.Range headerRange = section.Headers[Microsoft.Office.Interop.Word.WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
+                    headerRange.Fields.Add(headerRange, Microsoft.Office.Interop.Word.WdFieldType.wdFieldPage);
+                    headerRange.ParagraphFormat.Alignment = Microsoft.Office.Interop.Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                    headerRange.Font.ColorIndex = Microsoft.Office.Interop.Word.WdColorIndex.wdBlue;
+                    headerRange.Font.Size = 10;
+                    headerRange.Text = $"Paper {paperNo}";
+                }
+
+                //Add the footers into the document  
+                //foreach (Microsoft.Office.Interop.Word.Section wordSection in document.Sections)
+                //{
+                //    //Get the footer range and add the footer details.  
+                //    Microsoft.Office.Interop.Word.Range footerRange = wordSection.Footers[Microsoft.Office.Interop.Word.WdHeaderFooterIndex.wdHeaderFooterPrimary].Range;
+                //    footerRange.Font.ColorIndex = Microsoft.Office.Interop.Word.WdColorIndex.wdDarkRed;
+                //    footerRange.Font.Size = 10;
+                //    footerRange.ParagraphFormat.Alignment = Microsoft.Office.Interop.Word.WdParagraphAlignment.wdAlignParagraphCenter;
+                //    footerRange.Text = "Footer text goes here";
+                //}
+
+                document.Content.SetRange(0, 0);
+                int recordCount = 0;
+                foreach (PT_AlternativeRecord record in list)
+                {
+                    //adding text to document  
+                    StringBuilder sb = new StringBuilder(record.Text);
+                    ToHtml(sb);
+                    string text = record.Key + " " + sb.ToString();
+                    recordCount++;
+                    FireShowStatusMessage($"Paragraph {recordCount}-{list.Count}");
+                    Microsoft.Office.Interop.Word.Paragraph paraInserted = document.Content.Paragraphs.Add(ref missing);
+                    FormatParagraph(paraInserted, record);
+                    paraInserted.Range.InsertParagraphAfter();
+                }
+
+
+
+                ////Add paragraph with Heading 1 style  
+                //Microsoft.Office.Interop.Word.Paragraph para1 = document.Content.Paragraphs.Add(ref missing);
+                //object styleHeading1 = "Heading 1";
+                //para1.Range.set_Style(ref styleHeading1);
+                //para1.Range.Text = "Para 1 text";
+                //para1.Range.InsertParagraphAfter();
+
+                ////Add paragraph with Heading 2 style  
+                //Microsoft.Office.Interop.Word.Paragraph para2 = document.Content.Paragraphs.Add(ref missing);
+                //object styleHeading2 = "Heading 2";
+                //para2.Range.set_Style(ref styleHeading2);
+                //para2.Range.Text = "Para 2 text";
+                //para2.Range.InsertParagraphAfter();
+
+                ////Create a 5X5 table and insert some dummy record  
+                //Table firstTable = document.Tables.Add(para1.Range, 5, 5, ref missing, ref missing);
+
+                //firstTable.Borders.Enable = 1;
+                //foreach (Row row in firstTable.Rows)
+                //{
+                //    foreach (Cell cell in row.Cells)
+                //    {
+                //        //Header row  
+                //        if (cell.RowIndex == 1)
+                //        {
+                //            cell.Range.Text = "Column " + cell.ColumnIndex.ToString();
+                //            cell.Range.Font.Bold = 1;
+                //            //other format properties goes here  
+                //            cell.Range.Font.Name = "verdana";
+                //            cell.Range.Font.Size = 10;
+                //            //cell.Range.Font.ColorIndex = WdColorIndex.wdGray25;                              
+                //            cell.Shading.BackgroundPatternColor = WdColor.wdColorGray25;
+                //            //Center alignment for the Header cells  
+                //            cell.VerticalAlignment = WdCellVerticalAlignment.wdCellAlignVerticalCenter;
+                //            cell.Range.ParagraphFormat.Alignment = WdParagraphAlignment.wdAlignParagraphCenter;
+
+                //        }
+                //        //Data row  
+                //        else
+                //        {
+                //            cell.Range.Text = (cell.RowIndex - 2 + cell.ColumnIndex).ToString();
+                //        }
+                //    }
+                //}
+
+                //Save the document  
+                object filename = (object)pathDocx;
+                document.SaveAs2(ref filename);
+                document.Close(ref missing, ref missing, ref missing);
+                document = null;
+                winword.Quit(ref missing, ref missing, ref missing);
+                winword = null;
+                FireShowMessage($"Document created successfully: {pathDocx}");
+            }
+            catch (Exception ex)
+            {
+                FireShowMessage($"Error creating document: {ex.Message}");
+            }
+        }
+
+        public bool ExportToDocx()
+        {
+            for (short paperNo = 0; paperNo < 1; paperNo++)
+            {
+                FireShowPaperNumber((short)paperNo);
+                FireShowMessage($"Generating paper {paperNo}");
+                List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
+                string pathDocx = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder, $"Paper{paperNo:000}.docx");
+                if (File.Exists(pathDocx))
+                    File.Delete(pathDocx);
+                ExportPaperToDocx(list, pathDocx);
+            }
+            return true;
+        }
+
+
     }
 }

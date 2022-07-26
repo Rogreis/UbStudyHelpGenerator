@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Word;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -79,13 +80,13 @@ namespace UbStudyHelpGenerator
             {
                 tx.AppendText(message + Environment.NewLine);
             }
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
         }
 
         private void ShowPaperNumber(short paperNo)
         {
             toolStripStatusLabelPaperNumber.Text = paperNo.ToString();
-            Application.DoEvents();
+            System.Windows.Forms.Application.DoEvents();
         }
 
 
@@ -488,7 +489,45 @@ namespace UbStudyHelpGenerator
             PTAlternative alternative = new PTAlternative();
             alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;
+            alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
             alternative.ExportTranslationAlternative();
+        }
+
+        private void btPtRepository_Click(object sender, EventArgs e)
+        {
+            UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder = txPRAlternativeFolder.Text;
+            PTAlternative alternative = new PTAlternative();
+            alternative.ShowMessage += Logger_ShowMessage;
+            alternative.ShowPaperNumber += ShowPaperNumber;
+            alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
+            alternative.ExportRepository();
+        }
+
+        private void btExportPtAlternativeDocx_Click(object sender, EventArgs e)
+        {
+            UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder = txPRAlternativeFolder.Text;
+            PTAlternative alternative = new PTAlternative();
+            alternative.ShowMessage += Logger_ShowMessage;
+            alternative.ShowPaperNumber += ShowPaperNumber;
+            alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
+            alternative.ExportToDocx();
+        }
+
+        private void Alternative_ShowStatusMessage(string message)
+        {
+            toolStripStatusLabelMessage.Text = message;
+            System.Windows.Forms.Application.DoEvents();
+        }
+
+        private void btFirst_Click(object sender, EventArgs e)
+        {
+            string sql = txQuery.Text;
+
+        }
+
+        private void btNext_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

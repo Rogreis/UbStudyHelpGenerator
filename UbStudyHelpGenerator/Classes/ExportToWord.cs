@@ -160,8 +160,8 @@ namespace UbStudyHelpGenerator.Classes
                 Word.Row row = table.Rows[lineNumber];
                 lineNumber++;
 
-                InsertText(row, 1, p.English);
-                InsertText(row, 2, p.Portugues2007);
+                //InsertText(row, 1, p.English);
+                //InsertText(row, 2, p.Portugues2007);
                 InsertText(row, 3, p.Text);
             }
 

@@ -140,12 +140,23 @@ namespace UbStudyHelpGenerator.Database
         public List<PT_AlternativeRecord> GetPT_AlternativeRecords(short paperNo)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("Select * from (SELECT W.IndexWorK, W.LanguageID as TranslationID, W.Paper,W.PK_Seq,P.Section, P.Paragraph as ParagraphNo, P.Page, P.Line, P.Format FormatInt,[Text],[Status], ");
-            sb.AppendLine("	(Select Text from [UB_Texts_Work] W1 where W1.Paper = W.Paper and W1.PK_Seq = W.PK_Seq and W1.LanguageID = 0) as English, ");
-            sb.AppendLine("	(Select Text from [UB_Texts_Work] W1 where W1.Paper = W.Paper and W1.PK_Seq = W.PK_Seq and W1.LanguageID = 34) as Portugues2007 ");
+
+            // 3 columns
+            //sb.AppendLine("Select * from (SELECT W.IndexWorK, W.LanguageID as TranslationID, W.Paper,W.PK_Seq,P.Section, P.Paragraph as ParagraphNo, P.Page, P.Line, P.Format FormatInt,[Text],[Status], ");
+            //sb.AppendLine("	(Select Text from [UB_Texts_Work] W1 where W1.Paper = W.Paper and W1.PK_Seq = W.PK_Seq and W1.LanguageID = 0) as English, ");
+            //sb.AppendLine("	(Select Text from [UB_Texts_Work] W1 where W1.Paper = W.Paper and W1.PK_Seq = W.PK_Seq and W1.LanguageID = 34) as Portugues2007 ");
+            //sb.AppendLine("  FROM [UBT].[dbo].[UB_Texts_Work] W, [dbo].[ParagraphDescription] P ");
+            //sb.AppendLine($" WHERE W.Paper= {paperNo} and W.LanguageID = 2 and P.Paper = W.Paper and P.PK_Seq = W.PK_Seq and W.UserName = 'Caio') X order by PK_Seq ");
+            //sb.AppendLine(" FOR JSON AUTO, ROOT('Paragraphs') ");
+
+            // Only Pt Alternative
+            sb.AppendLine("SELECT dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, P.Section, P.Paragraph as ParagraphNoP, [Text] ");
             sb.AppendLine("  FROM [UBT].[dbo].[UB_Texts_Work] W, [dbo].[ParagraphDescription] P ");
-            sb.AppendLine($" WHERE W.Paper= {paperNo} and W.LanguageID = 2 and P.Paper = W.Paper and P.PK_Seq = W.PK_Seq and W.UserName = 'Caio') X order by PK_Seq ");
+            sb.AppendLine($" WHERE W.Paper= {paperNo} and W.LanguageID = 2 and W.UserName = 'Caio' and P.Paper = W.Paper and P.PK_Seq = W.PK_Seq order by PK_Seq ");
             sb.AppendLine(" FOR JSON AUTO, ROOT('Paragraphs') ");
+
+
+
             string jsonString = GetJsonStringFromDatabase(sb.ToString());
 
             var options = new JsonSerializerOptions
@@ -158,12 +169,6 @@ namespace UbStudyHelpGenerator.Database
             // Remove exemplar tags
             Paper paper = new Paper(jsonString);
             List<PT_AlternativeRecord> list = new List<PT_AlternativeRecord>(records.Paragraphs);
-            foreach (PT_AlternativeRecord paragraph in list)
-            {
-                paragraph.Text = Exemplar.ExemplarToHtml(paragraph.Text);
-                paragraph.Portugues2007 = Exemplar.ExemplarToHtml(paragraph.Portugues2007);
-                paragraph.English = Exemplar.ExemplarToHtml(paragraph.English);
-            }
             return list;
         }
 

@@ -254,14 +254,14 @@ namespace UBT_Tools_WorkLib
             int paperNo = list[0].Paper;
             pageStart(sb, paperNo);
 
-            foreach(PT_AlternativeRecord p in list)
-            {
-                sb.AppendLine("<tr>");
-                sb.AppendLine(FormatColumn(p.Identification + " " + p.English, 'l', statusStyleName(ParagraphStatus.Started), p.ParaIdent));
-                sb.AppendLine(FormatColumn(p.Portugues2007, 'm', statusStyleName(ParagraphStatus.Started), p.ParaIdent));
-                sb.AppendLine(FormatColumn(p.Text, 'r', statusStyleName(p.TranslationStatus), p.ParaIdent));
-                sb.AppendLine("</tr>");
-            }
+            //foreach(PT_AlternativeRecord p in list)
+            //{
+            //    sb.AppendLine("<tr>");
+            //    sb.AppendLine(FormatColumn(p.Identification + " " + p.English, 'l', statusStyleName(ParagraphStatus.Started), p.ParaIdent));
+            //    sb.AppendLine(FormatColumn(p.Portugues2007, 'm', statusStyleName(ParagraphStatus.Started), p.ParaIdent));
+            //    sb.AppendLine(FormatColumn(p.Text, 'r', statusStyleName(p.TranslationStatus), p.ParaIdent));
+            //    sb.AppendLine("</tr>");
+            //}
             pageEnd(sb);
             return sb.ToString();
         }
