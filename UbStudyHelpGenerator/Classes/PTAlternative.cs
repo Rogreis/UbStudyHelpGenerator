@@ -57,6 +57,10 @@ namespace UbStudyHelpGenerator.Classes
             }
         }
 
+        public override string ToString()
+        {
+            return $"{Paper}:{Section}-{ParagraphNo}";
+        }
 
 
     }
@@ -10609,6 +10613,35 @@ namespace UbStudyHelpGenerator.Classes
             }
         }
 
+        public bool ExportRecordsChanged()
+        {
+
+            try
+            {
+                string pathDest = @"C:\ProgramData\UbStudyHelp\Repo\PtAlternative";
+                FireShowMessage($"Exporting changed records");
+                List<PT_AlternativeRecord> list = server.GetPT_FixedAlternativeRecords();
+                foreach (PT_AlternativeRecord record in list)
+                {
+                    string pathPaperFolder = Path.Combine(pathDest, $"Doc{record.Paper:000}");
+                    string pathParagraphFile = Path.Combine(pathPaperFolder, record.FileName);
+                    FireShowMessage($"Generating paragraph {pathParagraphFile}");
+                    StringBuilder sb = new StringBuilder(record.Text);
+                    ToMarkdown(sb);
+                    string text = sb.ToString();
+                    File.WriteAllText(pathParagraphFile, text, Encoding.UTF8);
+                }
+
+                FireShowMessage("Finished");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FireShowMessage($"Exporting translation alternative {ex.Message}");
+                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+                return false;
+            }
+        }
 
         public enum TextTag
         {
@@ -10713,12 +10746,15 @@ namespace UbStudyHelpGenerator.Classes
         private void FormatParagraph(Microsoft.Office.Interop.Word.Paragraph paraInserted, PT_AlternativeRecord record)
         {
             Range range = paraInserted.Range;
-            range.Font.Bold = 1;
-            range.Text = $"{record.Identity}-{record.IndexWorK}:   ";
+            //range.Font.Bold = 1;
+            range.Text = $"[{record.Identity}-{record.IndexWorK}]   ";
             range.SetRange(range.End, range.End);
             range.Font.Italic = 0;
             range.Font.Bold = 0;
             range.Font.Superscript = 0;
+
+            //  ID entre chaves sem negrito e itálico sem azul
+
 
             foreach (UbTextTag textTag in Tags(record.Text))
             {
@@ -10733,7 +10769,7 @@ namespace UbStudyHelpGenerator.Classes
                 {
                     case TextTag.Italic:
                         range.Font.Italic = 1;
-                        range.Font.ColorIndex = WdColorIndex.wdBlue;
+                        //range.Font.ColorIndex = WdColorIndex.wdBlue;
                         break;
                     case TextTag.Bold:
                         range.Font.Bold = 1;
@@ -10873,7 +10909,7 @@ namespace UbStudyHelpGenerator.Classes
 
         public bool ExportToDocx()
         {
-            for (short paperNo = 0; paperNo < 1; paperNo++)
+            for (short paperNo = 100; paperNo < 101; paperNo++)
             {
                 FireShowPaperNumber((short)paperNo);
                 FireShowMessage($"Generating paper {paperNo}");

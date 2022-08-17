@@ -120,4 +120,11 @@
   <metadata name="statusStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <data name="txQuery.Text" xml:space="preserve">
+    <value>SELECT TOP (20) IndexWorK, dbo.FormatIdentity(Paper, PK_Seq) AS [Identity], Text,
+(Select Text from [UB_Texts_Work] W1 where W1.Paper = W.Paper and W1.PK_Seq = W.PK_Seq and W1.LanguageID = 0) as English
+FROM   UB_Texts_Work AS W
+WHERE (LanguageID = 2) AND (UserName = 'Caio') AND (Text LIKE '%&lt;br&gt;%')
+</value>
+  </data>
 </root>

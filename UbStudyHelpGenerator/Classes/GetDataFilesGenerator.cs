@@ -20,7 +20,7 @@ namespace UbStudyHelpGenerator.Classes
 
         private UbtDatabaseSqlServer Server = new UbtDatabaseSqlServer();
 
-        public GetDataFilesGenerator(UbtDatabaseSqlServer server)
+        public GetDataFilesGenerator(UbtDatabaseSqlServer server, string appFolder, string localStorageFolder) : base(appFolder, localStorageFolder)
         {
             Server = server;
             Server.ShowMessage += Server_ShowMessage;
@@ -50,24 +50,24 @@ namespace UbStudyHelpGenerator.Classes
             throw new NotImplementedException();
         }
 
-        public override List<Translation> GetTranslations()
-        {
-            string jsonString = Server.GetTranslationsJsonString();
-            string pathTranslations = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputFolder, "Translations.json");
-            DeleteFile(pathTranslations);
-            File.WriteAllText(pathTranslations, jsonString);
-            return Translations.DeserializeJson(jsonString);
-        }
+        //public override List<Translation> GetTranslations()
+        //{
+        //    string jsonString = Server.GetTranslationsJsonString();
+        //    string pathTranslations = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputFolder, "Translations.json");
+        //    DeleteFile(pathTranslations);
+        //    File.WriteAllText(pathTranslations, jsonString);
+        //    return Translations.DeserializeJson(jsonString);
+        //}
 
 
-        protected override List<UbAnnotationsStoreData> LoadAnnotations(short translationId)
-        {
-            throw new NotImplementedException();
-        }
+        //protected override List<UbAnnotationsStoreData> LoadAnnotations(short translationId)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public override void StoreAnnotations(TOC_Entry entry, List<UbAnnotationsStoreData> annotations)
-        {
-            throw new NotImplementedException();
-        }
+        //public override void StoreAnnotations(TOC_Entry entry, List<UbAnnotationsStoreData> annotations)
+        //{
+        //    throw new NotImplementedException();
+        //}
     }
 }

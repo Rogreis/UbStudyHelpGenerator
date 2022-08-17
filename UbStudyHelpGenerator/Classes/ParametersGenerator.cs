@@ -17,6 +17,7 @@ namespace UbStudyHelpGenerator.Classes
     public class ParametersGenerator : Parameters
     {
 
+        public string SqlEdit { get; set; }= "SELECT dbo.FormatIdentity(Paper, Pk_Seq) as [Identity], [IndexWorK],[Paper],[PK_Seq],[Text],[Notes],[Status] FROM [dbo].[CaioComments] where Status = 1";
         /// <summary>
         /// Serialize the parameters instance
         /// </summary>

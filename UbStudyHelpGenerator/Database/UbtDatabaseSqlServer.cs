@@ -1,6 +1,7 @@
 ﻿using JsonFormatterPlus;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.Common;
 using System.Data.SqlClient;
 using System.IO;
@@ -29,7 +30,7 @@ namespace UbStudyHelpGenerator.Database
         }
 
 
-        private string GetJsonStringFromDatabase(string selectQuery)
+        public string GetJsonStringFromDatabase(string selectQuery)
         {
             try
             {
@@ -150,9 +151,10 @@ namespace UbStudyHelpGenerator.Database
             //sb.AppendLine(" FOR JSON AUTO, ROOT('Paragraphs') ");
 
             // Only Pt Alternative
-            sb.AppendLine("SELECT dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, P.Section, P.Paragraph as ParagraphNoP, [Text] ");
-            sb.AppendLine("  FROM [UBT].[dbo].[UB_Texts_Work] W, [dbo].[ParagraphDescription] P ");
-            sb.AppendLine($" WHERE W.Paper= {paperNo} and W.LanguageID = 2 and W.UserName = 'Caio' and P.Paper = W.Paper and P.PK_Seq = W.PK_Seq order by PK_Seq ");
+            sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
+            sb.AppendLine("  FROM [UBT].[dbo].[UB_Texts_Work] W ");
+            sb.AppendLine($" WHERE W.Paper= {paperNo} and W.LanguageID = 2 order by PK_Seq ");
+            //sb.AppendLine(" AND W.LastDate > Convert(datetime, '2018-11-18 12:36:25.970')  ");
             sb.AppendLine(" FOR JSON AUTO, ROOT('Paragraphs') ");
 
 
@@ -170,6 +172,79 @@ namespace UbStudyHelpGenerator.Database
             Paper paper = new Paper(jsonString);
             List<PT_AlternativeRecord> list = new List<PT_AlternativeRecord>(records.Paragraphs);
             return list;
+        }
+
+        public List<PT_AlternativeRecord> GetPT_FixedAlternativeRecords()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
+            sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
+            sb.AppendLine("  FROM [UBT].[dbo].[UB_Texts_Work] W ");
+            sb.AppendLine($" WHERE W.LanguageID = 2 and W.UserName = 'Caio' ");
+            sb.AppendLine(" AND W.LastDate > Convert(datetime, '2018-11-18 12:36:25.970') order by Paper, PK_Seq  ");
+            sb.AppendLine(" FOR JSON AUTO, ROOT('Paragraphs') ");
+
+            string jsonString = GetJsonStringFromDatabase(sb.ToString());
+
+            var options = new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true
+            };
+
+            var records = JsonSerializer.Deserialize<PT_AlternativeRecords>(jsonString, options);
+            List<PT_AlternativeRecord> list = new List<PT_AlternativeRecord>(records.Paragraphs);
+            return list;
+        }
+
+
+        /// <summary>
+        /// Get the json string for a description
+        /// </summary>
+        /// <returns></returns>
+        public string GetParagraphsFormat()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("select dbo.[FormatIdentity](Paper, Pk_seq) as [FormatIdentity],  ");
+            sb.AppendLine("       Paper,  ");
+            sb.AppendLine("	   dbo.Section(Paper, Pk_seq) as Section,  ");
+            sb.AppendLine("	   dbo.Paragraph(Paper, Pk_seq) as Paragraph,  ");
+            sb.AppendLine("	   dbo.Page(Paper, Pk_seq) as Page,  ");
+            sb.AppendLine("	   dbo.Line(Paper, Pk_seq) as Line,  ");
+            sb.AppendLine("	   dbo.Format(Paper, Pk_seq) as Format  ");
+            sb.AppendLine("  from [PtAlternativeOficial]  ");
+            sb.AppendLine(" where Paper >= 0  ");
+            sb.AppendLine("order by Paper, Pk_seq "); 
+            sb.AppendLine(" FOR JSON AUTO, ROOT('ParagraphsFormat') ");
+
+            return GetJsonStringFromDatabase(sb.ToString());
+        }
+
+
+        public DataTable Query(string sql)
+        {
+            try
+            {
+                if (!ConnectionOpen())
+                {
+                    return null;
+                }
+
+                DataTable dataTable = new DataTable();
+                using (var cmd = new SqlCommand(sql, (SqlConnection)Connection))
+                {
+                    // create data adapter
+                    SqlDataAdapter da = new SqlDataAdapter(cmd);
+                    // this will query your database and return the result to your datatable
+                    da.Fill(dataTable);
+                    da.Dispose();
+                }
+                return dataTable;
+            }
+            catch (Exception ex)
+            {
+                UbStandardObjects.StaticObjects.Logger.Error("Query server", ex);
+                return null;
+            }
         }
 
 

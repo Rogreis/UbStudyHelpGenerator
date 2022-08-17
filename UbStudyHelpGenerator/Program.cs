@@ -43,7 +43,7 @@ namespace UbStudyHelpGenerator
             StaticObjects.Logger = new GeneratorLog();
             StaticObjects.Parameters= ParametersGenerator.Deserialize(pathParameters);
             StaticObjects.Book= new BookGenerator();
-            StaticObjects.Book.Inicialize(MakeProgramDataFolder("TUB_Files"), 0, 0);
+
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

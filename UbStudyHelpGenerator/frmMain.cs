@@ -13,6 +13,8 @@ using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.Database;
 using UbStudyHelpGenerator.Properties;
+using static System.Environment;
+using Application = System.Windows.Forms.Application;
 
 namespace UbStudyHelpGenerator
 {
@@ -25,13 +27,32 @@ namespace UbStudyHelpGenerator
         private GetDataFilesGenerator getDataFilesGenerator = null;
 
 
+        private string DataFolder()
+        {
+            string processName = System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
+            var commonpath = GetFolderPath(SpecialFolder.CommonApplicationData);
+            return Path.Combine(commonpath, processName);
+        }
+
+
+        private string MakeProgramDataFolder(string fileName)
+        {
+            string folder = DataFolder();
+            Directory.CreateDirectory(folder);
+            return Path.Combine(folder, fileName);
+        }
+
+
         public frmMain()
         {
             InitializeComponent();
             UbStandardObjects.StaticObjects.Logger.ShowMessage += Logger_ShowMessage;
-            getDataFilesGenerator = new GetDataFilesGenerator(Server);
+            string appFolder = Application.StartupPath;
+            string localStorageFolder = MakeProgramDataFolder("TUB_Files");
+            getDataFilesGenerator = new GetDataFilesGenerator(Server, appFolder, localStorageFolder);
             getDataFilesGenerator.ShowMessage += Logger_ShowMessage;
             getDataFilesGenerator.ShowPaperNumber += ShowPaperNumber;
+            StaticObjects.Book.Inicialize(getDataFilesGenerator);
         }
 
 
@@ -41,6 +62,7 @@ namespace UbStudyHelpGenerator
             txRepositoryOutputFolder.Text = UbStandardObjects.StaticObjects.Parameters.RepositoryOutputFolder;
             txPRAlternativeFolder.Text = UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder;
             txSqlServerConnectionString.Text = Settings.Default.SqlServerConnectionString;
+            txQuery.Text = ((ParametersGenerator)UbStandardObjects.StaticObjects.Parameters).SqlEdit;
             StillStarting = false;
         }
 
@@ -64,7 +86,10 @@ namespace UbStudyHelpGenerator
                     tx = txUbIndexMessages;
                     break;
                 case 3:
-                    tx = txPTAlternative;
+                    tx = txPTalternative;
+                    break;
+                case 4:
+                    tx = txPTalternative;
                     break;
                 default:
                     tx = textBoxFromHtml;
@@ -318,16 +343,26 @@ namespace UbStudyHelpGenerator
                     IncludeFields = true
                 };
                 string jsonPapers = JsonSerializer.Serialize<Translation>(translation, options);
-                string pathTranslationZipped = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputFolder, "TR" + translation.LanguageID.ToString("000") + ".gz");
-                DeleteFile(pathTranslationZipped);
-                string pathTranslationJson = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputFolder, "TR" + translation.LanguageID.ToString("000") + ".json");
-                DeleteFile(pathTranslationJson);
 
-                File.WriteAllText(pathTranslationJson, jsonPapers);
+                // Delete old files
+                string fileNameWithoutExtension = $"TR{translation.LanguageID:000}";
+                string pathRepositoryJson = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputFolder, fileNameWithoutExtension + ".json");
+                string pathRepositoryZipped = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputFolder, fileNameWithoutExtension + ".gz");
+                DeleteFile(pathRepositoryJson);
+                DeleteFile(pathRepositoryZipped);
 
-                using (FileStream originalFileStream = File.Open(pathTranslationJson, FileMode.Open))
+                // Delete also the application (TO DO: put as parameter)
+                string appFolder = @"C:\Trabalho\Github\Rogerio\UbStudyHelp\UbStudyHelpCore\UbStudyHelp\TUB_Files";
+                string pathAppZipped = Path.Combine(appFolder, fileNameWithoutExtension + ".gz");
+                string pathProgramDataJson = Path.Combine(appFolder, fileNameWithoutExtension + ".json");
+                DeleteFile(pathProgramDataJson);
+                DeleteFile(pathAppZipped);
+
+                File.WriteAllText(pathRepositoryJson, jsonPapers);
+
+                using (FileStream originalFileStream = File.Open(pathRepositoryJson, FileMode.Open))
                 {
-                    using (FileStream compressedFileStream = File.Create(pathTranslationZipped))
+                    using (FileStream compressedFileStream = File.Create(pathRepositoryZipped))
                     {
                         using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
                         {
@@ -335,6 +370,8 @@ namespace UbStudyHelpGenerator
                         }
                     }
                 }
+                File.Copy(pathRepositoryZipped, pathAppZipped);
+
             }
             catch (Exception ex)
             {
@@ -476,12 +513,46 @@ namespace UbStudyHelpGenerator
             ShowMessage("Finished");
         }
 
-        private void btDummy_Click(object sender, EventArgs e)
+        private void btExportFormat_Click(object sender, EventArgs e)
         {
-            DummyClass dummy = new DummyClass();
-            dummy.Gera();
-            ShowMessage("CABô");
+            // Delete also the application
+            string appFolder = UbStandardObjects.StaticObjects.Parameters.RepositoryOutputFolder;
+            string pathZipped = Path.Combine(appFolder, "FormatTable.gz");
+            string pathJson = Path.Combine(appFolder, "FormatTable.json");
+            DeleteFile(pathZipped);
+            DeleteFile(pathJson);
+
+
+            string json = Server.GetParagraphsFormat();
+            File.WriteAllText(pathJson, json);
+            using (FileStream originalFileStream = File.Open(pathJson, FileMode.Open))
+            {
+                using (FileStream compressedFileStream = File.Create(pathZipped))
+                {
+                    using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
+                    {
+                        originalFileStream.CopyTo(compressor);
+                    }
+                }
+            }
+            DeleteFile(pathJson);
+
+
+
+            //SaveFileDialog saveFileDialog = new SaveFileDialog();
+            //saveFileDialog.Filter = "Json Files (*.json)|*.json";
+            //saveFileDialog.RestoreDirectory = true;
+            //saveFileDialog.FileName = "FormatTable.json";
+
+            //if (saveFileDialog.ShowDialog() == DialogResult.OK)
+            //{
+            //    File.WriteAllText(saveFileDialog.FileName, json);
+            //}
+
+
+            ShowMessage("Exported.");
         }
+
 
         private void btPTAlternativeGenerate_Click(object sender, EventArgs e)
         {
@@ -503,6 +574,17 @@ namespace UbStudyHelpGenerator
             alternative.ExportRepository();
         }
 
+        private void btRecordChanged_Click(object sender, EventArgs e)
+        {
+            UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder = txPRAlternativeFolder.Text;
+            PTAlternative alternative = new PTAlternative();
+            alternative.ShowMessage += Logger_ShowMessage;
+            alternative.ShowPaperNumber += ShowPaperNumber;
+            alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
+            alternative.ExportRecordsChanged();
+        }
+
+
         private void btExportPtAlternativeDocx_Click(object sender, EventArgs e)
         {
             UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder = txPRAlternativeFolder.Text;
@@ -519,15 +601,134 @@ namespace UbStudyHelpGenerator
             System.Windows.Forms.Application.DoEvents();
         }
 
+
+
+        UbtDatabaseSqlServer server = new UbtDatabaseSqlServer();
+        System.Data.DataTable table = null;
+        int rowNo = 0;
+
+        private void FillFileds(ref int rowNo)
+        {
+            System.Data.DataRow row = table.Rows[rowNo];
+            txEnglish.Text = ""; // row["English"].ToString();
+            txPortuguese.Text = row["Text"].ToString();
+            lblMessage.Text = $"{row["Identity"]}   {rowNo}-{table.Rows.Count}";
+        }
+
         private void btFirst_Click(object sender, EventArgs e)
         {
             string sql = txQuery.Text;
-
+            table = server.Query(sql);
+            rowNo = 0;
+            if (table != null && table.Rows.Count > 0)
+            {
+                System.Data.DataRow row = table.Rows[rowNo];
+                FillFileds(ref rowNo);
+                lblMessage.Text += " Starting";
+            }
+            else
+            {
+                lblMessage.Text = "No more records";
+            }
+            ((ParametersGenerator)UbStandardObjects.StaticObjects.Parameters).SqlEdit = sql;
         }
 
         private void btNext_Click(object sender, EventArgs e)
         {
+            if (table == null)
+                return;
+            if (table == null)
+                return;
+            if (table.Rows.Count == 0) return;
+
+            rowNo++;
+            if (rowNo > table.Rows.Count - 1) rowNo = 0;
+            FillFileds(ref rowNo);
+            lblMessage.Text += " Next";
+        }
+
+        private void btPrevious_Click(object sender, EventArgs e)
+        {
+            if (table == null)
+                return;
+            if (table == null)
+                return;
+            if (table.Rows.Count == 0) return;
+
+            rowNo--;
+            if (rowNo < 0) rowNo = table.Rows.Count - 1;
+            FillFileds(ref rowNo);
+            lblMessage.Text += " Previous";
+        }
+
+        private void btStore_Click(object sender, EventArgs e)
+        {
+            if (table == null || table.Rows.Count == 0 || rowNo < 0)
+                return;
+
+            System.Data.DataRow row = table.Rows[rowNo];
+            int IndexWorK = Convert.ToInt32(row["IndexWorK"]);
+            // string sql = $"Update UB_Texts_Work set text= '{txPortuguese.Text}' where IndexWorK = {IndexWorK}";
+            string sql = $"UPDATE [dbo].[CaioComments] SET [Notes] = '{txPortuguese.Text}', [Status] = 2 WHERE [IndexWorK] = {IndexWorK}";
+            row["Text"] = txPortuguese.Text;
+            server.RunCommand(sql);
+            lblMessage.Text = "Stored";
+            btNext_Click(null, null);
+        }
+
+        private void btSeleciona_Click(object sender, EventArgs e)
+        {
+            string text = txPortuguese.Text;
+            if (!String.IsNullOrEmpty(text))
+            {
+                int ind = text.IndexOf("<br", 0, StringComparison.OrdinalIgnoreCase);
+                if (ind >= 0)
+                {
+                    txPortuguese.SelectionStart = ind;
+                    txPortuguese.SelectionLength = 4;
+                    //string s = txPortuguese.SelectedText;
+                }
+            }
 
         }
+
+        private string ReplaceAll(string input)
+        {
+            Regex.Replace(input, @"<br />+", Environment.NewLine);
+            return Regex.Replace(input, @"<br>+", Environment.NewLine);
+        }
+
+        private void btMudaBr_Click(object sender, EventArgs e)
+        {
+            //txPortuguese.Text= ReplaceAll(text);
+            txPortuguese.Text = txPortuguese.Text.Replace("<br>", Environment.NewLine);
+            txPortuguese.Text = txPortuguese.Text.Replace("<br />", Environment.NewLine);
+            txPortuguese.Text = txPortuguese.Text.Replace("<BR>", Environment.NewLine);
+            txPortuguese.Text = txPortuguese.Text.Replace("<BR />", Environment.NewLine);
+        }
+
+        private void btClear_Click(object sender, EventArgs e)
+        {
+            txPortuguese.Text = "";
+            btStore_Click(null, null);
+        }
+
+        private void btExportJson_Click(object sender, EventArgs e)
+        {
+            string pathFile = Path.Combine(@"C:\Trabalho\Github\Rogerio\UbReviewer\UbReviewerLibrary\DataFiles", "ParagraphsNumber.json");
+            string sql = txQuery.Text;
+            string jsonString = server.GetJsonStringFromDatabase(sql);
+            if (jsonString != null)
+            {
+                File.WriteAllText(pathFile, jsonString);
+                lblMessage.Text = "Json saved";
+            }
+            else
+            {
+                lblMessage.Text = "Erro getting json";
+            }
+            ((ParametersGenerator)UbStandardObjects.StaticObjects.Parameters).SqlEdit = sql;
+        }
+
     }
 }
