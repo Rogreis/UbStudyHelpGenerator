@@ -174,28 +174,6 @@ namespace UbStudyHelpGenerator.Database
             return list;
         }
 
-        public List<PT_AlternativeRecord> GetPT_FixedAlternativeRecords()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
-            sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
-            sb.AppendLine("  FROM [UBT].[dbo].[UB_Texts_Work] W ");
-            sb.AppendLine($" WHERE W.LanguageID = 2 and W.UserName = 'Caio' ");
-            sb.AppendLine(" AND W.LastDate > Convert(datetime, '2018-11-18 12:36:25.970') order by Paper, PK_Seq  ");
-            sb.AppendLine(" FOR JSON AUTO, ROOT('Paragraphs') ");
-
-            string jsonString = GetJsonStringFromDatabase(sb.ToString());
-
-            var options = new JsonSerializerOptions
-            {
-                AllowTrailingCommas = true
-            };
-
-            var records = JsonSerializer.Deserialize<PT_AlternativeRecords>(jsonString, options);
-            List<PT_AlternativeRecord> list = new List<PT_AlternativeRecord>(records.Paragraphs);
-            return list;
-        }
-
 
         /// <summary>
         /// Get the json string for a description
@@ -247,6 +225,31 @@ namespace UbStudyHelpGenerator.Database
             }
         }
 
+        #region Temporary routines to be deleted in the future
+
+        public List<PT_AlternativeRecord> GetPT_FixedAlternativeRecords()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
+            sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
+            sb.AppendLine("  FROM [UBT].[dbo].[UB_Texts_Work] W ");
+            sb.AppendLine($" WHERE W.LanguageID = 2 and W.UserName = 'Caio' ");
+            sb.AppendLine(" AND W.LastDate > Convert(datetime, '2018-11-18 12:36:25.970') order by Paper, PK_Seq  ");
+            sb.AppendLine(" FOR JSON AUTO, ROOT('Paragraphs') ");
+
+            string jsonString = GetJsonStringFromDatabase(sb.ToString());
+
+            var options = new JsonSerializerOptions
+            {
+                AllowTrailingCommas = true
+            };
+
+            var records = JsonSerializer.Deserialize<PT_AlternativeRecords>(jsonString, options);
+            List<PT_AlternativeRecord> list = new List<PT_AlternativeRecord>(records.Paragraphs);
+            return list;
+        }
+
+        #endregion
 
     }
 }

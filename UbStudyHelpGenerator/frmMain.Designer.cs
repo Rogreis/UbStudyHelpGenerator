@@ -36,6 +36,7 @@ namespace UbStudyHelpGenerator
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageFromSqlServer = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.btExportFormat = new System.Windows.Forms.Button();
             this.btCheck = new System.Windows.Forms.Button();
             this.btGetTranslation = new System.Windows.Forms.Button();
             this.btGetAllTranslations = new System.Windows.Forms.Button();
@@ -65,6 +66,7 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages = new System.Windows.Forms.TextBox();
             this.tabPagePTAlternative = new System.Windows.Forms.TabPage();
             this.splitContainer3 = new System.Windows.Forms.SplitContainer();
+            this.btImportDocx = new System.Windows.Forms.Button();
             this.btRecordChanged = new System.Windows.Forms.Button();
             this.btExportPtAlternativeDocx = new System.Windows.Forms.Button();
             this.btPtRepository = new System.Windows.Forms.Button();
@@ -92,7 +94,6 @@ namespace UbStudyHelpGenerator
             this.label4 = new System.Windows.Forms.Label();
             this.txRepositoryOutputFolder = new System.Windows.Forms.TextBox();
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
-            this.btExportFormat = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabPageFromSqlServer.SuspendLayout();
@@ -139,7 +140,7 @@ namespace UbStudyHelpGenerator
             this.statusStrip1.Location = new System.Drawing.Point(0, 1035);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(2, 0, 16, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1483, 53);
+            this.statusStrip1.Size = new System.Drawing.Size(1484, 53);
             this.statusStrip1.TabIndex = 0;
             // 
             // toolStripStatusLabelPaperNumber
@@ -152,7 +153,7 @@ namespace UbStudyHelpGenerator
             // 
             this.toolStripStatusLabelMessage.BackColor = System.Drawing.SystemColors.ControlDark;
             this.toolStripStatusLabelMessage.Name = "toolStripStatusLabelMessage";
-            this.toolStripStatusLabelMessage.Size = new System.Drawing.Size(1365, 46);
+            this.toolStripStatusLabelMessage.Size = new System.Drawing.Size(1366, 46);
             this.toolStripStatusLabelMessage.Spring = true;
             this.toolStripStatusLabelMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -168,7 +169,7 @@ namespace UbStudyHelpGenerator
             this.tabControlMain.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.tabControlMain.Name = "tabControlMain";
             this.tabControlMain.SelectedIndex = 0;
-            this.tabControlMain.Size = new System.Drawing.Size(1483, 921);
+            this.tabControlMain.Size = new System.Drawing.Size(1484, 921);
             this.tabControlMain.TabIndex = 1;
             // 
             // tabPageFromSqlServer
@@ -178,7 +179,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromSqlServer.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.tabPageFromSqlServer.Name = "tabPageFromSqlServer";
             this.tabPageFromSqlServer.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.tabPageFromSqlServer.Size = new System.Drawing.Size(1475, 888);
+            this.tabPageFromSqlServer.Size = new System.Drawing.Size(1476, 888);
             this.tabPageFromSqlServer.TabIndex = 1;
             this.tabPageFromSqlServer.Text = "From Sql Server";
             this.tabPageFromSqlServer.UseVisualStyleBackColor = true;
@@ -206,17 +207,28 @@ namespace UbStudyHelpGenerator
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBoxFromSqlServer);
-            this.splitContainer1.Size = new System.Drawing.Size(1469, 878);
+            this.splitContainer1.Size = new System.Drawing.Size(1470, 878);
             this.splitContainer1.SplitterDistance = 163;
             this.splitContainer1.SplitterWidth = 5;
             this.splitContainer1.TabIndex = 1;
+            // 
+            // btExportFormat
+            // 
+            this.btExportFormat.Location = new System.Drawing.Point(1126, 82);
+            this.btExportFormat.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btExportFormat.Name = "btExportFormat";
+            this.btExportFormat.Size = new System.Drawing.Size(138, 60);
+            this.btExportFormat.TabIndex = 7;
+            this.btExportFormat.Text = "Export Format";
+            this.btExportFormat.UseVisualStyleBackColor = true;
+            this.btExportFormat.Click += new System.EventHandler(this.btExportFormat_Click);
             // 
             // btCheck
             // 
             this.btCheck.Location = new System.Drawing.Point(957, 83);
             this.btCheck.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btCheck.Name = "btCheck";
-            this.btCheck.Size = new System.Drawing.Size(155, 60);
+            this.btCheck.Size = new System.Drawing.Size(154, 60);
             this.btCheck.TabIndex = 6;
             this.btCheck.Text = "Check";
             this.btCheck.UseVisualStyleBackColor = true;
@@ -228,7 +240,7 @@ namespace UbStudyHelpGenerator
             this.btGetTranslation.Location = new System.Drawing.Point(778, 82);
             this.btGetTranslation.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btGetTranslation.Name = "btGetTranslation";
-            this.btGetTranslation.Size = new System.Drawing.Size(163, 60);
+            this.btGetTranslation.Size = new System.Drawing.Size(164, 60);
             this.btGetTranslation.TabIndex = 5;
             this.btGetTranslation.Text = "Get Translations";
             this.btGetTranslation.UseVisualStyleBackColor = true;
@@ -294,7 +306,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromSqlServer.Multiline = true;
             this.textBoxFromSqlServer.Name = "textBoxFromSqlServer";
             this.textBoxFromSqlServer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromSqlServer.Size = new System.Drawing.Size(1469, 710);
+            this.textBoxFromSqlServer.Size = new System.Drawing.Size(1470, 710);
             this.textBoxFromSqlServer.TabIndex = 0;
             // 
             // tabPageFromHtml
@@ -304,7 +316,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromHtml.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.tabPageFromHtml.Name = "tabPageFromHtml";
             this.tabPageFromHtml.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.tabPageFromHtml.Size = new System.Drawing.Size(1475, 888);
+            this.tabPageFromHtml.Size = new System.Drawing.Size(1476, 801);
             this.tabPageFromHtml.TabIndex = 0;
             this.tabPageFromHtml.Text = "Spanish HTML";
             this.tabPageFromHtml.UseVisualStyleBackColor = true;
@@ -329,7 +341,7 @@ namespace UbStudyHelpGenerator
             // splitContainerFromHtml.Panel2
             // 
             this.splitContainerFromHtml.Panel2.Controls.Add(this.textBoxFromHtml);
-            this.splitContainerFromHtml.Size = new System.Drawing.Size(1469, 878);
+            this.splitContainerFromHtml.Size = new System.Drawing.Size(1470, 791);
             this.splitContainerFromHtml.SplitterDistance = 163;
             this.splitContainerFromHtml.SplitterWidth = 5;
             this.splitContainerFromHtml.TabIndex = 0;
@@ -395,7 +407,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromHtml.Multiline = true;
             this.textBoxFromHtml.Name = "textBoxFromHtml";
             this.textBoxFromHtml.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromHtml.Size = new System.Drawing.Size(1469, 710);
+            this.textBoxFromHtml.Size = new System.Drawing.Size(1470, 623);
             this.textBoxFromHtml.TabIndex = 0;
             // 
             // tabPageUbIndex
@@ -404,7 +416,7 @@ namespace UbStudyHelpGenerator
             this.tabPageUbIndex.Location = new System.Drawing.Point(4, 29);
             this.tabPageUbIndex.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.tabPageUbIndex.Name = "tabPageUbIndex";
-            this.tabPageUbIndex.Size = new System.Drawing.Size(1475, 888);
+            this.tabPageUbIndex.Size = new System.Drawing.Size(1476, 801);
             this.tabPageUbIndex.TabIndex = 2;
             this.tabPageUbIndex.Text = "Generate UB Index";
             this.tabPageUbIndex.UseVisualStyleBackColor = true;
@@ -432,7 +444,7 @@ namespace UbStudyHelpGenerator
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.txUbIndexMessages);
-            this.splitContainer2.Size = new System.Drawing.Size(1475, 888);
+            this.splitContainer2.Size = new System.Drawing.Size(1476, 801);
             this.splitContainer2.SplitterDistance = 188;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 1;
@@ -526,7 +538,7 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.Multiline = true;
             this.txUbIndexMessages.Name = "txUbIndexMessages";
             this.txUbIndexMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txUbIndexMessages.Size = new System.Drawing.Size(1475, 695);
+            this.txUbIndexMessages.Size = new System.Drawing.Size(1476, 608);
             this.txUbIndexMessages.TabIndex = 0;
             // 
             // tabPagePTAlternative
@@ -534,7 +546,7 @@ namespace UbStudyHelpGenerator
             this.tabPagePTAlternative.Controls.Add(this.splitContainer3);
             this.tabPagePTAlternative.Location = new System.Drawing.Point(4, 29);
             this.tabPagePTAlternative.Name = "tabPagePTAlternative";
-            this.tabPagePTAlternative.Size = new System.Drawing.Size(1475, 888);
+            this.tabPagePTAlternative.Size = new System.Drawing.Size(1476, 888);
             this.tabPagePTAlternative.TabIndex = 3;
             this.tabPagePTAlternative.Text = "Portuguese Alternative";
             this.tabPagePTAlternative.UseVisualStyleBackColor = true;
@@ -550,6 +562,7 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainer3.Panel1
             // 
+            this.splitContainer3.Panel1.Controls.Add(this.btImportDocx);
             this.splitContainer3.Panel1.Controls.Add(this.btRecordChanged);
             this.splitContainer3.Panel1.Controls.Add(this.btExportPtAlternativeDocx);
             this.splitContainer3.Panel1.Controls.Add(this.btPtRepository);
@@ -561,10 +574,21 @@ namespace UbStudyHelpGenerator
             // splitContainer3.Panel2
             // 
             this.splitContainer3.Panel2.Controls.Add(this.txPTalternative);
-            this.splitContainer3.Size = new System.Drawing.Size(1475, 888);
+            this.splitContainer3.Size = new System.Drawing.Size(1476, 888);
             this.splitContainer3.SplitterDistance = 163;
             this.splitContainer3.SplitterWidth = 5;
             this.splitContainer3.TabIndex = 2;
+            // 
+            // btImportDocx
+            // 
+            this.btImportDocx.Location = new System.Drawing.Point(728, 85);
+            this.btImportDocx.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btImportDocx.Name = "btImportDocx";
+            this.btImportDocx.Size = new System.Drawing.Size(158, 60);
+            this.btImportDocx.TabIndex = 11;
+            this.btImportDocx.Text = "Import docx";
+            this.btImportDocx.UseVisualStyleBackColor = true;
+            this.btImportDocx.Click += new System.EventHandler(this.btImportDocx_Click);
             // 
             // btRecordChanged
             // 
@@ -579,7 +603,7 @@ namespace UbStudyHelpGenerator
             // 
             // btExportPtAlternativeDocx
             // 
-            this.btExportPtAlternativeDocx.Location = new System.Drawing.Point(553, 85);
+            this.btExportPtAlternativeDocx.Location = new System.Drawing.Point(554, 85);
             this.btExportPtAlternativeDocx.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btExportPtAlternativeDocx.Name = "btExportPtAlternativeDocx";
             this.btExportPtAlternativeDocx.Size = new System.Drawing.Size(158, 60);
@@ -648,7 +672,7 @@ namespace UbStudyHelpGenerator
             this.txPTalternative.Multiline = true;
             this.txPTalternative.Name = "txPTalternative";
             this.txPTalternative.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txPTalternative.Size = new System.Drawing.Size(1475, 720);
+            this.txPTalternative.Size = new System.Drawing.Size(1476, 720);
             this.txPTalternative.TabIndex = 1;
             // 
             // tabPageEdit
@@ -656,7 +680,7 @@ namespace UbStudyHelpGenerator
             this.tabPageEdit.Controls.Add(this.splitContainerEdit);
             this.tabPageEdit.Location = new System.Drawing.Point(4, 29);
             this.tabPageEdit.Name = "tabPageEdit";
-            this.tabPageEdit.Size = new System.Drawing.Size(1475, 888);
+            this.tabPageEdit.Size = new System.Drawing.Size(1476, 801);
             this.tabPageEdit.TabIndex = 4;
             this.tabPageEdit.Text = "Edit";
             this.tabPageEdit.UseVisualStyleBackColor = true;
@@ -686,14 +710,14 @@ namespace UbStudyHelpGenerator
             // splitContainerEdit.Panel2
             // 
             this.splitContainerEdit.Panel2.Controls.Add(this.splitContainerEnPt);
-            this.splitContainerEdit.Size = new System.Drawing.Size(1475, 888);
+            this.splitContainerEdit.Size = new System.Drawing.Size(1476, 801);
             this.splitContainerEdit.SplitterDistance = 255;
             this.splitContainerEdit.SplitterWidth = 5;
             this.splitContainerEdit.TabIndex = 2;
             // 
             // btExportJson
             // 
-            this.btExportJson.Location = new System.Drawing.Point(1271, 200);
+            this.btExportJson.Location = new System.Drawing.Point(1270, 200);
             this.btExportJson.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btExportJson.Name = "btExportJson";
             this.btExportJson.Size = new System.Drawing.Size(110, 42);
@@ -707,7 +731,7 @@ namespace UbStudyHelpGenerator
             this.btClear.Location = new System.Drawing.Point(1176, 200);
             this.btClear.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btClear.Name = "btClear";
-            this.btClear.Size = new System.Drawing.Size(89, 42);
+            this.btClear.Size = new System.Drawing.Size(88, 42);
             this.btClear.TabIndex = 11;
             this.btClear.Text = "Clear";
             this.btClear.UseVisualStyleBackColor = true;
@@ -715,10 +739,10 @@ namespace UbStudyHelpGenerator
             // 
             // btMudaBr
             // 
-            this.btMudaBr.Location = new System.Drawing.Point(1081, 200);
+            this.btMudaBr.Location = new System.Drawing.Point(1082, 200);
             this.btMudaBr.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btMudaBr.Name = "btMudaBr";
-            this.btMudaBr.Size = new System.Drawing.Size(89, 42);
+            this.btMudaBr.Size = new System.Drawing.Size(88, 42);
             this.btMudaBr.TabIndex = 10;
             this.btMudaBr.Text = "Newlines";
             this.btMudaBr.UseVisualStyleBackColor = true;
@@ -729,7 +753,7 @@ namespace UbStudyHelpGenerator
             this.btSeleciona.Location = new System.Drawing.Point(986, 200);
             this.btSeleciona.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btSeleciona.Name = "btSeleciona";
-            this.btSeleciona.Size = new System.Drawing.Size(89, 42);
+            this.btSeleciona.Size = new System.Drawing.Size(88, 42);
             this.btSeleciona.TabIndex = 9;
             this.btSeleciona.Text = "Seleciona";
             this.btSeleciona.UseVisualStyleBackColor = true;
@@ -741,7 +765,7 @@ namespace UbStudyHelpGenerator
             this.btStore.Location = new System.Drawing.Point(354, 200);
             this.btStore.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btStore.Name = "btStore";
-            this.btStore.Size = new System.Drawing.Size(89, 42);
+            this.btStore.Size = new System.Drawing.Size(88, 42);
             this.btStore.TabIndex = 8;
             this.btStore.Text = "Store";
             this.btStore.UseVisualStyleBackColor = false;
@@ -752,7 +776,7 @@ namespace UbStudyHelpGenerator
             this.btPrevious.Location = new System.Drawing.Point(132, 200);
             this.btPrevious.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btPrevious.Name = "btPrevious";
-            this.btPrevious.Size = new System.Drawing.Size(89, 42);
+            this.btPrevious.Size = new System.Drawing.Size(88, 42);
             this.btPrevious.TabIndex = 7;
             this.btPrevious.Text = "Previous";
             this.btPrevious.UseVisualStyleBackColor = true;
@@ -763,7 +787,7 @@ namespace UbStudyHelpGenerator
             this.btNext.Location = new System.Drawing.Point(243, 200);
             this.btNext.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btNext.Name = "btNext";
-            this.btNext.Size = new System.Drawing.Size(89, 42);
+            this.btNext.Size = new System.Drawing.Size(88, 42);
             this.btNext.TabIndex = 6;
             this.btNext.Text = "Next";
             this.btNext.UseVisualStyleBackColor = true;
@@ -774,7 +798,7 @@ namespace UbStudyHelpGenerator
             this.btFirst.Location = new System.Drawing.Point(21, 200);
             this.btFirst.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btFirst.Name = "btFirst";
-            this.btFirst.Size = new System.Drawing.Size(89, 42);
+            this.btFirst.Size = new System.Drawing.Size(88, 42);
             this.btFirst.TabIndex = 5;
             this.btFirst.Text = "First";
             this.btFirst.UseVisualStyleBackColor = true;
@@ -783,7 +807,7 @@ namespace UbStudyHelpGenerator
             // lblMessage
             // 
             this.lblMessage.AutoSize = true;
-            this.lblMessage.Location = new System.Drawing.Point(449, 211);
+            this.lblMessage.Location = new System.Drawing.Point(448, 211);
             this.lblMessage.Name = "lblMessage";
             this.lblMessage.Size = new System.Drawing.Size(51, 20);
             this.lblMessage.TabIndex = 2;
@@ -798,7 +822,7 @@ namespace UbStudyHelpGenerator
             this.txQuery.Multiline = true;
             this.txQuery.Name = "txQuery";
             this.txQuery.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txQuery.Size = new System.Drawing.Size(1475, 190);
+            this.txQuery.Size = new System.Drawing.Size(1476, 190);
             this.txQuery.TabIndex = 1;
             this.txQuery.Text = resources.GetString("txQuery.Text");
             // 
@@ -815,8 +839,8 @@ namespace UbStudyHelpGenerator
             // splitContainerEnPt.Panel2
             // 
             this.splitContainerEnPt.Panel2.Controls.Add(this.txPortuguese);
-            this.splitContainerEnPt.Size = new System.Drawing.Size(1475, 628);
-            this.splitContainerEnPt.SplitterDistance = 732;
+            this.splitContainerEnPt.Size = new System.Drawing.Size(1476, 541);
+            this.splitContainerEnPt.SplitterDistance = 731;
             this.splitContainerEnPt.TabIndex = 2;
             // 
             // txEnglish
@@ -829,7 +853,7 @@ namespace UbStudyHelpGenerator
             this.txEnglish.Multiline = true;
             this.txEnglish.Name = "txEnglish";
             this.txEnglish.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txEnglish.Size = new System.Drawing.Size(732, 628);
+            this.txEnglish.Size = new System.Drawing.Size(731, 541);
             this.txEnglish.TabIndex = 1;
             // 
             // txPortuguese
@@ -842,7 +866,7 @@ namespace UbStudyHelpGenerator
             this.txPortuguese.Multiline = true;
             this.txPortuguese.Name = "txPortuguese";
             this.txPortuguese.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txPortuguese.Size = new System.Drawing.Size(739, 628);
+            this.txPortuguese.Size = new System.Drawing.Size(741, 541);
             this.txPortuguese.TabIndex = 0;
             // 
             // btGetRepositoryOutputFolder
@@ -893,27 +917,16 @@ namespace UbStudyHelpGenerator
             // splitContainerMain.Panel2
             // 
             this.splitContainerMain.Panel2.Controls.Add(this.tabControlMain);
-            this.splitContainerMain.Size = new System.Drawing.Size(1483, 1035);
+            this.splitContainerMain.Size = new System.Drawing.Size(1484, 1035);
             this.splitContainerMain.SplitterDistance = 109;
             this.splitContainerMain.SplitterWidth = 5;
             this.splitContainerMain.TabIndex = 2;
-            // 
-            // btExportFormat
-            // 
-            this.btExportFormat.Location = new System.Drawing.Point(1127, 82);
-            this.btExportFormat.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btExportFormat.Name = "btExportFormat";
-            this.btExportFormat.Size = new System.Drawing.Size(138, 60);
-            this.btExportFormat.TabIndex = 7;
-            this.btExportFormat.Text = "Export Format";
-            this.btExportFormat.UseVisualStyleBackColor = true;
-            this.btExportFormat.Click += new System.EventHandler(this.btExportFormat_Click);
             // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1483, 1088);
+            this.ClientSize = new System.Drawing.Size(1484, 1088);
             this.Controls.Add(this.splitContainerMain);
             this.Controls.Add(this.statusStrip1);
             this.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
@@ -1039,6 +1052,7 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.Button btClear;
         private System.Windows.Forms.Button btExportJson;
         private System.Windows.Forms.Button btExportFormat;
+        private System.Windows.Forms.Button btImportDocx;
     }
 }
 

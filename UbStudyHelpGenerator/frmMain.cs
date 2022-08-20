@@ -556,12 +556,21 @@ namespace UbStudyHelpGenerator
 
         private void btPTAlternativeGenerate_Click(object sender, EventArgs e)
         {
+            if (MessageBox.Show("Are you sure to generate UbStudyHelp format from PtAlternative repository?",
+                        "Confirmation",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.No)
+            {
+                return;
+            }
+
             UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder = txPRAlternativeFolder.Text;
             PTAlternative alternative = new PTAlternative();
             alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;
             alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
-            alternative.ExportTranslationAlternative();
+
+            alternative.ImportFromRepositoryToTUB_Files();
         }
 
         private void btPtRepository_Click(object sender, EventArgs e)
@@ -571,7 +580,7 @@ namespace UbStudyHelpGenerator
             alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;
             alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
-            alternative.ExportRepository();
+            alternative.ExportFromDatabaseToRepository();
         }
 
         private void btRecordChanged_Click(object sender, EventArgs e)
@@ -581,7 +590,7 @@ namespace UbStudyHelpGenerator
             alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;
             alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
-            alternative.ExportRecordsChanged();
+            alternative.ExportRecordsChangedFromDatabase_Temp();
         }
 
 
@@ -594,6 +603,17 @@ namespace UbStudyHelpGenerator
             alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
             alternative.ExportToDocx();
         }
+
+        private void btImportDocx_Click(object sender, EventArgs e)
+        {
+            UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder = txPRAlternativeFolder.Text;
+            PTAlternative alternative = new PTAlternative();
+            alternative.ShowMessage += Logger_ShowMessage;
+            alternative.ShowPaperNumber += ShowPaperNumber;
+            alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
+            alternative.ImportVoiceChangedFromWord();
+        }
+
 
         private void Alternative_ShowStatusMessage(string message)
         {
