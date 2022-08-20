@@ -96,7 +96,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BookGenerator.cs" />
-    <Compile Include="Classes\DummyClass.cs" />
     <Compile Include="Classes\EventsControl.cs" />
     <Compile Include="Classes\Exemplar.cs" />
     <Compile Include="Classes\ExportToWord.cs" />

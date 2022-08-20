@@ -5,15 +5,24 @@ using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using UbStandardObjects;
-using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Database;
 using UBT_Tools_WorkLib;
+
+using MyWord = Microsoft.Office.Interop.Word;
+
 //using Xceed.Words.NET;
 //using Xceed.Document.NET;
 
 namespace UbStudyHelpGenerator.Classes
 {
 
+    public enum TextTag
+    {
+        Normal,
+        Bold,
+        Italic,
+        Superscript
+    }
 
 
     public class PT_AlternativeRecords
@@ -46,8 +55,6 @@ namespace UbStudyHelpGenerator.Classes
                 return $"{IndexWorK}";
             }
         }
-
-
 
         public string FileName
         {
@@ -10408,8 +10415,72 @@ namespace UbStudyHelpGenerator.Classes
 
     internal class PTAlternative
     {
-        UbtDatabaseSqlServer server = new UbtDatabaseSqlServer();
-        HtmlGenerator htmlGenerator = new HtmlGenerator();
+        private UbtDatabaseSqlServer server = new UbtDatabaseSqlServer();
+
+        private HtmlGenerator htmlGenerator = new HtmlGenerator();
+
+        private Microsoft.Office.Interop.Word.Application WordApp = null;
+
+        #region Private classes
+        private class UbTextTag
+        {
+            public TextTag Tag { get; set; } = TextTag.Normal;
+            public string Text { get; set; } = "";
+            public UbTextTag(TextTag tag, string text)
+            {
+                Tag = tag;
+                Text = text;
+            }
+        }
+
+        private class HtmlTag
+        {
+            public const string markWithoutTag = "|~S~|";
+            public const string indicatorTag = "|~I~|";
+
+            public static string[] Separators = { markWithoutTag };
+
+            public string Start { get; set; }
+            public string End { get; set; }
+            public TextTag Tag { get; set; }
+
+            public string MarkStart
+            {
+                get
+                {
+                    return markWithoutTag + indicatorTag + ((int)Tag).ToString("00");
+                }
+            }
+
+            public string MarkEnd
+            {
+                get
+                {
+                    return markWithoutTag;
+                }
+            }
+
+            public HtmlTag(string start, string end, TextTag tag)
+            {
+                Start = start;
+                End = end;
+                Tag = tag;
+            }
+
+        }
+
+        #endregion
+
+        private List<HtmlTag> HtmlTags = new List<HtmlTag>()
+        {
+            new HtmlTag("<b>", "</b>",  TextTag.Bold),
+            new HtmlTag("<em>", "</em>",  TextTag.Italic),
+            new HtmlTag("<i>", "</i>",  TextTag.Italic),
+            new HtmlTag("<I>", "</I>",  TextTag.Italic),
+            new HtmlTag("<sup>", "</sup>",  TextTag.Superscript),
+        };
+
+        public string RepositoryPath = @"C:\ProgramData\UbStudyHelp\Repo\PtAlternative";
 
         public event ShowMessage ShowMessage = null;
 
@@ -10417,12 +10488,15 @@ namespace UbStudyHelpGenerator.Classes
 
         public event ShowStatusMessage ShowStatusMessage = null;
 
+
+
         public PTAlternative()
         {
             htmlGenerator.ShowMessage += HtmlGenerator_ShowMessage;
             htmlGenerator.ShowPaperNumber += HtmlGenerator_ShowPaperNumber;
         }
 
+        #region events
         private void FireShowMessage(string message)
         {
             ShowMessage?.Invoke(message);
@@ -10447,55 +10521,8 @@ namespace UbStudyHelpGenerator.Classes
         {
             ShowMessage?.Invoke(message);
         }
+        #endregion
 
-
-        //private Xceed.Document.NET.Paragraph CreateWordParagraph(Cell cell, string text)
-        //{
-        //    Xceed.Document.NET.Paragraph p = cell.InsertParagraph(text);
-        //    p.Font(new Xceed.Document.NET.Font("Verdana"))
-        //          .FontSize(10)
-        //          .Italic()
-        //          .Spacing(5)
-        //          .SpacingLine(22)
-        //          .SpacingAfter(5);
-        //    return p;
-        //}
-
-        public bool ExportTranslationAlternative()
-        {
-            ExportToWord word = new ExportToWord();
-
-            try
-            {
-                for (short paperNo = 0; paperNo < 197; paperNo++)
-                {
-                    FireShowPaperNumber((short)paperNo);
-                    FireShowMessage($"Generating paper {paperNo}");
-                    List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
-
-                    string pathFile = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder, $"Paper{paperNo:000}.html");
-                    if (File.Exists(pathFile))
-                        File.Delete(pathFile);
-                    string html = htmlGenerator.FormatPaper(list);
-                    File.WriteAllText(pathFile, html, Encoding.UTF8);
-
-                    //string pathDocx = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder, $"Paper{paperNo:000}.docx");
-                    //if (File.Exists(pathDocx))
-                    //    File.Delete(pathDocx);
-
-                    //word.Export(pathDocx, list);
-
-                }
-                FireShowMessage("Finished");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                FireShowMessage($"Exporting translation alternative {ex.Message}");
-                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
-                return false;
-            }
-        }
 
         private void removeTags(StringBuilder sb, string startTag, string endTag)
         {
@@ -10551,7 +10578,6 @@ namespace UbStudyHelpGenerator.Classes
             sb.Replace("{n{n{", "");
         }
 
-
         private void ToMarkdown(StringBuilder sb)
         {
             RemoveExemplarTags(sb);
@@ -10576,139 +10602,69 @@ namespace UbStudyHelpGenerator.Classes
             replaceTags(sb, "{h{h{", "}h}h}", "<sup>", "</sup>");
         }
 
-        public bool ExportRepository()
+        private bool ChangeItalicsToHTML(ref string ErrorMessage)
         {
-
-            string pathDest = @"C:\ProgramData\UbStudyHelp\Repo\PtAlternative";
-
-            ExportToWord word = new ExportToWord();
-
+            // Use find/replace to change all italics to the html format <i>...</i>
             try
             {
-                for (short paperNo = 0; paperNo < 197; paperNo++)
-                {
-                    FireShowMessage($"Exporting paper {paperNo}");
-                    string pathPaperFolder = Path.Combine(pathDest, $"Doc{paperNo:000}");
-                    Directory.CreateDirectory(pathPaperFolder);
-                    FireShowPaperNumber((short)paperNo);
-                    FireShowMessage($"Generating paper {paperNo}");
-                    List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
-                    foreach (PT_AlternativeRecord record in list)
-                    {
-                        string pathParagraphFile = Path.Combine(pathPaperFolder, record.FileName);
-                        StringBuilder sb = new StringBuilder(record.Text);
-                        ToMarkdown(sb);
-                        string text = sb.ToString();
-                        File.WriteAllText(pathParagraphFile, text, Encoding.UTF8);
-                    }
-                }
-                FireShowMessage("Finished");
+
+                WordApp.Selection.WholeStory();
+                WordApp.Selection.Find.ClearFormatting();
+                WordApp.Selection.Find.Font.Italic = 1;
+                WordApp.Selection.Find.Font.Italic = 1;
+
+                object FindText = "";
+                object MatchCase = false;
+                object MatchWholeWord = false;
+                object MatchWildcards = false;
+                object MatchSoundsLike = false;
+                object MatchAllWordForms = false;
+                object Forward = true;
+                object Wrap = Microsoft.Office.Interop.Word.WdFindWrap.wdFindAsk;
+                object Format = true;
+                object ReplaceWith = "<i>^&</i>";
+                object Replace = Microsoft.Office.Interop.Word.WdReplace.wdReplaceNone;
+                object MatchKashida = false;
+                object MatchDiacritics = false;
+                object MatchAlefHamza = false;
+                object MatchControl = false;
+
+
+
+                WordApp.Selection.Find.Replacement.ClearFormatting();
+                ReplaceWith = "<i>^&</i>";
+                Replace = Microsoft.Office.Interop.Word.WdReplace.wdReplaceAll;
+                FindText = "";
+                WordApp.Selection.Find.Execute(ref FindText, ref MatchCase, ref MatchWholeWord,
+                       ref MatchWildcards, ref MatchSoundsLike, ref MatchAllWordForms, ref Forward, ref Wrap, ref Format,
+                       ref ReplaceWith, ref Replace, ref MatchKashida, ref MatchDiacritics, ref MatchAlefHamza, ref MatchControl);
+
+                WordApp.Selection.Find.Replacement.ClearFormatting();
+                ReplaceWith = "<i>";
+                Replace = Microsoft.Office.Interop.Word.WdReplace.wdReplaceAll;
+                FindText = "<i><i>";
+                WordApp.Selection.Find.Execute(ref FindText, ref MatchCase, ref MatchWholeWord,
+                       ref MatchWildcards, ref MatchSoundsLike, ref MatchAllWordForms, ref Forward, ref Wrap, ref Format,
+                       ref ReplaceWith, ref Replace, ref MatchKashida, ref MatchDiacritics, ref MatchAlefHamza, ref MatchControl);
+
+
+                WordApp.Selection.Find.Replacement.ClearFormatting();
+                ReplaceWith = "</i>";
+                Replace = Microsoft.Office.Interop.Word.WdReplace.wdReplaceAll;
+                FindText = "</i></i>";
+                WordApp.Selection.Find.Execute(ref FindText, ref MatchCase, ref MatchWholeWord,
+                       ref MatchWildcards, ref MatchSoundsLike, ref MatchAllWordForms, ref Forward, ref Wrap, ref Format,
+                       ref ReplaceWith, ref Replace, ref MatchKashida, ref MatchDiacritics, ref MatchAlefHamza, ref MatchControl);
+
+
                 return true;
             }
             catch (Exception ex)
             {
-                FireShowMessage($"Exporting translation alternative {ex.Message}");
-                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+                ErrorMessage = "Error in cWord_Importador.ChangeItalicsToHTML: " + ex.Message;
                 return false;
             }
-        }
-
-        public bool ExportRecordsChanged()
-        {
-
-            try
-            {
-                string pathDest = @"C:\ProgramData\UbStudyHelp\Repo\PtAlternative";
-                FireShowMessage($"Exporting changed records");
-                List<PT_AlternativeRecord> list = server.GetPT_FixedAlternativeRecords();
-                foreach (PT_AlternativeRecord record in list)
-                {
-                    string pathPaperFolder = Path.Combine(pathDest, $"Doc{record.Paper:000}");
-                    string pathParagraphFile = Path.Combine(pathPaperFolder, record.FileName);
-                    FireShowMessage($"Generating paragraph {pathParagraphFile}");
-                    StringBuilder sb = new StringBuilder(record.Text);
-                    ToMarkdown(sb);
-                    string text = sb.ToString();
-                    File.WriteAllText(pathParagraphFile, text, Encoding.UTF8);
-                }
-
-                FireShowMessage("Finished");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                FireShowMessage($"Exporting translation alternative {ex.Message}");
-                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
-                return false;
-            }
-        }
-
-        public enum TextTag
-        {
-            Normal,
-            Bold,
-            Italic,
-            Superscript
-        }
-
-
-
-        private class UbTextTag
-        {
-            public TextTag Tag { get; set; } = TextTag.Normal;
-            public string Text { get; set; } = "";
-            public UbTextTag(TextTag tag, string text)
-            {
-                Tag = tag;
-                Text = text;
-            }
-        }
-
-        private class HtmlTag
-        {
-            public const string markWithoutTag = "|~S~|";
-            public const string indicatorTag = "|~I~|";
-
-            public static string[] Separators = { markWithoutTag };
-
-            public string Start { get; set; }
-            public string End { get; set; }
-            public TextTag Tag { get; set; }
-
-            public string MarkStart
-            {
-                get
-                {
-                    return markWithoutTag + indicatorTag + ((int)Tag).ToString("00");
-                }
-            }
-
-            public string MarkEnd
-            {
-                get
-                {
-                    return markWithoutTag;
-                }
-            }
-
-            public HtmlTag(string start, string end, TextTag tag)
-            {
-                Start = start;
-                End = end;
-                Tag = tag;
-            }
-
-        }
-
-        private List<HtmlTag> HtmlTags = new List<HtmlTag>()
-        {
-            new HtmlTag("<b>", "</b>",  TextTag.Bold),
-            new HtmlTag("<em>", "</em>",  TextTag.Italic),
-            new HtmlTag("<i>", "</i>",  TextTag.Italic),
-            new HtmlTag("<I>", "</I>",  TextTag.Italic),
-            new HtmlTag("<sup>", "</sup>",  TextTag.Superscript),
-        };
-
+        } // end ChangeItalicsToHTML()
 
         /// <summary>
         /// Returns the text split in identifies parts to create a WPF Inline
@@ -10741,7 +10697,6 @@ namespace UbStudyHelpGenerator.Classes
             }
             return list;
         }
-
 
         private void FormatParagraph(Microsoft.Office.Interop.Word.Paragraph paraInserted, PT_AlternativeRecord record)
         {
@@ -10781,8 +10736,132 @@ namespace UbStudyHelpGenerator.Classes
             }
         }
 
+        /// <summary>
+        /// Import a document from docx file.
+        /// Used to import to PtAlternative repository the new files with voice convertion
+        /// </summary>
+        /// <param name="pathFile"></param>
+        /// <param name="ErrorMessage"></param>
+        /// <returns></returns>
+        private bool ImportDocumentFromWord(string pathFile, ref string ErrorMessage)
+        {
+            WordApp = new Microsoft.Office.Interop.Word.Application();
+            object SaveChanges = Microsoft.Office.Interop.Word.WdSaveOptions.wdDoNotSaveChanges;
+            object OriginalFormat = Microsoft.Office.Interop.Word.WdOriginalFormat.wdOriginalDocumentFormat;
+            object RouteDocument = false;
 
-        public void ExportPaperToDocx(List<PT_AlternativeRecord> list, string pathDocx)
+            try
+            {
+
+                object fileName = pathFile;
+                object readOnly = false;
+                object isVisible = true;
+                object missing = System.Reflection.Missing.Value;
+
+                //WordApp.Activate();
+                WordApp.Visible = false;
+                WordApp.WordBasic.DisableAutoMacros(1);
+
+                Microsoft.Office.Interop.Word.Document aDoc = WordApp.Documents.Open(ref fileName, ref missing, ref readOnly,
+                                ref missing, ref missing, ref missing, ref missing, ref missing, ref missing,
+                                ref missing, ref missing, ref isVisible, ref missing, ref missing, ref missing, ref missing);
+
+                // Enibe exibição dos dados (ganho de velocidade)
+                aDoc.Application.Options.Pagination = false;
+                aDoc.Application.ScreenUpdating = false;
+
+                if (!ChangeItalicsToHTML(ref ErrorMessage))
+                {
+                    WordApp.Quit(ref SaveChanges, ref OriginalFormat, ref RouteDocument);
+                    return false;
+                }
+
+                MyWord.Paragraphs paras = aDoc.Paragraphs;
+
+                int count = 0;
+
+                foreach (MyWord.Paragraph para in aDoc.Paragraphs)
+                {
+                    string Texto = para.Range.Text.Trim();
+                    if (Texto != "" && Texto != "")
+                    {
+                        string s = para.Range.Text;
+                        count++;
+                        s = s.Replace('\r', ' ');
+                        s = s.Replace("\v", "");
+                        s = s.Replace("@", "");
+                        // delete characters below 0x20 that sometimes can be seen on MS word
+                        int total = 0;
+                        foreach (char c in s.ToCharArray())
+                        {
+                            total++;
+                            //if ((total < 7 && (char.IsDigit(c) || c == ':')) || (Convert.ToInt32(c) < 32)) s = s.Replace(Convert.ToString(c) , "");
+                            if (Convert.ToInt32(c) < 32) s = s.Replace(Convert.ToString(c), "");
+                        }
+
+                        //Debug.WriteLine(s);
+
+                        // Delete first maximum 6 characters when they are number or :  (russin docs issue)
+
+                        s = s.Trim();
+                        SaveParagraph(s);
+                    }
+                }
+
+                WordApp.Quit(ref SaveChanges, ref OriginalFormat, ref RouteDocument);
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                WordApp.Quit(ref SaveChanges, ref OriginalFormat, ref RouteDocument);
+                ErrorMessage = "Error in cWord_Importador.ImportOneDocument: " + ex.Message;
+                return false;
+            }
+
+        } // end ImportOneDocument()
+
+        private bool ExportParagraphToRepository(string pathPaperFolder, string fileName, string text)
+        {
+            try
+            {
+                string pathParagraphFile = Path.Combine(pathPaperFolder, fileName);
+                StringBuilder sb = new StringBuilder(text);
+                ToMarkdown(sb);
+                File.WriteAllText(pathParagraphFile, sb.ToString(), Encoding.UTF8);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FireShowMessage($"Exporting Paragraph to Repository: {ex.Message}");
+                UbStandardObjects.StaticObjects.Logger.Error("Exporting Paragraph to Repository", ex);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Save a paragraph into the repository
+        /// Convert to markdown format
+        /// </summary>
+        /// <param name="text"></param>
+        private void SaveParagraph(string text)
+        {
+            // [130:8-6-47654]   Dali eles foram a Roma por 
+            int size = Math.Min(200, text.Length);
+            char[] sep = { '[', ']', ':', '-' };
+            string[] parts = text.Split(sep, StringSplitOptions.RemoveEmptyEntries);
+            short paperNo = Convert.ToInt16(parts[0]);
+            short section = Convert.ToInt16(parts[1]);
+            short paragraphNo = Convert.ToInt16(parts[2]);
+            string paragraphText = parts[4].Trim();
+            FireShowMessage(text.Substring(0, size));
+
+            string pathPaperFolder = Path.Combine(RepositoryPath, $"Doc{paperNo:000}");
+            string fileName = $"Par_{paperNo:000}_{section:000}_{paragraphNo:000}.md";
+            ExportParagraphToRepository(pathPaperFolder, fileName, paragraphText);
+        }
+
+        private void ExportPaperToDocx(List<PT_AlternativeRecord> list, string pathDocx)
         {
             try
             {
@@ -10907,6 +10986,42 @@ namespace UbStudyHelpGenerator.Classes
             }
         }
 
+        public bool ExportFromDatabaseToDocx()
+        {
+            ExportToWord word = new ExportToWord();
+
+            try
+            {
+                for (short paperNo = 0; paperNo < 197; paperNo++)
+                {
+                    FireShowPaperNumber((short)paperNo);
+                    FireShowMessage($"Generating paper {paperNo}");
+                    List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
+
+                    string pathFile = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder, $"Paper{paperNo:000}.html");
+                    if (File.Exists(pathFile))
+                        File.Delete(pathFile);
+                    string html = htmlGenerator.FormatPaper(list);
+                    File.WriteAllText(pathFile, html, Encoding.UTF8);
+
+                    //string pathDocx = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder, $"Paper{paperNo:000}.docx");
+                    //if (File.Exists(pathDocx))
+                    //    File.Delete(pathDocx);
+
+                    //word.Export(pathDocx, list);
+
+                }
+                FireShowMessage("Finished");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FireShowMessage($"Exporting translation alternative {ex.Message}");
+                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+                return false;
+            }
+        }
+
         public bool ExportToDocx()
         {
             for (short paperNo = 100; paperNo < 101; paperNo++)
@@ -10921,6 +11036,114 @@ namespace UbStudyHelpGenerator.Classes
             }
             return true;
         }
+
+        #region Repository API's
+        public bool ExportFromDatabaseToRepository()
+        {
+            try
+            {
+                for (short paperNo = 0; paperNo < 197; paperNo++)
+                {
+                    FireShowMessage($"Exporting paper {paperNo}");
+                    string pathPaperFolder = Path.Combine(RepositoryPath, $"Doc{paperNo:000}");
+                    Directory.CreateDirectory(pathPaperFolder);
+                    FireShowPaperNumber((short)paperNo);
+                    FireShowMessage($"Generating paper {paperNo}");
+                    List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
+                    foreach (PT_AlternativeRecord record in list)
+                    {
+                        ExportParagraphToRepository(pathPaperFolder, record.FileName, record.Text);
+                    }
+                }
+                FireShowMessage("Finished");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FireShowMessage($"Exporting translation alternative {ex.Message}");
+                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+                return false;
+            }
+        }
+
+        public bool ImportFromRepositoryToTUB_Files()
+        {
+            try
+            {
+                for (short paperNo = 0; paperNo < 197; paperNo++)
+                {
+                    FireShowMessage($"Exporting paper {paperNo}");
+                    string pathPaperFolder = Path.Combine(RepositoryPath, $"Doc{paperNo:000}");
+                    FireShowPaperNumber((short)paperNo);
+                    FireShowMessage($"Generating paper {paperNo}");
+
+                    foreach(string file in Directory.GetFiles(pathPaperFolder, "*.md"))
+                    {
+
+                    }
+
+                    List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
+                    foreach (PT_AlternativeRecord record in list)
+                    {
+                        ExportParagraphToRepository(pathPaperFolder, record.FileName, record.Text);
+                    }
+                }
+                FireShowMessage("Finished");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FireShowMessage($"Exporting translation alternative {ex.Message}");
+                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+                return false;
+            }
+        }
+        #endregion
+
+        #region Temporary routines - to be removed soon
+        public bool ExportRecordsChangedFromDatabase_Temp()
+        {
+
+            try
+            {
+                string pathDest = @"C:\ProgramData\UbStudyHelp\Repo\PtAlternative";
+                FireShowMessage($"Exporting changed records");
+                List<PT_AlternativeRecord> list = server.GetPT_FixedAlternativeRecords();
+                foreach (PT_AlternativeRecord record in list)
+                {
+                    string pathPaperFolder = Path.Combine(pathDest, $"Doc{record.Paper:000}");
+                    string pathParagraphFile = Path.Combine(pathPaperFolder, record.FileName);
+                    FireShowMessage($"Generating paragraph {pathParagraphFile}");
+                    StringBuilder sb = new StringBuilder(record.Text);
+                    ToMarkdown(sb);
+                    string text = sb.ToString();
+                    File.WriteAllText(pathParagraphFile, text, Encoding.UTF8);
+                }
+
+                FireShowMessage("Finished");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FireShowMessage($"Exporting translation alternative {ex.Message}");
+                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+                return false;
+            }
+        }
+        public bool ImportVoiceChangedFromWord()
+        {
+            string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre";
+            string ErrorMessage = "";
+            foreach (string pathFile in Directory.GetFiles(folderDocx, "*.docx"))
+            {
+                short paperNo = Convert.ToInt16(Path.GetFileNameWithoutExtension(pathFile).Substring(5, 3));
+                FireShowPaperNumber(paperNo);
+                FireShowMessage($"Generating paper {paperNo}");
+                ImportDocumentFromWord(pathFile, ref ErrorMessage);
+            }
+            return true;
+        }
+        #endregion
 
 
     }
