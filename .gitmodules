@@ -1,0 +1,3 @@
+[submodule "UbStudyHelpGenerator/UbStandardObjects"]
+	path = UbStudyHelpGenerator/UbStandardObjects
+	url = git@github.com:Rogreis/UbStandardObjects.git
