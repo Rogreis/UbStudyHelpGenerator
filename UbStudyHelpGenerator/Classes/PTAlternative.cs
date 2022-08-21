@@ -1,6 +1,7 @@
 ﻿using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10802,7 +10803,8 @@ namespace UbStudyHelpGenerator.Classes
                         //Debug.WriteLine(s);
 
                         // Delete first maximum 6 characters when they are number or :  (russin docs issue)
-
+                        Debug.WriteLine("");
+                        Debug.WriteLine(s);
                         s = s.Trim();
                         SaveParagraph(s);
                     }
@@ -10828,6 +10830,7 @@ namespace UbStudyHelpGenerator.Classes
                 string pathParagraphFile = Path.Combine(pathPaperFolder, fileName);
                 StringBuilder sb = new StringBuilder(text);
                 ToMarkdown(sb);
+                string s = sb.ToString();
                 File.WriteAllText(pathParagraphFile, sb.ToString(), Encoding.UTF8);
                 return true;
             }
@@ -10846,15 +10849,19 @@ namespace UbStudyHelpGenerator.Classes
         /// <param name="text"></param>
         private void SaveParagraph(string text)
         {
-            // [130:8-6-47654]   Dali eles foram a Roma por 
-            int size = Math.Min(200, text.Length);
             char[] sep = { '[', ']', ':', '-' };
-            string[] parts = text.Split(sep, StringSplitOptions.RemoveEmptyEntries);
+
+            int ind = text.IndexOf("]");
+            string ident = text.Substring(0, ind + 1);
+            string paragraphText = text.Remove(0, ind + 1).Trim();
+            int size = Math.Min(200, text.Length);
+
+            string[] parts = ident.Split(sep, StringSplitOptions.RemoveEmptyEntries);
             short paperNo = Convert.ToInt16(parts[0]);
             short section = Convert.ToInt16(parts[1]);
             short paragraphNo = Convert.ToInt16(parts[2]);
-            string paragraphText = parts[4].Trim();
             FireShowMessage(text.Substring(0, size));
+
 
             string pathPaperFolder = Path.Combine(RepositoryPath, $"Doc{paperNo:000}");
             string fileName = $"Par_{paperNo:000}_{section:000}_{paragraphNo:000}.md";
@@ -11134,7 +11141,7 @@ namespace UbStudyHelpGenerator.Classes
         {
             string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre";
             string ErrorMessage = "";
-            foreach (string pathFile in Directory.GetFiles(folderDocx, "*.docx"))
+            foreach (string pathFile in Directory.GetFiles(folderDocx, "Paper*.docx"))
             {
                 short paperNo = Convert.ToInt16(Path.GetFileNameWithoutExtension(pathFile).Substring(5, 3));
                 FireShowPaperNumber(paperNo);

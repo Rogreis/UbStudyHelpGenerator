@@ -316,7 +316,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromHtml.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.tabPageFromHtml.Name = "tabPageFromHtml";
             this.tabPageFromHtml.Padding = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.tabPageFromHtml.Size = new System.Drawing.Size(1476, 801);
+            this.tabPageFromHtml.Size = new System.Drawing.Size(1476, 888);
             this.tabPageFromHtml.TabIndex = 0;
             this.tabPageFromHtml.Text = "Spanish HTML";
             this.tabPageFromHtml.UseVisualStyleBackColor = true;
@@ -341,7 +341,7 @@ namespace UbStudyHelpGenerator
             // splitContainerFromHtml.Panel2
             // 
             this.splitContainerFromHtml.Panel2.Controls.Add(this.textBoxFromHtml);
-            this.splitContainerFromHtml.Size = new System.Drawing.Size(1470, 791);
+            this.splitContainerFromHtml.Size = new System.Drawing.Size(1470, 878);
             this.splitContainerFromHtml.SplitterDistance = 163;
             this.splitContainerFromHtml.SplitterWidth = 5;
             this.splitContainerFromHtml.TabIndex = 0;
@@ -407,7 +407,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromHtml.Multiline = true;
             this.textBoxFromHtml.Name = "textBoxFromHtml";
             this.textBoxFromHtml.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromHtml.Size = new System.Drawing.Size(1470, 623);
+            this.textBoxFromHtml.Size = new System.Drawing.Size(1470, 710);
             this.textBoxFromHtml.TabIndex = 0;
             // 
             // tabPageUbIndex
@@ -416,7 +416,7 @@ namespace UbStudyHelpGenerator
             this.tabPageUbIndex.Location = new System.Drawing.Point(4, 29);
             this.tabPageUbIndex.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.tabPageUbIndex.Name = "tabPageUbIndex";
-            this.tabPageUbIndex.Size = new System.Drawing.Size(1476, 801);
+            this.tabPageUbIndex.Size = new System.Drawing.Size(1476, 888);
             this.tabPageUbIndex.TabIndex = 2;
             this.tabPageUbIndex.Text = "Generate UB Index";
             this.tabPageUbIndex.UseVisualStyleBackColor = true;
@@ -444,7 +444,7 @@ namespace UbStudyHelpGenerator
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.txUbIndexMessages);
-            this.splitContainer2.Size = new System.Drawing.Size(1476, 801);
+            this.splitContainer2.Size = new System.Drawing.Size(1476, 888);
             this.splitContainer2.SplitterDistance = 188;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 1;
@@ -538,7 +538,7 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.Multiline = true;
             this.txUbIndexMessages.Name = "txUbIndexMessages";
             this.txUbIndexMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txUbIndexMessages.Size = new System.Drawing.Size(1476, 608);
+            this.txUbIndexMessages.Size = new System.Drawing.Size(1476, 695);
             this.txUbIndexMessages.TabIndex = 0;
             // 
             // tabPagePTAlternative
@@ -680,7 +680,7 @@ namespace UbStudyHelpGenerator
             this.tabPageEdit.Controls.Add(this.splitContainerEdit);
             this.tabPageEdit.Location = new System.Drawing.Point(4, 29);
             this.tabPageEdit.Name = "tabPageEdit";
-            this.tabPageEdit.Size = new System.Drawing.Size(1476, 801);
+            this.tabPageEdit.Size = new System.Drawing.Size(1476, 888);
             this.tabPageEdit.TabIndex = 4;
             this.tabPageEdit.Text = "Edit";
             this.tabPageEdit.UseVisualStyleBackColor = true;
@@ -710,7 +710,7 @@ namespace UbStudyHelpGenerator
             // splitContainerEdit.Panel2
             // 
             this.splitContainerEdit.Panel2.Controls.Add(this.splitContainerEnPt);
-            this.splitContainerEdit.Size = new System.Drawing.Size(1476, 801);
+            this.splitContainerEdit.Size = new System.Drawing.Size(1476, 888);
             this.splitContainerEdit.SplitterDistance = 255;
             this.splitContainerEdit.SplitterWidth = 5;
             this.splitContainerEdit.TabIndex = 2;
@@ -839,7 +839,7 @@ namespace UbStudyHelpGenerator
             // splitContainerEnPt.Panel2
             // 
             this.splitContainerEnPt.Panel2.Controls.Add(this.txPortuguese);
-            this.splitContainerEnPt.Size = new System.Drawing.Size(1476, 541);
+            this.splitContainerEnPt.Size = new System.Drawing.Size(1476, 628);
             this.splitContainerEnPt.SplitterDistance = 731;
             this.splitContainerEnPt.TabIndex = 2;
             // 
@@ -853,7 +853,7 @@ namespace UbStudyHelpGenerator
             this.txEnglish.Multiline = true;
             this.txEnglish.Name = "txEnglish";
             this.txEnglish.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txEnglish.Size = new System.Drawing.Size(731, 541);
+            this.txEnglish.Size = new System.Drawing.Size(731, 628);
             this.txEnglish.TabIndex = 1;
             // 
             // txPortuguese
@@ -866,7 +866,7 @@ namespace UbStudyHelpGenerator
             this.txPortuguese.Multiline = true;
             this.txPortuguese.Name = "txPortuguese";
             this.txPortuguese.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txPortuguese.Size = new System.Drawing.Size(741, 541);
+            this.txPortuguese.Size = new System.Drawing.Size(741, 628);
             this.txPortuguese.TabIndex = 0;
             // 
             // btGetRepositoryOutputFolder
