@@ -10803,8 +10803,6 @@ namespace UbStudyHelpGenerator.Classes
                         //Debug.WriteLine(s);
 
                         // Delete first maximum 6 characters when they are number or :  (russin docs issue)
-                        Debug.WriteLine("");
-                        Debug.WriteLine(s);
                         s = s.Trim();
                         SaveParagraph(s);
                     }
@@ -11005,13 +11003,13 @@ namespace UbStudyHelpGenerator.Classes
                     FireShowMessage($"Generating paper {paperNo}");
                     List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
 
-                    string pathFile = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder, $"Paper{paperNo:000}.html");
+                    string pathFile = Path.Combine(UbStandardObjects.StaticObjects.Parameters.EditParagraphsRepositoryFolder, $"Paper{paperNo:000}.html");
                     if (File.Exists(pathFile))
                         File.Delete(pathFile);
                     string html = htmlGenerator.FormatPaper(list);
                     File.WriteAllText(pathFile, html, Encoding.UTF8);
 
-                    //string pathDocx = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder, $"Paper{paperNo:000}.docx");
+                    //string pathDocx = Path.Combine(UbStandardObjects.StaticObjects.Parameters.TranslationRepositoryFolder, $"Paper{paperNo:000}.docx");
                     //if (File.Exists(pathDocx))
                     //    File.Delete(pathDocx);
 
@@ -11036,7 +11034,7 @@ namespace UbStudyHelpGenerator.Classes
                 FireShowPaperNumber((short)paperNo);
                 FireShowMessage($"Generating paper {paperNo}");
                 List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
-                string pathDocx = Path.Combine(UbStandardObjects.StaticObjects.Parameters.RepositoryOutputPTAlternativeFolder, $"Paper{paperNo:000}.docx");
+                string pathDocx = Path.Combine(UbStandardObjects.StaticObjects.Parameters.EditParagraphsRepositoryFolder, $"Paper{paperNo:000}.docx");
                 if (File.Exists(pathDocx))
                     File.Delete(pathDocx);
                 ExportPaperToDocx(list, pathDocx);
@@ -11073,38 +11071,6 @@ namespace UbStudyHelpGenerator.Classes
             }
         }
 
-        public bool ImportFromRepositoryToTUB_Files()
-        {
-            try
-            {
-                for (short paperNo = 0; paperNo < 197; paperNo++)
-                {
-                    FireShowMessage($"Exporting paper {paperNo}");
-                    string pathPaperFolder = Path.Combine(RepositoryPath, $"Doc{paperNo:000}");
-                    FireShowPaperNumber((short)paperNo);
-                    FireShowMessage($"Generating paper {paperNo}");
-
-                    foreach(string file in Directory.GetFiles(pathPaperFolder, "*.md"))
-                    {
-
-                    }
-
-                    List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
-                    foreach (PT_AlternativeRecord record in list)
-                    {
-                        ExportParagraphToRepository(pathPaperFolder, record.FileName, record.Text);
-                    }
-                }
-                FireShowMessage("Finished");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                FireShowMessage($"Exporting translation alternative {ex.Message}");
-                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
-                return false;
-            }
-        }
         #endregion
 
         #region Temporary routines - to be removed soon

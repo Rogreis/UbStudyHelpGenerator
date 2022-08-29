@@ -2,6 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 using UbStandardObjects;
+using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Classes;
 using static System.Environment;
 
@@ -42,7 +43,8 @@ namespace UbStudyHelpGenerator
             pathParameters = MakeProgramDataFolder("UbStudyHelpGenerator.json");
             StaticObjects.Logger = new GeneratorLog();
             StaticObjects.Parameters= ParametersGenerator.Deserialize(pathParameters);
-            StaticObjects.Book= new BookGenerator();
+            StaticObjects.Parameters.ApplicationFolder= Application.StartupPath;
+            StaticObjects.Book= new Book();
 
 
             Application.EnableVisualStyles();

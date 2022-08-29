@@ -95,7 +95,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\BookGenerator.cs" />
     <Compile Include="Classes\EventsControl.cs" />
     <Compile Include="Classes\Exemplar.cs" />
     <Compile Include="Classes\ExportToWord.cs" />
@@ -103,6 +102,7 @@
     <Compile Include="Classes\HtmlGenerator.cs" />
     <Compile Include="Classes\ParametersGenerator.cs" />
     <Compile Include="Classes\PTAlternative.cs" />
+    <Compile Include="Classes\TUB_PT_BR.cs" />
     <Compile Include="Classes\UrantiaIndex.cs" />
     <Compile Include="Classes\UrantiaSpanish.cs" />
     <Compile Include="Database\UbtDatabase.cs" />

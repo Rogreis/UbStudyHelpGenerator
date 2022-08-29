@@ -20,7 +20,7 @@ namespace UbStudyHelpGenerator.Classes
 
         private UbtDatabaseSqlServer Server = new UbtDatabaseSqlServer();
 
-        public GetDataFilesGenerator(UbtDatabaseSqlServer server, string appFolder, string localStorageFolder) : base(appFolder, localStorageFolder)
+        public GetDataFilesGenerator(UbtDatabaseSqlServer server, Parameters param) : base(param)
         {
             Server = server;
             Server.ShowMessage += Server_ShowMessage;
@@ -43,12 +43,6 @@ namespace UbStudyHelpGenerator.Classes
                 File.Delete(pathFile);
         }
 
-
-
-        public override Translation GetTranslation(short translatioId)
-        {
-            throw new NotImplementedException();
-        }
 
         //public override List<Translation> GetTranslations()
         //{

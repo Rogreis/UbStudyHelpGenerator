@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Xml;
 using UbStandardObjects;
+using UbStandardObjects.Objects;
 
 namespace UbStudyHelpGenerator.Classes
 {
@@ -18,6 +19,21 @@ namespace UbStudyHelpGenerator.Classes
     {
 
         public string SqlEdit { get; set; }= "SELECT dbo.FormatIdentity(Paper, Pk_Seq) as [Identity], [IndexWorK],[Paper],[PK_Seq],[Text],[Notes],[Status] FROM [dbo].[CaioComments] where Status = 1";
+
+        public short TranslationIdLeft { get; set; } = 0;
+
+        public short TranslationIdMiddle { get; set; } = 143;
+
+        public short TranslationIdRight { get; set; } = 34;
+
+
+        public Translation TranslationLeft { get; set; } = null;
+
+        public Translation TranslationMiddle { get; set; } = null;
+
+        public Translation TranslationRight { get; set; } = null;
+
+
         /// <summary>
         /// Serialize the parameters instance
         /// </summary>
