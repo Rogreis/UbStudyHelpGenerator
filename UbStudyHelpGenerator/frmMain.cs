@@ -658,11 +658,20 @@ namespace UbStudyHelpGenerator
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            PTAlternative alternative = new PTAlternative();
-            alternative.ShowMessage += Logger_ShowMessage;
-            alternative.ShowPaperNumber += ShowPaperNumber;
-            alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
-            alternative.ExportRecordsChangedFromDatabase_Temp();
+
+            for(short paperNo = 0; paperNo < 197; paperNo++)
+            {
+                if (!Server.GetNotesData(paperNo))
+                {
+                    return;
+                }
+            }
+
+            //PTAlternative alternative = new PTAlternative();
+            //alternative.ShowMessage += Logger_ShowMessage;
+            //alternative.ShowPaperNumber += ShowPaperNumber;
+            //alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
+            //alternative.ExportRecordsChangedFromDatabase_Temp();
         }
 
 

@@ -34,6 +34,20 @@ namespace UbStudyHelpGenerator
             this.toolStripStatusLabelPaperNumber = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelMessage = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControlMain = new System.Windows.Forms.TabControl();
+            this.tabPageEditTranslation = new System.Windows.Forms.TabPage();
+            this.splitContainerPtAlternative = new System.Windows.Forms.SplitContainer();
+            this.btEditBookRepositoryFolder = new System.Windows.Forms.Button();
+            this.label6 = new System.Windows.Forms.Label();
+            this.txEditBookRepositoryFolder = new System.Windows.Forms.TextBox();
+            this.btImportDocx = new System.Windows.Forms.Button();
+            this.btRecordChanged = new System.Windows.Forms.Button();
+            this.btExportPtAlternativeDocx = new System.Windows.Forms.Button();
+            this.btPtRepository = new System.Windows.Forms.Button();
+            this.btEditTranslationRepositoryFolder = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txTranslationRepositoryFolder = new System.Windows.Forms.TextBox();
+            this.btPTAlternativeGenerate = new System.Windows.Forms.Button();
+            this.txPTalternative = new System.Windows.Forms.TextBox();
             this.tabPageFromSqlServer = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.btExportFormat = new System.Windows.Forms.Button();
@@ -64,20 +78,6 @@ namespace UbStudyHelpGenerator
             this.label2 = new System.Windows.Forms.Label();
             this.txUfIndexDownloadeFiles = new System.Windows.Forms.TextBox();
             this.txUbIndexMessages = new System.Windows.Forms.TextBox();
-            this.tabPageEditTranslation = new System.Windows.Forms.TabPage();
-            this.splitContainerPtAlternative = new System.Windows.Forms.SplitContainer();
-            this.btEditBookRepositoryFolder = new System.Windows.Forms.Button();
-            this.label6 = new System.Windows.Forms.Label();
-            this.txEditBookRepositoryFolder = new System.Windows.Forms.TextBox();
-            this.btImportDocx = new System.Windows.Forms.Button();
-            this.btRecordChanged = new System.Windows.Forms.Button();
-            this.btExportPtAlternativeDocx = new System.Windows.Forms.Button();
-            this.btPtRepository = new System.Windows.Forms.Button();
-            this.btEditTranslationRepositoryFolder = new System.Windows.Forms.Button();
-            this.label5 = new System.Windows.Forms.Label();
-            this.txTranslationRepositoryFolder = new System.Windows.Forms.TextBox();
-            this.btPTAlternativeGenerate = new System.Windows.Forms.Button();
-            this.txPTalternative = new System.Windows.Forms.TextBox();
             this.tabPageEdit = new System.Windows.Forms.TabPage();
             this.splitContainerEdit = new System.Windows.Forms.SplitContainer();
             this.btExportJson = new System.Windows.Forms.Button();
@@ -99,6 +99,11 @@ namespace UbStudyHelpGenerator
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
             this.statusStrip1.SuspendLayout();
             this.tabControlMain.SuspendLayout();
+            this.tabPageEditTranslation.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerPtAlternative)).BeginInit();
+            this.splitContainerPtAlternative.Panel1.SuspendLayout();
+            this.splitContainerPtAlternative.Panel2.SuspendLayout();
+            this.splitContainerPtAlternative.SuspendLayout();
             this.tabPageFromSqlServer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -114,11 +119,6 @@ namespace UbStudyHelpGenerator
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
-            this.tabPageEditTranslation.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainerPtAlternative)).BeginInit();
-            this.splitContainerPtAlternative.Panel1.SuspendLayout();
-            this.splitContainerPtAlternative.Panel2.SuspendLayout();
-            this.splitContainerPtAlternative.SuspendLayout();
             this.tabPageEdit.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerEdit)).BeginInit();
             this.splitContainerEdit.Panel1.SuspendLayout();
@@ -174,6 +174,178 @@ namespace UbStudyHelpGenerator
             this.tabControlMain.SelectedIndex = 0;
             this.tabControlMain.Size = new System.Drawing.Size(1484, 921);
             this.tabControlMain.TabIndex = 1;
+            // 
+            // tabPageEditTranslation
+            // 
+            this.tabPageEditTranslation.Controls.Add(this.splitContainerPtAlternative);
+            this.tabPageEditTranslation.Location = new System.Drawing.Point(4, 29);
+            this.tabPageEditTranslation.Name = "tabPageEditTranslation";
+            this.tabPageEditTranslation.Size = new System.Drawing.Size(1476, 888);
+            this.tabPageEditTranslation.TabIndex = 3;
+            this.tabPageEditTranslation.Text = "Edit Translation";
+            this.tabPageEditTranslation.UseVisualStyleBackColor = true;
+            // 
+            // splitContainerPtAlternative
+            // 
+            this.splitContainerPtAlternative.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerPtAlternative.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainerPtAlternative.Location = new System.Drawing.Point(0, 0);
+            this.splitContainerPtAlternative.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.splitContainerPtAlternative.Name = "splitContainerPtAlternative";
+            this.splitContainerPtAlternative.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainerPtAlternative.Panel1
+            // 
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btEditBookRepositoryFolder);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.label6);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.txEditBookRepositoryFolder);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btImportDocx);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btRecordChanged);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btExportPtAlternativeDocx);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btPtRepository);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btEditTranslationRepositoryFolder);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.label5);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.txTranslationRepositoryFolder);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btPTAlternativeGenerate);
+            // 
+            // splitContainerPtAlternative.Panel2
+            // 
+            this.splitContainerPtAlternative.Panel2.Controls.Add(this.txPTalternative);
+            this.splitContainerPtAlternative.Size = new System.Drawing.Size(1476, 888);
+            this.splitContainerPtAlternative.SplitterDistance = 248;
+            this.splitContainerPtAlternative.SplitterWidth = 5;
+            this.splitContainerPtAlternative.TabIndex = 2;
+            // 
+            // btEditBookRepositoryFolder
+            // 
+            this.btEditBookRepositoryFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btEditBookRepositoryFolder.Location = new System.Drawing.Point(1204, 103);
+            this.btEditBookRepositoryFolder.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btEditBookRepositoryFolder.Name = "btEditBookRepositoryFolder";
+            this.btEditBookRepositoryFolder.Size = new System.Drawing.Size(66, 44);
+            this.btEditBookRepositoryFolder.TabIndex = 14;
+            this.btEditBookRepositoryFolder.Text = "...";
+            this.btEditBookRepositoryFolder.UseVisualStyleBackColor = true;
+            this.btEditBookRepositoryFolder.Click += new System.EventHandler(this.btEditBookRepositoryFolder_Click);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(16, 92);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(207, 20);
+            this.label6.TabIndex = 13;
+            this.label6.Text = "Edit Book Repostiroy Folder";
+            // 
+            // txEditBookRepositoryFolder
+            // 
+            this.txEditBookRepositoryFolder.Location = new System.Drawing.Point(16, 121);
+            this.txEditBookRepositoryFolder.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.txEditBookRepositoryFolder.Name = "txEditBookRepositoryFolder";
+            this.txEditBookRepositoryFolder.Size = new System.Drawing.Size(1171, 26);
+            this.txEditBookRepositoryFolder.TabIndex = 12;
+            // 
+            // btImportDocx
+            // 
+            this.btImportDocx.Enabled = false;
+            this.btImportDocx.Location = new System.Drawing.Point(1112, 172);
+            this.btImportDocx.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btImportDocx.Name = "btImportDocx";
+            this.btImportDocx.Size = new System.Drawing.Size(158, 60);
+            this.btImportDocx.TabIndex = 11;
+            this.btImportDocx.Text = "Import docx";
+            this.btImportDocx.UseVisualStyleBackColor = true;
+            this.btImportDocx.Visible = false;
+            this.btImportDocx.Click += new System.EventHandler(this.btImportDocx_Click);
+            // 
+            // btRecordChanged
+            // 
+            this.btRecordChanged.Location = new System.Drawing.Point(748, 172);
+            this.btRecordChanged.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btRecordChanged.Name = "btRecordChanged";
+            this.btRecordChanged.Size = new System.Drawing.Size(158, 60);
+            this.btRecordChanged.TabIndex = 10;
+            this.btRecordChanged.Text = "Generate Records Changed";
+            this.btRecordChanged.UseVisualStyleBackColor = true;
+            this.btRecordChanged.Click += new System.EventHandler(this.btRecordChanged_Click);
+            // 
+            // btExportPtAlternativeDocx
+            // 
+            this.btExportPtAlternativeDocx.Enabled = false;
+            this.btExportPtAlternativeDocx.Location = new System.Drawing.Point(930, 172);
+            this.btExportPtAlternativeDocx.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btExportPtAlternativeDocx.Name = "btExportPtAlternativeDocx";
+            this.btExportPtAlternativeDocx.Size = new System.Drawing.Size(158, 60);
+            this.btExportPtAlternativeDocx.TabIndex = 9;
+            this.btExportPtAlternativeDocx.Text = "Export docx";
+            this.btExportPtAlternativeDocx.UseVisualStyleBackColor = true;
+            this.btExportPtAlternativeDocx.Visible = false;
+            this.btExportPtAlternativeDocx.Click += new System.EventHandler(this.btExportPtAlternativeDocx_Click);
+            // 
+            // btPtRepository
+            // 
+            this.btPtRepository.BackColor = System.Drawing.Color.PeachPuff;
+            this.btPtRepository.Location = new System.Drawing.Point(298, 172);
+            this.btPtRepository.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btPtRepository.Name = "btPtRepository";
+            this.btPtRepository.Size = new System.Drawing.Size(258, 60);
+            this.btPtRepository.TabIndex = 8;
+            this.btPtRepository.Text = "Generate TUB_Files with Edit Repository";
+            this.btPtRepository.UseVisualStyleBackColor = false;
+            this.btPtRepository.Click += new System.EventHandler(this.btPtRepository_Click);
+            // 
+            // btEditTranslationRepositoryFolder
+            // 
+            this.btEditTranslationRepositoryFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btEditTranslationRepositoryFolder.Location = new System.Drawing.Point(1204, 31);
+            this.btEditTranslationRepositoryFolder.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btEditTranslationRepositoryFolder.Name = "btEditTranslationRepositoryFolder";
+            this.btEditTranslationRepositoryFolder.Size = new System.Drawing.Size(66, 44);
+            this.btEditTranslationRepositoryFolder.TabIndex = 7;
+            this.btEditTranslationRepositoryFolder.Text = "...";
+            this.btEditTranslationRepositoryFolder.UseVisualStyleBackColor = true;
+            this.btEditTranslationRepositoryFolder.Click += new System.EventHandler(this.btEditTranslationRepositoryFolder_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(16, 20);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(248, 20);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "Edit Translation Repository Folder";
+            // 
+            // txTranslationRepositoryFolder
+            // 
+            this.txTranslationRepositoryFolder.Location = new System.Drawing.Point(16, 49);
+            this.txTranslationRepositoryFolder.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.txTranslationRepositoryFolder.Name = "txTranslationRepositoryFolder";
+            this.txTranslationRepositoryFolder.Size = new System.Drawing.Size(1171, 26);
+            this.txTranslationRepositoryFolder.TabIndex = 1;
+            // 
+            // btPTAlternativeGenerate
+            // 
+            this.btPTAlternativeGenerate.BackColor = System.Drawing.Color.PeachPuff;
+            this.btPTAlternativeGenerate.Location = new System.Drawing.Point(16, 172);
+            this.btPTAlternativeGenerate.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btPTAlternativeGenerate.Name = "btPTAlternativeGenerate";
+            this.btPTAlternativeGenerate.Size = new System.Drawing.Size(258, 60);
+            this.btPTAlternativeGenerate.TabIndex = 0;
+            this.btPTAlternativeGenerate.Text = "Generate TUB_PT_BR from Repository";
+            this.btPTAlternativeGenerate.UseVisualStyleBackColor = false;
+            this.btPTAlternativeGenerate.Click += new System.EventHandler(this.btPTAlternativeGenerate_Click);
+            // 
+            // txPTalternative
+            // 
+            this.txPTalternative.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txPTalternative.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txPTalternative.Location = new System.Drawing.Point(0, 0);
+            this.txPTalternative.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.txPTalternative.Multiline = true;
+            this.txPTalternative.Name = "txPTalternative";
+            this.txPTalternative.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txPTalternative.Size = new System.Drawing.Size(1476, 635);
+            this.txPTalternative.TabIndex = 1;
             // 
             // tabPageFromSqlServer
             // 
@@ -547,180 +719,6 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.Size = new System.Drawing.Size(1476, 695);
             this.txUbIndexMessages.TabIndex = 0;
             // 
-            // tabPageEditTranslation
-            // 
-            this.tabPageEditTranslation.Controls.Add(this.splitContainerPtAlternative);
-            this.tabPageEditTranslation.Location = new System.Drawing.Point(4, 29);
-            this.tabPageEditTranslation.Name = "tabPageEditTranslation";
-            this.tabPageEditTranslation.Size = new System.Drawing.Size(1476, 888);
-            this.tabPageEditTranslation.TabIndex = 3;
-            this.tabPageEditTranslation.Text = "Edit Translation";
-            this.tabPageEditTranslation.UseVisualStyleBackColor = true;
-            // 
-            // splitContainerPtAlternative
-            // 
-            this.splitContainerPtAlternative.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainerPtAlternative.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainerPtAlternative.Location = new System.Drawing.Point(0, 0);
-            this.splitContainerPtAlternative.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.splitContainerPtAlternative.Name = "splitContainerPtAlternative";
-            this.splitContainerPtAlternative.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainerPtAlternative.Panel1
-            // 
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btEditBookRepositoryFolder);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.label6);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.txEditBookRepositoryFolder);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btImportDocx);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btRecordChanged);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btExportPtAlternativeDocx);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btPtRepository);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btEditTranslationRepositoryFolder);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.label5);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.txTranslationRepositoryFolder);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btPTAlternativeGenerate);
-            // 
-            // splitContainerPtAlternative.Panel2
-            // 
-            this.splitContainerPtAlternative.Panel2.Controls.Add(this.txPTalternative);
-            this.splitContainerPtAlternative.Size = new System.Drawing.Size(1476, 888);
-            this.splitContainerPtAlternative.SplitterDistance = 248;
-            this.splitContainerPtAlternative.SplitterWidth = 5;
-            this.splitContainerPtAlternative.TabIndex = 2;
-            // 
-            // btEditBookRepositoryFolder
-            // 
-            this.btEditBookRepositoryFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btEditBookRepositoryFolder.Location = new System.Drawing.Point(1204, 103);
-            this.btEditBookRepositoryFolder.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btEditBookRepositoryFolder.Name = "btEditBookRepositoryFolder";
-            this.btEditBookRepositoryFolder.Size = new System.Drawing.Size(66, 44);
-            this.btEditBookRepositoryFolder.TabIndex = 14;
-            this.btEditBookRepositoryFolder.Text = "...";
-            this.btEditBookRepositoryFolder.UseVisualStyleBackColor = true;
-            this.btEditBookRepositoryFolder.Click += new System.EventHandler(this.btEditBookRepositoryFolder_Click);
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(16, 92);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(207, 20);
-            this.label6.TabIndex = 13;
-            this.label6.Text = "Edit Book Repostiroy Folder";
-            // 
-            // txEditBookRepositoryFolder
-            // 
-            this.txEditBookRepositoryFolder.Location = new System.Drawing.Point(16, 121);
-            this.txEditBookRepositoryFolder.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txEditBookRepositoryFolder.Name = "txEditBookRepositoryFolder";
-            this.txEditBookRepositoryFolder.Size = new System.Drawing.Size(1171, 26);
-            this.txEditBookRepositoryFolder.TabIndex = 12;
-            // 
-            // btImportDocx
-            // 
-            this.btImportDocx.Enabled = false;
-            this.btImportDocx.Location = new System.Drawing.Point(1112, 172);
-            this.btImportDocx.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btImportDocx.Name = "btImportDocx";
-            this.btImportDocx.Size = new System.Drawing.Size(158, 60);
-            this.btImportDocx.TabIndex = 11;
-            this.btImportDocx.Text = "Import docx";
-            this.btImportDocx.UseVisualStyleBackColor = true;
-            this.btImportDocx.Visible = false;
-            this.btImportDocx.Click += new System.EventHandler(this.btImportDocx_Click);
-            // 
-            // btRecordChanged
-            // 
-            this.btRecordChanged.Enabled = false;
-            this.btRecordChanged.Location = new System.Drawing.Point(748, 172);
-            this.btRecordChanged.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btRecordChanged.Name = "btRecordChanged";
-            this.btRecordChanged.Size = new System.Drawing.Size(158, 60);
-            this.btRecordChanged.TabIndex = 10;
-            this.btRecordChanged.Text = "Generate Records Changed";
-            this.btRecordChanged.UseVisualStyleBackColor = true;
-            this.btRecordChanged.Visible = false;
-            this.btRecordChanged.Click += new System.EventHandler(this.btRecordChanged_Click);
-            // 
-            // btExportPtAlternativeDocx
-            // 
-            this.btExportPtAlternativeDocx.Enabled = false;
-            this.btExportPtAlternativeDocx.Location = new System.Drawing.Point(930, 172);
-            this.btExportPtAlternativeDocx.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btExportPtAlternativeDocx.Name = "btExportPtAlternativeDocx";
-            this.btExportPtAlternativeDocx.Size = new System.Drawing.Size(158, 60);
-            this.btExportPtAlternativeDocx.TabIndex = 9;
-            this.btExportPtAlternativeDocx.Text = "Export docx";
-            this.btExportPtAlternativeDocx.UseVisualStyleBackColor = true;
-            this.btExportPtAlternativeDocx.Visible = false;
-            this.btExportPtAlternativeDocx.Click += new System.EventHandler(this.btExportPtAlternativeDocx_Click);
-            // 
-            // btPtRepository
-            // 
-            this.btPtRepository.BackColor = System.Drawing.Color.PeachPuff;
-            this.btPtRepository.Location = new System.Drawing.Point(298, 172);
-            this.btPtRepository.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btPtRepository.Name = "btPtRepository";
-            this.btPtRepository.Size = new System.Drawing.Size(258, 60);
-            this.btPtRepository.TabIndex = 8;
-            this.btPtRepository.Text = "Generate TUB_Files with Edit Repository";
-            this.btPtRepository.UseVisualStyleBackColor = false;
-            this.btPtRepository.Click += new System.EventHandler(this.btPtRepository_Click);
-            // 
-            // btEditTranslationRepositoryFolder
-            // 
-            this.btEditTranslationRepositoryFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btEditTranslationRepositoryFolder.Location = new System.Drawing.Point(1204, 31);
-            this.btEditTranslationRepositoryFolder.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btEditTranslationRepositoryFolder.Name = "btEditTranslationRepositoryFolder";
-            this.btEditTranslationRepositoryFolder.Size = new System.Drawing.Size(66, 44);
-            this.btEditTranslationRepositoryFolder.TabIndex = 7;
-            this.btEditTranslationRepositoryFolder.Text = "...";
-            this.btEditTranslationRepositoryFolder.UseVisualStyleBackColor = true;
-            this.btEditTranslationRepositoryFolder.Click += new System.EventHandler(this.btEditTranslationRepositoryFolder_Click);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(16, 20);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(248, 20);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "Edit Translation Repository Folder";
-            // 
-            // txTranslationRepositoryFolder
-            // 
-            this.txTranslationRepositoryFolder.Location = new System.Drawing.Point(16, 49);
-            this.txTranslationRepositoryFolder.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txTranslationRepositoryFolder.Name = "txTranslationRepositoryFolder";
-            this.txTranslationRepositoryFolder.Size = new System.Drawing.Size(1171, 26);
-            this.txTranslationRepositoryFolder.TabIndex = 1;
-            // 
-            // btPTAlternativeGenerate
-            // 
-            this.btPTAlternativeGenerate.BackColor = System.Drawing.Color.PeachPuff;
-            this.btPTAlternativeGenerate.Location = new System.Drawing.Point(16, 172);
-            this.btPTAlternativeGenerate.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btPTAlternativeGenerate.Name = "btPTAlternativeGenerate";
-            this.btPTAlternativeGenerate.Size = new System.Drawing.Size(258, 60);
-            this.btPTAlternativeGenerate.TabIndex = 0;
-            this.btPTAlternativeGenerate.Text = "Generate TUB_PT_BR from Repository";
-            this.btPTAlternativeGenerate.UseVisualStyleBackColor = false;
-            this.btPTAlternativeGenerate.Click += new System.EventHandler(this.btPTAlternativeGenerate_Click);
-            // 
-            // txPTalternative
-            // 
-            this.txPTalternative.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txPTalternative.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txPTalternative.Location = new System.Drawing.Point(0, 0);
-            this.txPTalternative.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.txPTalternative.Multiline = true;
-            this.txPTalternative.Name = "txPTalternative";
-            this.txPTalternative.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txPTalternative.Size = new System.Drawing.Size(1476, 635);
-            this.txPTalternative.TabIndex = 1;
-            // 
             // tabPageEdit
             // 
             this.tabPageEdit.Controls.Add(this.splitContainerEdit);
@@ -983,6 +981,13 @@ namespace UbStudyHelpGenerator
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             this.tabControlMain.ResumeLayout(false);
+            this.tabPageEditTranslation.ResumeLayout(false);
+            this.splitContainerPtAlternative.Panel1.ResumeLayout(false);
+            this.splitContainerPtAlternative.Panel1.PerformLayout();
+            this.splitContainerPtAlternative.Panel2.ResumeLayout(false);
+            this.splitContainerPtAlternative.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerPtAlternative)).EndInit();
+            this.splitContainerPtAlternative.ResumeLayout(false);
             this.tabPageFromSqlServer.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
@@ -1004,13 +1009,6 @@ namespace UbStudyHelpGenerator
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
-            this.tabPageEditTranslation.ResumeLayout(false);
-            this.splitContainerPtAlternative.Panel1.ResumeLayout(false);
-            this.splitContainerPtAlternative.Panel1.PerformLayout();
-            this.splitContainerPtAlternative.Panel2.ResumeLayout(false);
-            this.splitContainerPtAlternative.Panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.splitContainerPtAlternative)).EndInit();
-            this.splitContainerPtAlternative.ResumeLayout(false);
             this.tabPageEdit.ResumeLayout(false);
             this.splitContainerEdit.Panel1.ResumeLayout(false);
             this.splitContainerEdit.Panel1.PerformLayout();

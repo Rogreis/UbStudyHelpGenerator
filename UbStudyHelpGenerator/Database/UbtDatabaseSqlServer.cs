@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Text;
 using System.Text.Json;
+using UbStandardObjects;
 using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.Properties;
@@ -225,7 +226,45 @@ namespace UbStudyHelpGenerator.Database
             }
         }
 
+
         #region Temporary routines to be deleted in the future
+
+        /// <summary>
+        /// Get notes data from sql server
+        /// </summary>
+        /// <param name="paperNo"></param>
+        /// <returns></returns>
+        public bool GetNotesData(short paperNo)
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("select Paper, Section, Paragraph, TranslatorNote, case when Notes is null then '' else Notes end as Notes from ");
+                sb.AppendLine("(SELECT Paper ");
+                sb.AppendLine("	  ,dbo.Section(W.Paper, W.PK_seq) Section ");
+                sb.AppendLine("	  ,dbo.Paragraph(W.Paper, W.PK_seq) as Paragraph ");
+                sb.AppendLine("	  ,'' as TranslatorNote, ");
+                sb.AppendLine("	  (select Notes from [UBT].[dbo].[CaioComments] C where C.Paper = W.Paper and C.PK_Seq = W.PK_Seq) as Notes ");
+                sb.AppendLine("FROM [dbo].[UB_Texts_Work] W where LanguageID = 0 and Paper = 3) T ");
+                sb.AppendLine("order by Section, Paragraph ");
+                sb.AppendLine(" FOR JSON AUTO, ROOT('Notes') ");
+
+                string jsonString = GetJsonStringFromDatabase(sb.ToString());
+                var options = new JsonSerializerOptions
+                {
+                    AllowTrailingCommas = true
+                };
+
+                string filePath = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder, $@"{ParagraphMarkDown.FolderPath(paperNo)}\Notes.json");
+                File.WriteAllText(filePath, jsonString);
+                return true;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
         public List<PT_AlternativeRecord> GetPT_FixedAlternativeRecords()
         {
