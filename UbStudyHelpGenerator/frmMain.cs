@@ -655,17 +655,17 @@ namespace UbStudyHelpGenerator
 
         private void btRecordChanged_Click(object sender, EventArgs e)
         {
-            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
-            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            //StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            //StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+            //StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
 
-            for(short paperNo = 0; paperNo < 197; paperNo++)
-            {
-                if (!Server.GetNotesData(paperNo))
-                {
-                    return;
-                }
-            }
+            //for(short paperNo = 0; paperNo < 197; paperNo++)
+            //{
+            //    if (!Server.GetNotesData(paperNo))
+            //    {
+            //        return;
+            //    }
+            //}
 
             //PTAlternative alternative = new PTAlternative();
             //alternative.ShowMessage += Logger_ShowMessage;

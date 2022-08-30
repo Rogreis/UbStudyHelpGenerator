@@ -229,64 +229,64 @@ namespace UbStudyHelpGenerator.Database
 
         #region Temporary routines to be deleted in the future
 
-        /// <summary>
-        /// Get notes data from sql server
-        /// </summary>
-        /// <param name="paperNo"></param>
-        /// <returns></returns>
-        public bool GetNotesData(short paperNo)
-        {
-            try
-            {
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine("select Paper, Section, Paragraph, TranslatorNote, case when Notes is null then '' else Notes end as Notes from ");
-                sb.AppendLine("(SELECT Paper ");
-                sb.AppendLine("	  ,dbo.Section(W.Paper, W.PK_seq) Section ");
-                sb.AppendLine("	  ,dbo.Paragraph(W.Paper, W.PK_seq) as Paragraph ");
-                sb.AppendLine("	  ,'' as TranslatorNote, ");
-                sb.AppendLine("	  (select Notes from [UBT].[dbo].[CaioComments] C where C.Paper = W.Paper and C.PK_Seq = W.PK_Seq) as Notes ");
-                sb.AppendLine("FROM [dbo].[UB_Texts_Work] W where LanguageID = 0 and Paper = 3) T ");
-                sb.AppendLine("order by Section, Paragraph ");
-                sb.AppendLine(" FOR JSON AUTO, ROOT('Notes') ");
+        ///// <summary>
+        ///// Get notes data from sql server
+        ///// </summary>
+        ///// <param name="paperNo"></param>
+        ///// <returns></returns>
+        //public bool GetNotesData(short paperNo)
+        //{
+        //    try
+        //    {
+        //        StringBuilder sb = new StringBuilder();
+        //        sb.AppendLine("select Paper, Section, Paragraph, TranslatorNote, case when Notes is null then '' else Notes end as Notes from ");
+        //        sb.AppendLine("(SELECT Paper ");
+        //        sb.AppendLine("	  ,dbo.Section(W.Paper, W.PK_seq) Section ");
+        //        sb.AppendLine("	  ,dbo.Paragraph(W.Paper, W.PK_seq) as Paragraph ");
+        //        sb.AppendLine("	  ,'' as TranslatorNote, ");
+        //        sb.AppendLine("	  (select Notes from [UBT].[dbo].[CaioComments] C where C.Paper = W.Paper and C.PK_Seq = W.PK_Seq) as Notes ");
+        //        sb.AppendLine("FROM [dbo].[UB_Texts_Work] W where LanguageID = 0 and Paper = 3) T ");
+        //        sb.AppendLine("order by Section, Paragraph ");
+        //        sb.AppendLine(" FOR JSON AUTO, ROOT('Notes') ");
 
-                string jsonString = GetJsonStringFromDatabase(sb.ToString());
-                var options = new JsonSerializerOptions
-                {
-                    AllowTrailingCommas = true
-                };
+        //        string jsonString = GetJsonStringFromDatabase(sb.ToString());
+        //        var options = new JsonSerializerOptions
+        //        {
+        //            AllowTrailingCommas = true
+        //        };
 
-                string filePath = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder, $@"{ParagraphMarkDown.FolderPath(paperNo)}\Notes.json");
-                File.WriteAllText(filePath, jsonString);
-                return true;
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
+        //        string filePath = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder, $@"{ParagraphMarkDown.FolderPath(paperNo)}\Notes.json");
+        //        File.WriteAllText(filePath, jsonString);
+        //        return true;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
 
 
-        public List<PT_AlternativeRecord> GetPT_FixedAlternativeRecords()
-        {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
-            sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
-            sb.AppendLine("  FROM [UBT].[dbo].[UB_Texts_Work] W ");
-            sb.AppendLine($" WHERE W.LanguageID = 2 and W.UserName = 'Caio' ");
-            sb.AppendLine(" AND W.LastDate > Convert(datetime, '2018-11-18 12:36:25.970') order by Paper, PK_Seq  ");
-            sb.AppendLine(" FOR JSON AUTO, ROOT('Paragraphs') ");
+        //public List<PT_AlternativeRecord> GetPT_FixedAlternativeRecords()
+        //{
+        //    StringBuilder sb = new StringBuilder();
+        //    sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
+        //    sb.AppendLine("select dbo.FormatIdentity(W.Paper, W.Pk_Seq) as [Identity], W.IndexWorK, W.Pk_Seq, W.Paper, dbo.Section(W.Paper, W.Pk_Seq) as Section, dbo.Paragraph(W.Paper, W.Pk_Seq) as ParagraphNo, [Text] ");
+        //    sb.AppendLine("  FROM [UBT].[dbo].[UB_Texts_Work] W ");
+        //    sb.AppendLine($" WHERE W.LanguageID = 2 and W.UserName = 'Caio' ");
+        //    sb.AppendLine(" AND W.LastDate > Convert(datetime, '2018-11-18 12:36:25.970') order by Paper, PK_Seq  ");
+        //    sb.AppendLine(" FOR JSON AUTO, ROOT('Paragraphs') ");
 
-            string jsonString = GetJsonStringFromDatabase(sb.ToString());
+        //    string jsonString = GetJsonStringFromDatabase(sb.ToString());
 
-            var options = new JsonSerializerOptions
-            {
-                AllowTrailingCommas = true
-            };
+        //    var options = new JsonSerializerOptions
+        //    {
+        //        AllowTrailingCommas = true
+        //    };
 
-            var records = JsonSerializer.Deserialize<PT_AlternativeRecords>(jsonString, options);
-            List<PT_AlternativeRecord> list = new List<PT_AlternativeRecord>(records.Paragraphs);
-            return list;
-        }
+        //    var records = JsonSerializer.Deserialize<PT_AlternativeRecords>(jsonString, options);
+        //    List<PT_AlternativeRecord> list = new List<PT_AlternativeRecord>(records.Paragraphs);
+        //    return list;
+        //}
 
         #endregion
 
