@@ -3,9 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Text;
+using System.Runtime.Remoting.Contexts;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using UbStandardObjects;
@@ -14,7 +13,7 @@ using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.Database;
 using UbStudyHelpGenerator.Properties;
 using static System.Environment;
-using Application = System.Windows.Forms.Application;
+using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace UbStudyHelpGenerator
 {
@@ -87,7 +86,7 @@ namespace UbStudyHelpGenerator
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            Parameters= (ParametersGenerator)StaticObjects.Parameters;
+            Parameters = (ParametersGenerator)StaticObjects.Parameters;
 
             txHtmlFilesPath.Text = StaticObjects.Parameters.InputHtmlFilesPath;
             txRepositoryOutputFolder.Text = StaticObjects.Parameters.TUB_Files_RepositoryFolder;
@@ -95,12 +94,7 @@ namespace UbStudyHelpGenerator
             txSqlServerConnectionString.Text = Settings.Default.SqlServerConnectionString;
             txTranslationRepositoryFolder.Text = StaticObjects.Parameters.EditParagraphsRepositoryFolder;
             txEditBookRepositoryFolder.Text = StaticObjects.Parameters.EditBookRepositoryFolder;
-            txQuery.Text = ((ParametersGenerator)StaticObjects.Parameters).SqlEdit;
-
             Initialize();
-
-
-
         }
 
 
@@ -111,27 +105,25 @@ namespace UbStudyHelpGenerator
         private void ShowMessage(string message)
         {
             TextBox tx = null;
-            switch (tabControlMain.SelectedIndex)
+            switch (tabControlMain.SelectedTab.Tag.ToString())
             {
-                case 0:
+                case "Edit":
+                    tx = txPTalternative;
+                    break;
+                case "Sql":
                     tx = textBoxFromSqlServer;
                     break;
-                case 1:
+                case "Html":
                     tx = textBoxFromHtml;
                     break;
-                case 2:
+                case "Index":
                     tx = txUbIndexMessages;
                     break;
-                case 3:
-                    tx = txPTalternative;
-                    break;
-                case 4:
-                    tx = txPTalternative;
-                    break;
                 default:
-                    tx = textBoxFromHtml;
-                    break;
+                    MessageBox.Show(message);
+                    return;
             }
+
 
             // txUbIndexMessages
             if (message == null)
@@ -625,18 +617,24 @@ namespace UbStudyHelpGenerator
                 return;
             }
 
+            ShowMessage("Starting full TUB html output");
+
             StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
 
             BootstrapBook formatter = new BootstrapBook(StaticObjects.Parameters.HtmlParam);
             TUB_PT_BR tubPT_BR = new TUB_PT_BR(Parameters);
-            PTAlternative alternative = new PTAlternative();
+            PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
+
+            List<TUB_TOC_Entry> tocEntries = ((TranslationEdit)((ParametersGenerator)StaticObjects.Parameters).TranslationRight).GetTranslationIndex();
+            TUB_TOC_Html toc_table = new TUB_TOC_Html(tocEntries);
 
             tubPT_BR.ShowMessage += Logger_ShowMessage;
             tubPT_BR.ShowPaperNumber += ShowPaperNumber;
             tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
-            tubPT_BR.RepositoryToTUB_Files(formatter);
+            tubPT_BR.RepositoryToBookHtmlPages(formatter, toc_table);
+            ShowMessage("Finished");
         }
 
         private void btPtRepository_Click(object sender, EventArgs e)
@@ -646,7 +644,7 @@ namespace UbStudyHelpGenerator
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            PTAlternative alternative = new PTAlternative();
+            PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
             alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;
             alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
@@ -680,7 +678,7 @@ namespace UbStudyHelpGenerator
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            PTAlternative alternative = new PTAlternative();
+            PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
             alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;
             alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
@@ -692,7 +690,7 @@ namespace UbStudyHelpGenerator
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            PTAlternative alternative = new PTAlternative();
+            PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
             alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;
             alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
@@ -708,131 +706,23 @@ namespace UbStudyHelpGenerator
 
 
 
-        UbtDatabaseSqlServer server = new UbtDatabaseSqlServer();
-        System.Data.DataTable table = null;
-        int rowNo = 0;
-
-        private void FillFileds(ref int rowNo)
-        {
-            System.Data.DataRow row = table.Rows[rowNo];
-            txEnglish.Text = ""; // row["English"].ToString();
-            txPortuguese.Text = row["Text"].ToString();
-            lblMessage.Text = $"{row["Identity"]}   {rowNo}-{table.Rows.Count}";
-        }
-
-        private void btFirst_Click(object sender, EventArgs e)
-        {
-            string sql = txQuery.Text;
-            table = server.Query(sql);
-            rowNo = 0;
-            if (table != null && table.Rows.Count > 0)
-            {
-                System.Data.DataRow row = table.Rows[rowNo];
-                FillFileds(ref rowNo);
-                lblMessage.Text += " Starting";
-            }
-            else
-            {
-                lblMessage.Text = "No more records";
-            }
-            ((ParametersGenerator)StaticObjects.Parameters).SqlEdit = sql;
-        }
-
-        private void btNext_Click(object sender, EventArgs e)
-        {
-            if (table == null)
-                return;
-            if (table == null)
-                return;
-            if (table.Rows.Count == 0) return;
-
-            rowNo++;
-            if (rowNo > table.Rows.Count - 1) rowNo = 0;
-            FillFileds(ref rowNo);
-            lblMessage.Text += " Next";
-        }
-
-        private void btPrevious_Click(object sender, EventArgs e)
-        {
-            if (table == null)
-                return;
-            if (table == null)
-                return;
-            if (table.Rows.Count == 0) return;
-
-            rowNo--;
-            if (rowNo < 0) rowNo = table.Rows.Count - 1;
-            FillFileds(ref rowNo);
-            lblMessage.Text += " Previous";
-        }
-
-        private void btStore_Click(object sender, EventArgs e)
-        {
-            if (table == null || table.Rows.Count == 0 || rowNo < 0)
-                return;
-
-            System.Data.DataRow row = table.Rows[rowNo];
-            int IndexWorK = Convert.ToInt32(row["IndexWorK"]);
-            // string sql = $"Update UB_Texts_Work set text= '{txPortuguese.Text}' where IndexWorK = {IndexWorK}";
-            string sql = $"UPDATE [dbo].[CaioComments] SET [Notes] = '{txPortuguese.Text}', [Status] = 2 WHERE [IndexWorK] = {IndexWorK}";
-            row["Text"] = txPortuguese.Text;
-            server.RunCommand(sql);
-            lblMessage.Text = "Stored";
-            btNext_Click(null, null);
-        }
-
-        private void btSeleciona_Click(object sender, EventArgs e)
-        {
-            string text = txPortuguese.Text;
-            if (!String.IsNullOrEmpty(text))
-            {
-                int ind = text.IndexOf("<br", 0, StringComparison.OrdinalIgnoreCase);
-                if (ind >= 0)
-                {
-                    txPortuguese.SelectionStart = ind;
-                    txPortuguese.SelectionLength = 4;
-                    //string s = txPortuguese.SelectedText;
-                }
-            }
-
-        }
-
         private string ReplaceAll(string input)
         {
             Regex.Replace(input, @"<br />+", Environment.NewLine);
             return Regex.Replace(input, @"<br>+", Environment.NewLine);
         }
 
-        private void btMudaBr_Click(object sender, EventArgs e)
-        {
-            //txPortuguese.Text= ReplaceAll(text);
-            txPortuguese.Text = txPortuguese.Text.Replace("<br>", Environment.NewLine);
-            txPortuguese.Text = txPortuguese.Text.Replace("<br />", Environment.NewLine);
-            txPortuguese.Text = txPortuguese.Text.Replace("<BR>", Environment.NewLine);
-            txPortuguese.Text = txPortuguese.Text.Replace("<BR />", Environment.NewLine);
-        }
 
-        private void btClear_Click(object sender, EventArgs e)
+        private void PrintNodes(List<TUB_TOC_Entry> list, string ident)
         {
-            txPortuguese.Text = "";
-            btStore_Click(null, null);
-        }
-
-        private void btExportJson_Click(object sender, EventArgs e)
-        {
-            string pathFile = Path.Combine(@"C:\Trabalho\Github\Rogerio\UbReviewer\UbReviewerLibrary\DataFiles", "ParagraphsNumber.json");
-            string sql = txQuery.Text;
-            string jsonString = server.GetJsonStringFromDatabase(sql);
-            if (jsonString != null)
+            foreach (TUB_TOC_Entry item in list)
             {
-                File.WriteAllText(pathFile, jsonString);
-                lblMessage.Text = "Json saved";
+                ShowMessage($"{ident}{item.Text}");
+                if (item.Nodes != null && item.Nodes.Count > 0)
+                {
+                    PrintNodes(item.Nodes, ident + "   ");
+                }
             }
-            else
-            {
-                lblMessage.Text = "Erro getting json";
-            }
-            ((ParametersGenerator)StaticObjects.Parameters).SqlEdit = sql;
         }
 
     }

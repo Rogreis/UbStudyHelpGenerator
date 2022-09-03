@@ -10481,18 +10481,19 @@ namespace UbStudyHelpGenerator.Classes
             new HtmlTag("<sup>", "</sup>",  TextTag.Superscript),
         };
 
-        public string RepositoryPath = @"C:\ProgramData\UbStudyHelp\Repo\PtAlternative";
-
         public event ShowMessage ShowMessage = null;
 
         public event ShowPaperNumber ShowPaperNumber = null;
 
         public event ShowStatusMessage ShowStatusMessage = null;
 
+        private Parameters Param = null;
 
 
-        public PTAlternative()
+
+        public PTAlternative(Parameters param)
         {
+            Param = param;
             htmlGenerator.ShowMessage += HtmlGenerator_ShowMessage;
             htmlGenerator.ShowPaperNumber += HtmlGenerator_ShowPaperNumber;
         }
@@ -10771,6 +10772,9 @@ namespace UbStudyHelpGenerator.Classes
                 aDoc.Application.Options.Pagination = false;
                 aDoc.Application.ScreenUpdating = false;
 
+                // Importante aceitar todas as revisões antes de importar 
+                aDoc.AcceptAllRevisions();
+
                 if (!ChangeItalicsToHTML(ref ErrorMessage))
                 {
                     WordApp.Quit(ref SaveChanges, ref OriginalFormat, ref RouteDocument);
@@ -10861,7 +10865,7 @@ namespace UbStudyHelpGenerator.Classes
             FireShowMessage(text.Substring(0, size));
 
 
-            string pathPaperFolder = Path.Combine(RepositoryPath, $"Doc{paperNo:000}");
+            string pathPaperFolder = Path.Combine(Param.EditParagraphsRepositoryFolder, $"Doc{paperNo:000}");
             string fileName = $"Par_{paperNo:000}_{section:000}_{paragraphNo:000}.md";
             ExportParagraphToRepository(pathPaperFolder, fileName, paragraphText);
         }
@@ -11045,30 +11049,31 @@ namespace UbStudyHelpGenerator.Classes
         #region Repository API's
         public bool ExportFromDatabaseToRepository()
         {
-            try
-            {
-                for (short paperNo = 0; paperNo < 197; paperNo++)
-                {
-                    FireShowMessage($"Exporting paper {paperNo}");
-                    string pathPaperFolder = Path.Combine(RepositoryPath, $"Doc{paperNo:000}");
-                    Directory.CreateDirectory(pathPaperFolder);
-                    FireShowPaperNumber((short)paperNo);
-                    FireShowMessage($"Generating paper {paperNo}");
-                    List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
-                    foreach (PT_AlternativeRecord record in list)
-                    {
-                        ExportParagraphToRepository(pathPaperFolder, record.FileName, record.Text);
-                    }
-                }
-                FireShowMessage("Finished");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                FireShowMessage($"Exporting translation alternative {ex.Message}");
-                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
-                return false;
-            }
+            //try
+            //{
+            //    for (short paperNo = 0; paperNo < 197; paperNo++)
+            //    {
+            //        FireShowMessage($"Exporting paper {paperNo}");
+            //        string pathPaperFolder = Path.Combine(Param.EditParagraphsRepositoryFolder, $"Doc{paperNo:000}");
+            //        Directory.CreateDirectory(pathPaperFolder);
+            //        FireShowPaperNumber((short)paperNo);
+            //        FireShowMessage($"Generating paper {paperNo}");
+            //        List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
+            //        foreach (PT_AlternativeRecord record in list)
+            //        {
+            //            ExportParagraphToRepository(pathPaperFolder, record.FileName, record.Text);
+            //        }
+            //    }
+            //    FireShowMessage("Finished");
+            //    return true;
+            //}
+            //catch (Exception ex)
+            //{
+            //    FireShowMessage($"Exporting translation alternative {ex.Message}");
+            //    UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+            //    return false;
+            //}
+            return false;
         }
 
         #endregion
@@ -11077,35 +11082,36 @@ namespace UbStudyHelpGenerator.Classes
         public bool ExportRecordsChangedFromDatabase_Temp()
         {
 
-            try
-            {
-                string pathDest = @"C:\ProgramData\UbStudyHelp\Repo\PtAlternative";
-                FireShowMessage($"Exporting changed records");
-                List<PT_AlternativeRecord> list = server.GetPT_FixedAlternativeRecords();
-                foreach (PT_AlternativeRecord record in list)
-                {
-                    string pathPaperFolder = Path.Combine(pathDest, $"Doc{record.Paper:000}");
-                    string pathParagraphFile = Path.Combine(pathPaperFolder, record.FileName);
-                    FireShowMessage($"Generating paragraph {pathParagraphFile}");
-                    StringBuilder sb = new StringBuilder(record.Text);
-                    ToMarkdown(sb);
-                    string text = sb.ToString();
-                    File.WriteAllText(pathParagraphFile, text, Encoding.UTF8);
-                }
+            //    try
+            //    {
+            //        string pathDest = @"C:\ProgramData\UbStudyHelp\Repo\PtAlternative";
+            //        FireShowMessage($"Exporting changed records");
+            //        List<PT_AlternativeRecord> list = server.GetPT_FixedAlternativeRecords();
+            //        foreach (PT_AlternativeRecord record in list)
+            //        {
+            //            string pathPaperFolder = Path.Combine(pathDest, $"Doc{record.Paper:000}");
+            //            string pathParagraphFile = Path.Combine(pathPaperFolder, record.FileName);
+            //            FireShowMessage($"Generating paragraph {pathParagraphFile}");
+            //            StringBuilder sb = new StringBuilder(record.Text);
+            //            ToMarkdown(sb);
+            //            string text = sb.ToString();
+            //            File.WriteAllText(pathParagraphFile, text, Encoding.UTF8);
+            //        }
 
-                FireShowMessage("Finished");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                FireShowMessage($"Exporting translation alternative {ex.Message}");
-                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
-                return false;
-            }
+            //        FireShowMessage("Finished");
+            //        return true;
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        FireShowMessage($"Exporting translation alternative {ex.Message}");
+            //        UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+            //        return false;
+            //    }
+            return false;
         }
         public bool ImportVoiceChangedFromWord()
         {
-            string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre";
+            string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre\134to162";
             string ErrorMessage = "";
             foreach (string pathFile in Directory.GetFiles(folderDocx, "Paper*.docx"))
             {

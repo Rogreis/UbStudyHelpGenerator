@@ -51,7 +51,7 @@ namespace UbStudyHelpGenerator.Classes
             Param = param;
         }
 
-        public bool RepositoryToTUB_Files(BootstrapBook Formatter)
+        public bool RepositoryToBookHtmlPages(BootstrapBook Formatter, TUB_TOC_Html toc_table)
         {
             try
             {
@@ -67,7 +67,7 @@ namespace UbStudyHelpGenerator.Classes
                         ParagraphMarkDown paragraph = new ParagraphMarkDown(file);
                         paper.Paragraphs.Add(paragraph);
                     }
-                    Formatter.GeneratPaper(Param.EditBookRepositoryFolder, Param.TranslationLeft, Param.TranslationRight, paperNo);
+                    Formatter.GeneratPaper(Param.EditBookRepositoryFolder, Param.TranslationLeft, Param.TranslationRight, toc_table, paperNo);
                 }
                 FireShowMessage("Finished");
                 return true;
