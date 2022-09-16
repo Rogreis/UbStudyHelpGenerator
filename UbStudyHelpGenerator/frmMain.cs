@@ -635,6 +635,8 @@ namespace UbStudyHelpGenerator
             tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
             tubPT_BR.RepositoryToBookHtmlPages(formatter, toc_table);
             ShowMessage("Finished");
+            //Process.Start("chrome.exe", "--incognito");
+
         }
 
         private void btPtRepository_Click(object sender, EventArgs e)
@@ -643,13 +645,21 @@ namespace UbStudyHelpGenerator
                 return;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
-            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
             PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
             alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;
             alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
-            alternative.ExportFromDatabaseToRepository();
+            alternative.RepositoryToTUB_Files();
         }
+
+        private void btTocTable_Click(object sender, EventArgs e)
+        {
+            ShowMessage("Creating TOC table");
+            List<TUB_TOC_Entry> tocEntries = ((TranslationEdit)((ParametersGenerator)StaticObjects.Parameters).TranslationRight).GetTranslationIndex(true);
+            ShowMessage("Finished");
+        }
+
 
         private void btRecordChanged_Click(object sender, EventArgs e)
         {
@@ -689,7 +699,6 @@ namespace UbStudyHelpGenerator
         {
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
-            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
             alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;

@@ -67,7 +67,7 @@ namespace UbStudyHelpGenerator.Classes
                         ParagraphMarkDown paragraph = new ParagraphMarkDown(file);
                         paper.Paragraphs.Add(paragraph);
                     }
-                    Formatter.GeneratPaper(Param.EditBookRepositoryFolder, Param.TranslationLeft, Param.TranslationRight, toc_table, paperNo);
+                    Formatter.GeneratePaper(Param.EditBookRepositoryFolder, Param.TranslationLeft, Param.TranslationRight, toc_table, paperNo);
                 }
                 FireShowMessage("Finished");
                 return true;

@@ -173,8 +173,8 @@
     </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="UbStandardObjects\UbStandardObjects.csproj">
-      <Project>{96456684-1e0f-42cb-aebd-06804e14b049}</Project>
+    <ProjectReference Include="..\..\Ub\UbStandardObjects\UbStandardObjects.csproj">
+      <Project>{ea4c4302-2331-4e94-82ee-aad3e07a0d0c}</Project>
       <Name>UbStandardObjects</Name>
     </ProjectReference>
   </ItemGroup>

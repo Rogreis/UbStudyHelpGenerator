@@ -73,8 +73,6 @@ namespace UBT_Tools_WorkLib
             ShowPaperNumber?.Invoke(paperNo);
         }
 
-        #region HTML Help functions
-        #endregion
 
         #region CSS Style
 

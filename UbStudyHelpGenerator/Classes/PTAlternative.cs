@@ -3,9 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using UbStandardObjects;
+using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Database;
 using UBT_Tools_WorkLib;
 
@@ -11047,32 +11050,62 @@ namespace UbStudyHelpGenerator.Classes
         }
 
         #region Repository API's
-        public bool ExportFromDatabaseToRepository()
+        public bool RepositoryToTUB_Files()
         {
-            //try
-            //{
-            //    for (short paperNo = 0; paperNo < 197; paperNo++)
-            //    {
-            //        FireShowMessage($"Exporting paper {paperNo}");
-            //        string pathPaperFolder = Path.Combine(Param.EditParagraphsRepositoryFolder, $"Doc{paperNo:000}");
-            //        Directory.CreateDirectory(pathPaperFolder);
-            //        FireShowPaperNumber((short)paperNo);
-            //        FireShowMessage($"Generating paper {paperNo}");
-            //        List<PT_AlternativeRecord> list = server.GetPT_AlternativeRecords(paperNo);
-            //        foreach (PT_AlternativeRecord record in list)
-            //        {
-            //            ExportParagraphToRepository(pathPaperFolder, record.FileName, record.Text);
-            //        }
-            //    }
-            //    FireShowMessage("Finished");
-            //    return true;
-            //}
-            //catch (Exception ex)
-            //{
-            //    FireShowMessage($"Exporting translation alternative {ex.Message}");
-            //    UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
-            //    return false;
-            //}
+            try
+            {
+
+                var options = new JsonSerializerOptions
+                {
+                    AllowTrailingCommas = true,
+                    WriteIndented = true,
+                    IncludeFields = true
+                };
+
+                Translation editTranslation = StaticObjects.Book.GetTranslation(2);
+                editTranslation.Papers = new List<Paper>();
+
+                for (short paperNo = 0; paperNo < 197; paperNo++)
+                {
+                    FireShowMessage($"Exporting paper {paperNo}");
+                    string pathPaperFolder = Path.Combine(Param.EditParagraphsRepositoryFolder, $"Doc{paperNo:000}");
+                    editTranslation.Papers.Add(new PaperEdit(paperNo, pathPaperFolder));
+                }
+
+                string pathEditTranslationJson = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, $"TR{editTranslation.LanguageID:000}.json");
+                string jsonString = JsonSerializer.Serialize<Translation>(editTranslation, options);
+                if (File.Exists(pathEditTranslationJson))
+                {
+                    File.Delete(pathEditTranslationJson);
+                }
+                File.WriteAllText(pathEditTranslationJson, jsonString);
+                string pathEditTranslationZipped = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, $"TR{editTranslation.LanguageID:000}.gz");
+                if (File.Exists(pathEditTranslationZipped))
+                {
+                    File.Delete(pathEditTranslationZipped);
+                }
+                using (FileStream originalFileStream = File.Open(pathEditTranslationJson, FileMode.Open))
+                {
+                    using (FileStream compressedFileStream = File.Create(pathEditTranslationZipped))
+                    {
+                        using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
+                        {
+                            originalFileStream.CopyTo(compressor);
+                        }
+                    }
+                }
+
+                File.Delete(pathEditTranslationJson);
+
+                FireShowMessage("Finished");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                FireShowMessage($"Exporting translation alternative {ex.Message}");
+                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+                return false;
+            }
             return false;
         }
 
@@ -11111,7 +11144,7 @@ namespace UbStudyHelpGenerator.Classes
         }
         public bool ImportVoiceChangedFromWord()
         {
-            string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre\134to162";
+            string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre\162to196";
             string ErrorMessage = "";
             foreach (string pathFile in Directory.GetFiles(folderDocx, "Paper*.docx"))
             {
