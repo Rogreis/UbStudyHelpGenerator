@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using UbStandardObjects;
 using UbStandardObjects.Objects;
@@ -59,15 +60,11 @@ namespace UbStudyHelpGenerator.Classes
                 {
                     FireShowMessage($"Exporting paper {paperNo}");
                     FireShowPaperNumber((short)paperNo);
-                    string pathPaperFolder = Path.Combine(Param.EditParagraphsRepositoryFolder, $"Doc{paperNo:000}");
 
-                    Paper paper = new Paper();
-                    foreach (string file in Directory.GetFiles(pathPaperFolder, "*.md"))
-                    {
-                        ParagraphMarkDown paragraph = new ParagraphMarkDown(file);
-                        paper.Paragraphs.Add(paragraph);
-                    }
-                    Formatter.GeneratePaper(Param.EditBookRepositoryFolder, Param.TranslationLeft, Param.TranslationRight, toc_table, paperNo);
+                    string pathPaperFolder = Path.Combine(Param.EditParagraphsRepositoryFolder, $"Doc{paperNo:000}");
+                    PaperEdit paper = new PaperEdit(paperNo, pathPaperFolder);
+                    paper.GetNotes(Param.EditParagraphsRepositoryFolder, paperNo);
+                    Formatter.GeneratePaper(Param.EditBookRepositoryFolder, Param.TranslationLeft, paper, toc_table, paperNo);
                 }
                 FireShowMessage("Finished");
                 return true;

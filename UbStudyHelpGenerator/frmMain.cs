@@ -628,7 +628,7 @@ namespace UbStudyHelpGenerator
             PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
 
             List<TUB_TOC_Entry> tocEntries = ((TranslationEdit)((ParametersGenerator)StaticObjects.Parameters).TranslationRight).GetTranslationIndex();
-            TUB_TOC_Html toc_table = new TUB_TOC_Html(tocEntries);
+            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters.HtmlParam, tocEntries);
 
             tubPT_BR.ShowMessage += Logger_ShowMessage;
             tubPT_BR.ShowPaperNumber += ShowPaperNumber;
@@ -660,26 +660,34 @@ namespace UbStudyHelpGenerator
             ShowMessage("Finished");
         }
 
-
+        /// <summary>
+        /// Export notes and status from database
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btRecordChanged_Click(object sender, EventArgs e)
         {
-            //StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            //StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
-            //StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            if (MessageBox.Show("Are you sure to regenerate all Notes.json for edit translation repository from database?",
+                 "Confirmation",
+                 MessageBoxButtons.YesNo,
+                 MessageBoxIcon.Question) == DialogResult.No)
+            {
+                return;
+            }
 
-            //for(short paperNo = 0; paperNo < 197; paperNo++)
-            //{
-            //    if (!Server.GetNotesData(paperNo))
-            //    {
-            //        return;
-            //    }
-            //}
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
 
-            //PTAlternative alternative = new PTAlternative();
-            //alternative.ShowMessage += Logger_ShowMessage;
-            //alternative.ShowPaperNumber += ShowPaperNumber;
-            //alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
-            //alternative.ExportRecordsChangedFromDatabase_Temp();
+            for (short paperNo = 0; paperNo < 197; paperNo++)
+            {
+                ShowMessage(paperNo.ToString());    
+                if (!Server.GetNotesData(paperNo))
+                {
+                    return;
+                }
+            }
+
         }
 
 

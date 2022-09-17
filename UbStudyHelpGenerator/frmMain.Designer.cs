@@ -39,6 +39,7 @@ namespace UbStudyHelpGenerator
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageEditTranslation = new System.Windows.Forms.TabPage();
             this.splitContainerPtAlternative = new System.Windows.Forms.SplitContainer();
+            this.btTocTable = new System.Windows.Forms.Button();
             this.btEditBookRepositoryFolder = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.txEditBookRepositoryFolder = new System.Windows.Forms.TextBox();
@@ -81,7 +82,6 @@ namespace UbStudyHelpGenerator
             this.label2 = new System.Windows.Forms.Label();
             this.txUfIndexDownloadeFiles = new System.Windows.Forms.TextBox();
             this.txUbIndexMessages = new System.Windows.Forms.TextBox();
-            this.btTocTable = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -246,6 +246,18 @@ namespace UbStudyHelpGenerator
             this.splitContainerPtAlternative.SplitterWidth = 5;
             this.splitContainerPtAlternative.TabIndex = 2;
             // 
+            // btTocTable
+            // 
+            this.btTocTable.BackColor = System.Drawing.Color.PeachPuff;
+            this.btTocTable.Location = new System.Drawing.Point(571, 172);
+            this.btTocTable.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btTocTable.Name = "btTocTable";
+            this.btTocTable.Size = new System.Drawing.Size(188, 60);
+            this.btTocTable.TabIndex = 15;
+            this.btTocTable.Text = "Generate TOC Table";
+            this.btTocTable.UseVisualStyleBackColor = false;
+            this.btTocTable.Click += new System.EventHandler(this.btTocTable_Click);
+            // 
             // btEditBookRepositoryFolder
             // 
             this.btEditBookRepositoryFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -288,13 +300,14 @@ namespace UbStudyHelpGenerator
             // 
             // btRecordChanged
             // 
+            this.btRecordChanged.BackColor = System.Drawing.Color.PeachPuff;
             this.btRecordChanged.Location = new System.Drawing.Point(824, 172);
             this.btRecordChanged.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btRecordChanged.Name = "btRecordChanged";
             this.btRecordChanged.Size = new System.Drawing.Size(158, 60);
             this.btRecordChanged.TabIndex = 10;
-            this.btRecordChanged.Text = "Generate Records Changed";
-            this.btRecordChanged.UseVisualStyleBackColor = true;
+            this.btRecordChanged.Text = "Generate Notes";
+            this.btRecordChanged.UseVisualStyleBackColor = false;
             this.btRecordChanged.Click += new System.EventHandler(this.btRecordChanged_Click);
             // 
             // btExportPtAlternativeDocx
@@ -749,18 +762,6 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txUbIndexMessages.Size = new System.Drawing.Size(1476, 695);
             this.txUbIndexMessages.TabIndex = 0;
-            // 
-            // btTocTable
-            // 
-            this.btTocTable.BackColor = System.Drawing.Color.PeachPuff;
-            this.btTocTable.Location = new System.Drawing.Point(571, 172);
-            this.btTocTable.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btTocTable.Name = "btTocTable";
-            this.btTocTable.Size = new System.Drawing.Size(188, 60);
-            this.btTocTable.TabIndex = 15;
-            this.btTocTable.Text = "Generate TOC Table";
-            this.btTocTable.UseVisualStyleBackColor = false;
-            this.btTocTable.Click += new System.EventHandler(this.btTocTable_Click);
             // 
             // frmMain
             // 
