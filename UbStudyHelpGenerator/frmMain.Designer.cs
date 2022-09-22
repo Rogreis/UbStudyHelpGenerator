@@ -44,9 +44,9 @@ namespace UbStudyHelpGenerator
             this.label6 = new System.Windows.Forms.Label();
             this.txEditBookRepositoryFolder = new System.Windows.Forms.TextBox();
             this.btImportDocx = new System.Windows.Forms.Button();
-            this.btRecordChanged = new System.Windows.Forms.Button();
+            this.btGenerateNotes = new System.Windows.Forms.Button();
             this.btExportPtAlternativeDocx = new System.Windows.Forms.Button();
-            this.btPtRepository = new System.Windows.Forms.Button();
+            this.btPtBrIndex = new System.Windows.Forms.Button();
             this.btEditTranslationRepositoryFolder = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
             this.txTranslationRepositoryFolder = new System.Windows.Forms.TextBox();
@@ -230,9 +230,9 @@ namespace UbStudyHelpGenerator
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.label6);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.txEditBookRepositoryFolder);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btImportDocx);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btRecordChanged);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btGenerateNotes);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btExportPtAlternativeDocx);
-            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btPtRepository);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btPtBrIndex);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btEditTranslationRepositoryFolder);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.label5);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.txTranslationRepositoryFolder);
@@ -249,7 +249,7 @@ namespace UbStudyHelpGenerator
             // btTocTable
             // 
             this.btTocTable.BackColor = System.Drawing.Color.PeachPuff;
-            this.btTocTable.Location = new System.Drawing.Point(571, 172);
+            this.btTocTable.Location = new System.Drawing.Point(562, 172);
             this.btTocTable.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btTocTable.Name = "btTocTable";
             this.btTocTable.Size = new System.Drawing.Size(188, 60);
@@ -298,17 +298,17 @@ namespace UbStudyHelpGenerator
             this.btImportDocx.UseVisualStyleBackColor = true;
             this.btImportDocx.Click += new System.EventHandler(this.btImportDocx_Click);
             // 
-            // btRecordChanged
+            // btGenerateNotes
             // 
-            this.btRecordChanged.BackColor = System.Drawing.Color.PeachPuff;
-            this.btRecordChanged.Location = new System.Drawing.Point(824, 172);
-            this.btRecordChanged.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btRecordChanged.Name = "btRecordChanged";
-            this.btRecordChanged.Size = new System.Drawing.Size(158, 60);
-            this.btRecordChanged.TabIndex = 10;
-            this.btRecordChanged.Text = "Generate Notes";
-            this.btRecordChanged.UseVisualStyleBackColor = false;
-            this.btRecordChanged.Click += new System.EventHandler(this.btRecordChanged_Click);
+            this.btGenerateNotes.BackColor = System.Drawing.Color.PeachPuff;
+            this.btGenerateNotes.Location = new System.Drawing.Point(765, 172);
+            this.btGenerateNotes.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btGenerateNotes.Name = "btGenerateNotes";
+            this.btGenerateNotes.Size = new System.Drawing.Size(158, 60);
+            this.btGenerateNotes.TabIndex = 10;
+            this.btGenerateNotes.Text = "Generate Notes";
+            this.btGenerateNotes.UseVisualStyleBackColor = false;
+            this.btGenerateNotes.Click += new System.EventHandler(this.btGenerateNotes_Click);
             // 
             // btExportPtAlternativeDocx
             // 
@@ -323,17 +323,17 @@ namespace UbStudyHelpGenerator
             this.btExportPtAlternativeDocx.Visible = false;
             this.btExportPtAlternativeDocx.Click += new System.EventHandler(this.btExportPtAlternativeDocx_Click);
             // 
-            // btPtRepository
+            // btPtBrIndex
             // 
-            this.btPtRepository.BackColor = System.Drawing.Color.PeachPuff;
-            this.btPtRepository.Location = new System.Drawing.Point(298, 172);
-            this.btPtRepository.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btPtRepository.Name = "btPtRepository";
-            this.btPtRepository.Size = new System.Drawing.Size(258, 60);
-            this.btPtRepository.TabIndex = 8;
-            this.btPtRepository.Text = "Generate TUB_Files with Edit Repository";
-            this.btPtRepository.UseVisualStyleBackColor = false;
-            this.btPtRepository.Click += new System.EventHandler(this.btPtRepository_Click);
+            this.btPtBrIndex.BackColor = System.Drawing.Color.PeachPuff;
+            this.btPtBrIndex.Location = new System.Drawing.Point(289, 172);
+            this.btPtBrIndex.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btPtBrIndex.Name = "btPtBrIndex";
+            this.btPtBrIndex.Size = new System.Drawing.Size(258, 60);
+            this.btPtBrIndex.TabIndex = 8;
+            this.btPtBrIndex.Text = "Generate index.html";
+            this.btPtBrIndex.UseVisualStyleBackColor = false;
+            this.btPtBrIndex.Click += new System.EventHandler(this.btPtBrIndex_Click);
             // 
             // btEditTranslationRepositoryFolder
             // 
@@ -372,7 +372,7 @@ namespace UbStudyHelpGenerator
             this.btPTAlternativeGenerate.Name = "btPTAlternativeGenerate";
             this.btPTAlternativeGenerate.Size = new System.Drawing.Size(258, 60);
             this.btPTAlternativeGenerate.TabIndex = 0;
-            this.btPTAlternativeGenerate.Text = "Generate TUB_PT_BR from Repository";
+            this.btPTAlternativeGenerate.Text = "Generate rogreis.github.io";
             this.btPTAlternativeGenerate.UseVisualStyleBackColor = false;
             this.btPTAlternativeGenerate.Click += new System.EventHandler(this.btPTAlternativeGenerate_Click);
             // 
@@ -832,9 +832,9 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TextBox txEditBookRepositoryFolder;
         private System.Windows.Forms.Button btImportDocx;
-        private System.Windows.Forms.Button btRecordChanged;
+        private System.Windows.Forms.Button btGenerateNotes;
         private System.Windows.Forms.Button btExportPtAlternativeDocx;
-        private System.Windows.Forms.Button btPtRepository;
+        private System.Windows.Forms.Button btPtBrIndex;
         private System.Windows.Forms.Button btEditTranslationRepositoryFolder;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox txTranslationRepositoryFolder;

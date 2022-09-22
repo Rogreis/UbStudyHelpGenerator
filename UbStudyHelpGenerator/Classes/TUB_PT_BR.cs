@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -19,6 +20,8 @@ namespace UbStudyHelpGenerator.Classes
         public event ShowStatusMessage ShowStatusMessage = null;
 
         private ParametersGenerator Param = null;
+
+        private BootstrapBook Formatter = null;
 
         #region events
         private void FireShowMessage(string message)
@@ -47,12 +50,20 @@ namespace UbStudyHelpGenerator.Classes
         }
         #endregion
 
-        public TUB_PT_BR(ParametersGenerator param)
+        public TUB_PT_BR(ParametersGenerator param, BootstrapBook formatter)
         {
             Param = param;
+            Formatter = formatter;
         }
 
-        public bool RepositoryToBookHtmlPages(BootstrapBook Formatter, TUB_TOC_Html toc_table)
+        public void MainPage(string mainPageFilePath)
+        {
+            StringBuilder sb = new StringBuilder();
+            Formatter.MainPage(sb);
+            File.WriteAllText(mainPageFilePath, sb.ToString(), Encoding.UTF8);
+        }
+
+        public bool RepositoryToBookHtmlPages(TUB_TOC_Html toc_table)
         {
             try
             {

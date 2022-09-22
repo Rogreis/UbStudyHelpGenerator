@@ -1,9 +1,12 @@
 ﻿using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Runtime.Remoting.Contexts;
+using System.Runtime.Serialization;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -405,7 +408,7 @@ namespace UbStudyHelpGenerator
                 DeleteFile(pathProgramDataJson);
                 DeleteFile(pathAppZipped);
 
-                File.WriteAllText(pathRepositoryJson, jsonPapers);
+                File.WriteAllText(pathRepositoryJson, jsonPapers, Encoding.UTF8);
 
                 using (FileStream originalFileStream = File.Open(pathRepositoryJson, FileMode.Open))
                 {
@@ -575,7 +578,7 @@ namespace UbStudyHelpGenerator
 
 
             string json = Server.GetParagraphsFormat();
-            File.WriteAllText(pathJson, json);
+            File.WriteAllText(pathJson, json, Encoding.UTF8);
             using (FileStream originalFileStream = File.Open(pathJson, FileMode.Open))
             {
                 using (FileStream compressedFileStream = File.Create(pathZipped))
@@ -597,7 +600,7 @@ namespace UbStudyHelpGenerator
 
             //if (saveFileDialog.ShowDialog() == DialogResult.OK)
             //{
-            //    File.WriteAllText(saveFileDialog.FileName, json);
+            //    File.WriteAllText(saveFileDialog.FileName, json, Encoding.UTF8);
             //}
 
 
@@ -609,7 +612,11 @@ namespace UbStudyHelpGenerator
         {
             if (!Initialize())
                 return;
-            if (MessageBox.Show("Are you sure to generate UbStudyHelp format from edit translation repository?",
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+
+            if (MessageBox.Show($"Are you sure to generate all pages for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
                         "Confirmation",
                         MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question) == DialogResult.No)
@@ -617,46 +624,84 @@ namespace UbStudyHelpGenerator
                 return;
             }
 
-            ShowMessage("Starting full TUB html output");
+            ShowMessage("Starting rogreis.github.io pages");
 
-            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
-            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+            ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
+            List<TUB_TOC_Entry> tocEntries = ((TranslationEdit)((ParametersGenerator)StaticObjects.Parameters).TranslationRight).GetTranslationIndex(true);
+            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters.HtmlParam, tocEntries);
+            string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
+            toc_table.Html(pathTocTable);
 
             BootstrapBook formatter = new BootstrapBook(StaticObjects.Parameters.HtmlParam);
-            TUB_PT_BR tubPT_BR = new TUB_PT_BR(Parameters);
-            PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
-
-            List<TUB_TOC_Entry> tocEntries = ((TranslationEdit)((ParametersGenerator)StaticObjects.Parameters).TranslationRight).GetTranslationIndex();
-            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters.HtmlParam, tocEntries);
+            TUB_PT_BR tubPT_BR = new TUB_PT_BR(Parameters, formatter);
 
             tubPT_BR.ShowMessage += Logger_ShowMessage;
             tubPT_BR.ShowPaperNumber += ShowPaperNumber;
             tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
-            tubPT_BR.RepositoryToBookHtmlPages(formatter, toc_table);
+
+            string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
+            tubPT_BR.MainPage(mainPageFilePath);
+
+            tubPT_BR.RepositoryToBookHtmlPages(toc_table);
             ShowMessage("Finished");
-            //Process.Start("chrome.exe", "--incognito");
+
+            Process.Start("chrome.exe", "localhost");
 
         }
 
-        private void btPtRepository_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Generate the index.html page for rogreis.github.io
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btPtBrIndex_Click(object sender, EventArgs e)
         {
-            if (!Initialize())
-                return;
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
-            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
-            PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
-            alternative.ShowMessage += Logger_ShowMessage;
-            alternative.ShowPaperNumber += ShowPaperNumber;
-            alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
-            alternative.RepositoryToTUB_Files();
+
+            if (MessageBox.Show($"Are you sure to generate all pages for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
+                        "Confirmation",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.No)
+            {
+                return;
+            }
+
+            ShowMessage("Generating index.html");
+            BootstrapBook formatter = new BootstrapBook(StaticObjects.Parameters.HtmlParam);
+            TUB_PT_BR tubPT_BR = new TUB_PT_BR(Parameters, formatter);
+
+            tubPT_BR.ShowMessage += Logger_ShowMessage;
+            tubPT_BR.ShowPaperNumber += ShowPaperNumber;
+            tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
+
+            string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
+            tubPT_BR.MainPage(mainPageFilePath);
+            ShowMessage("Finished");
+            Process.Start("chrome.exe", "localhost");
         }
 
         private void btTocTable_Click(object sender, EventArgs e)
         {
-            ShowMessage("Creating TOC table");
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+
+            if (MessageBox.Show($"Are you sure to generate the TOC Table for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
+                        "Confirmation",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.No)
+            {
+                return;
+            }
+
+            ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
             List<TUB_TOC_Entry> tocEntries = ((TranslationEdit)((ParametersGenerator)StaticObjects.Parameters).TranslationRight).GetTranslationIndex(true);
+
+            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters.HtmlParam, tocEntries);
+            string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
+            toc_table.Html(pathTocTable);
             ShowMessage("Finished");
         }
 
@@ -665,7 +710,7 @@ namespace UbStudyHelpGenerator
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void btRecordChanged_Click(object sender, EventArgs e)
+        private void btGenerateNotes_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show("Are you sure to regenerate all Notes.json for edit translation repository from database?",
                  "Confirmation",
@@ -679,7 +724,7 @@ namespace UbStudyHelpGenerator
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
 
-            for (short paperNo = 0; paperNo < 197; paperNo++)
+            for (short paperNo = 120; paperNo < 197; paperNo++)
             {
                 ShowMessage(paperNo.ToString());    
                 if (!Server.GetNotesData(paperNo))
