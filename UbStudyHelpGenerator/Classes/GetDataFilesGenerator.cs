@@ -13,8 +13,6 @@ namespace UbStudyHelpGenerator.Classes
     internal class GetDataFilesGenerator : GetDataFiles
     {
 
-        public event ShowMessage ShowMessage = null;
-
         public event ShowPaperNumber ShowPaperNumber = null;
 
 
@@ -23,7 +21,7 @@ namespace UbStudyHelpGenerator.Classes
         public GetDataFilesGenerator(UbtDatabaseSqlServer server, Parameters param) : base(param)
         {
             Server = server;
-            Server.ShowMessage += Server_ShowMessage;
+            //Server.ShowMessage += Server_ShowMessage;
             Server.ShowPaperNumber += Server_ShowPaperNumber;
         }
 
@@ -34,7 +32,7 @@ namespace UbStudyHelpGenerator.Classes
 
         private void Server_ShowMessage(string message, bool isError = false, bool isFatal = false)
         {
-            ShowMessage?.Invoke(message, isError, isFatal);
+            StaticObjects.FireSendMessage(message, isError, isFatal);
         }
 
         private void DeleteFile(string pathFile)

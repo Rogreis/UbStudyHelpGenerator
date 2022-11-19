@@ -13,20 +13,18 @@ namespace UbStudyHelpGenerator.Classes
 {
     public class TUB_PT_BR
     {
-        public event ShowMessage ShowMessage = null;
-
         public event ShowPaperNumber ShowPaperNumber = null;
 
         public event ShowStatusMessage ShowStatusMessage = null;
 
         private ParametersGenerator Param = null;
 
-        private BootstrapBook Formatter = null;
+        private TUB_PT_BR_Page Formatter = null;
 
         #region events
         private void FireShowMessage(string message)
         {
-            ShowMessage?.Invoke(message);
+            StaticObjects.FireSendMessage(message);
         }
 
         private void FireShowStatusMessage(string message)
@@ -46,11 +44,11 @@ namespace UbStudyHelpGenerator.Classes
 
         private void HtmlGenerator_ShowMessage(string message, bool isError = false, bool isFatal = false)
         {
-            ShowMessage?.Invoke(message);
+            StaticObjects.FireSendMessage(message);
         }
         #endregion
 
-        public TUB_PT_BR(ParametersGenerator param, BootstrapBook formatter)
+        public TUB_PT_BR(ParametersGenerator param, TUB_PT_BR_Page formatter)
         {
             Param = param;
             Formatter = formatter;
@@ -58,9 +56,9 @@ namespace UbStudyHelpGenerator.Classes
 
         public void MainPage(string mainPageFilePath)
         {
-            StringBuilder sb = new StringBuilder();
-            Formatter.MainPage(sb);
-            File.WriteAllText(mainPageFilePath, sb.ToString(), Encoding.UTF8);
+            //StringBuilder sb = new StringBuilder();
+            //Formatter.MainPage(sb);
+            //File.WriteAllText(mainPageFilePath, sb.ToString(), Encoding.UTF8);
         }
 
         public bool RepositoryToBookHtmlPages(TUB_TOC_Html toc_table)
@@ -71,10 +69,7 @@ namespace UbStudyHelpGenerator.Classes
                 {
                     FireShowMessage($"Exporting paper {paperNo}");
                     FireShowPaperNumber((short)paperNo);
-
-                    string pathPaperFolder = Path.Combine(Param.EditParagraphsRepositoryFolder, $"Doc{paperNo:000}");
-                    PaperEdit paper = new PaperEdit(paperNo, pathPaperFolder);
-                    paper.GetNotes(Param.EditParagraphsRepositoryFolder, paperNo);
+                    PaperEdit paper = new PaperEdit(paperNo, Param.EditParagraphsRepositoryFolder);
                     Formatter.GeneratePaper(Param.EditBookRepositoryFolder, Param.TranslationLeft, paper, toc_table, paperNo);
                 }
                 FireShowMessage("Finished");
@@ -88,6 +83,7 @@ namespace UbStudyHelpGenerator.Classes
             }
         }
 
+        public void Test() => Formatter.Test();
 
     }
 }

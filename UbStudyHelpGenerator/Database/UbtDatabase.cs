@@ -9,8 +9,6 @@ namespace UbStudyHelpGenerator.Database
     internal abstract class UbtDatabase
     {
 
-		public event ShowMessage ShowMessage = null;
-
 		public event ShowPaperNumber ShowPaperNumber = null;
 
 		/// <summary>
@@ -62,10 +60,10 @@ namespace UbStudyHelpGenerator.Database
 
 		protected void FireShowMessage(string message, bool isError = false, bool isFatal = false)
 		{
-			ShowMessage?.Invoke(message, isError, isFatal);
-		}
+            StaticObjects.FireSendMessage(message, isError, isFatal);
+        }
 
-		protected void FireShowPaperNumber(short paperNo)
+        protected void FireShowPaperNumber(short paperNo)
 		{
 			ShowPaperNumber?.Invoke(paperNo);
 		}

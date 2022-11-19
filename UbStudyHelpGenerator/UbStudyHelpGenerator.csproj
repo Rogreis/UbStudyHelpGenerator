@@ -102,6 +102,7 @@
     <Compile Include="Classes\HtmlGenerator.cs" />
     <Compile Include="Classes\ParametersGenerator.cs" />
     <Compile Include="Classes\PTAlternative.cs" />
+    <Compile Include="Classes\SpanishEscobar.cs" />
     <Compile Include="Classes\TUB_PT_BR.cs" />
     <Compile Include="Classes\UrantiaIndex.cs" />
     <Compile Include="Classes\UrantiaSpanish.cs" />

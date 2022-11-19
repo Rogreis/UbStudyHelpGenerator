@@ -5,6 +5,7 @@ using System.Text;
 using HtmlAgilityPack;
 using UbStandardObjects;
 using UbStandardObjects.Objects;
+using UbStudyHelpGenerator;
 using UbStudyHelpGenerator.Classes;
 
 namespace UBT_Tools_WorkLib
@@ -14,8 +15,6 @@ namespace UBT_Tools_WorkLib
 
         private string FontName { get; set; } = "Verdana";
         private float FontSize { get; set; } = 10;
-
-        public event ShowMessage ShowMessage = null;
 
         public event ShowPaperNumber ShowPaperNumber = null;
 
@@ -65,7 +64,7 @@ namespace UBT_Tools_WorkLib
 
         private void FireShowMessage(string message)
         {
-            ShowMessage?.Invoke(message);
+            StaticObjects.FireSendMessage(message);
         }
 
         private void FireShowPaperNumber(short paperNo)

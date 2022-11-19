@@ -10484,8 +10484,6 @@ namespace UbStudyHelpGenerator.Classes
             new HtmlTag("<sup>", "</sup>",  TextTag.Superscript),
         };
 
-        public event ShowMessage ShowMessage = null;
-
         public event ShowPaperNumber ShowPaperNumber = null;
 
         public event ShowStatusMessage ShowStatusMessage = null;
@@ -10497,14 +10495,14 @@ namespace UbStudyHelpGenerator.Classes
         public PTAlternative(Parameters param)
         {
             Param = param;
-            htmlGenerator.ShowMessage += HtmlGenerator_ShowMessage;
+            //htmlGenerator.ShowMessage += HtmlGenerator_ShowMessage;
             htmlGenerator.ShowPaperNumber += HtmlGenerator_ShowPaperNumber;
         }
 
         #region events
         private void FireShowMessage(string message)
         {
-            ShowMessage?.Invoke(message);
+            StaticObjects.FireSendMessage(message);
         }
 
         private void FireShowStatusMessage(string message)
@@ -10524,7 +10522,7 @@ namespace UbStudyHelpGenerator.Classes
 
         private void HtmlGenerator_ShowMessage(string message, bool isError = false, bool isFatal = false)
         {
-            ShowMessage?.Invoke(message);
+            StaticObjects.FireSendMessage(message, isError, isFatal);
         }
         #endregion
 
@@ -11049,67 +11047,67 @@ namespace UbStudyHelpGenerator.Classes
             return true;
         }
 
-        #region Repository API's
-        public bool RepositoryToTUB_Files()
-        {
-            try
-            {
+        //#region Repository API's
+        //public bool RepositoryToTUB_Files()
+        //{
+        //    try
+        //    {
 
-                var options = new JsonSerializerOptions
-                {
-                    AllowTrailingCommas = true,
-                    WriteIndented = true,
-                    IncludeFields = true
-                };
+        //        var options = new JsonSerializerOptions
+        //        {
+        //            AllowTrailingCommas = true,
+        //            WriteIndented = true,
+        //            IncludeFields = true
+        //        };
 
-                Translation editTranslation = StaticObjects.Book.GetTranslation(2);
-                editTranslation.Papers = new List<Paper>();
+        //        Translation editTranslation = StaticObjects.Book.GetTranslation(2);
+        //        editTranslation.Papers = new List<Paper>();
 
-                for (short paperNo = 0; paperNo < 197; paperNo++)
-                {
-                    FireShowMessage($"Exporting paper {paperNo}");
-                    string pathPaperFolder = Path.Combine(Param.EditParagraphsRepositoryFolder, $"Doc{paperNo:000}");
-                    editTranslation.Papers.Add(new PaperEdit(paperNo, pathPaperFolder));
-                }
+        //        for (short paperNo = 0; paperNo < 197; paperNo++)
+        //        {
+        //            FireShowMessage($"Exporting paper {paperNo}");
+        //            string pathPaperFolder = Path.Combine(Param.EditParagraphsRepositoryFolder, $"Doc{paperNo:000}");
+        //            editTranslation.Papers.Add(new PaperEdit(paperNo, pathPaperFolder));
+        //        }
 
-                string pathEditTranslationJson = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, $"TR{editTranslation.LanguageID:000}.json");
-                string jsonString = JsonSerializer.Serialize<Translation>(editTranslation, options);
-                if (File.Exists(pathEditTranslationJson))
-                {
-                    File.Delete(pathEditTranslationJson);
-                }
-                File.WriteAllText(pathEditTranslationJson, jsonString);
-                string pathEditTranslationZipped = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, $"TR{editTranslation.LanguageID:000}.gz");
-                if (File.Exists(pathEditTranslationZipped))
-                {
-                    File.Delete(pathEditTranslationZipped);
-                }
-                using (FileStream originalFileStream = File.Open(pathEditTranslationJson, FileMode.Open))
-                {
-                    using (FileStream compressedFileStream = File.Create(pathEditTranslationZipped))
-                    {
-                        using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
-                        {
-                            originalFileStream.CopyTo(compressor);
-                        }
-                    }
-                }
+        //        string pathEditTranslationJson = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, $"TR{editTranslation.LanguageID:000}.json");
+        //        string jsonString = JsonSerializer.Serialize<Translation>(editTranslation, options);
+        //        if (File.Exists(pathEditTranslationJson))
+        //        {
+        //            File.Delete(pathEditTranslationJson);
+        //        }
+        //        File.WriteAllText(pathEditTranslationJson, jsonString);
+        //        string pathEditTranslationZipped = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, $"TR{editTranslation.LanguageID:000}.gz");
+        //        if (File.Exists(pathEditTranslationZipped))
+        //        {
+        //            File.Delete(pathEditTranslationZipped);
+        //        }
+        //        using (FileStream originalFileStream = File.Open(pathEditTranslationJson, FileMode.Open))
+        //        {
+        //            using (FileStream compressedFileStream = File.Create(pathEditTranslationZipped))
+        //            {
+        //                using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
+        //                {
+        //                    originalFileStream.CopyTo(compressor);
+        //                }
+        //            }
+        //        }
 
-                File.Delete(pathEditTranslationJson);
+        //        File.Delete(pathEditTranslationJson);
 
-                FireShowMessage("Finished");
-                return true;
-            }
-            catch (Exception ex)
-            {
-                FireShowMessage($"Exporting translation alternative {ex.Message}");
-                UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
-                return false;
-            }
-            return false;
-        }
+        //        FireShowMessage("Finished");
+        //        return true;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        FireShowMessage($"Exporting translation alternative {ex.Message}");
+        //        UbStandardObjects.StaticObjects.Logger.Error("Exporting translation alternative", ex);
+        //        return false;
+        //    }
+        //    return false;
+        //}
 
-        #endregion
+        //#endregion
 
         #region Temporary routines - to be removed soon
         public bool ExportRecordsChangedFromDatabase_Temp()
@@ -11144,7 +11142,7 @@ namespace UbStudyHelpGenerator.Classes
         }
         public bool ImportVoiceChangedFromWord()
         {
-            string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre\162to196";
+            string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre\134";
             string ErrorMessage = "";
             foreach (string pathFile in Directory.GetFiles(folderDocx, "Paper*.docx"))
             {

@@ -50,7 +50,7 @@ namespace UbStudyHelpGenerator
         public frmMain()
         {
             InitializeComponent();
-            StaticObjects.Logger.ShowMessage += Logger_ShowMessage;
+            StaticObjects.ShowMessage += Logger_ShowMessage;
         }
 
         private bool _initialized = false;
@@ -66,7 +66,7 @@ namespace UbStudyHelpGenerator
             try
             {
                 getDataFilesGenerator = new GetDataFilesGenerator(Server, Parameters);
-                getDataFilesGenerator.ShowMessage += Logger_ShowMessage;
+                //getDataFilesGenerator.ShowMessage += Logger_ShowMessage;
                 getDataFilesGenerator.ShowPaperNumber += ShowPaperNumber;
 
                 if (!StaticObjects.Book.Inicialize(getDataFilesGenerator))
@@ -76,7 +76,12 @@ namespace UbStudyHelpGenerator
 
                 Parameters.TranslationLeft = getDataFilesGenerator.GetTranslation(Parameters.TranslationIdLeft);
                 Parameters.TranslationMiddle = null; //  getDataFilesGenerator.GetTranslation(Parameters.TranslationIdMiddle);
-                Parameters.TranslationRight = new TranslationEdit(Parameters.EditParagraphsRepositoryFolder);
+
+                // Set the edit translation (hard coded here to be PT Alternative)
+                short editLanguageId = 2;
+                Translation trans = getDataFilesGenerator.GetTranslation(editLanguageId);
+                TranslationEdit translatioEdit = new TranslationEdit(trans, Parameters.EditParagraphsRepositoryFolder);
+                Parameters.TranslationRight = translatioEdit;
                 _initialized = true;
                 StillStarting = false;
                 return true;
@@ -265,6 +270,14 @@ namespace UbStudyHelpGenerator
                 spanish.ProcessFiles(Server, StaticObjects.Parameters.InputHtmlFilesPath);
             }
 
+
+        }
+
+        private void btSpanishEscobar_Click(object sender, EventArgs e)
+        {
+            string pathToWordFile = @"C:\Urantia\Textos\Escobar\Escobar_Import.docx";
+            SpanishEscobar escobar = new SpanishEscobar();
+            escobar.Import(pathToWordFile);
 
         }
 
@@ -607,6 +620,12 @@ namespace UbStudyHelpGenerator
             ShowMessage("Exported.");
         }
 
+        private void Test()
+        {
+            TUB_PT_BR_Page formatter = new TUB_PT_BR_Page(StaticObjects.Parameters);
+            TUB_PT_BR tubPT_BR = new TUB_PT_BR(Parameters, formatter);
+            tubPT_BR.Test();
+        }
 
         private void btPTAlternativeGenerate_Click(object sender, EventArgs e)
         {
@@ -615,6 +634,10 @@ namespace UbStudyHelpGenerator
             StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+
+            //Test();
+            //return;
+
 
             if (MessageBox.Show($"Are you sure to generate all pages for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
                         "Confirmation",
@@ -628,14 +651,14 @@ namespace UbStudyHelpGenerator
 
             ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
             List<TUB_TOC_Entry> tocEntries = ((TranslationEdit)((ParametersGenerator)StaticObjects.Parameters).TranslationRight).GetTranslationIndex(true);
-            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters.HtmlParam, tocEntries);
+            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
             string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
             toc_table.Html(pathTocTable);
 
-            BootstrapBook formatter = new BootstrapBook(StaticObjects.Parameters.HtmlParam);
+            TUB_PT_BR_Page formatter = new TUB_PT_BR_Page(StaticObjects.Parameters);
             TUB_PT_BR tubPT_BR = new TUB_PT_BR(Parameters, formatter);
 
-            tubPT_BR.ShowMessage += Logger_ShowMessage;
+            //tubPT_BR.ShowMessage += Logger_ShowMessage;
             tubPT_BR.ShowPaperNumber += ShowPaperNumber;
             tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
 
@@ -669,10 +692,10 @@ namespace UbStudyHelpGenerator
             }
 
             ShowMessage("Generating index.html");
-            BootstrapBook formatter = new BootstrapBook(StaticObjects.Parameters.HtmlParam);
+            TUB_PT_BR_Page formatter = new TUB_PT_BR_Page(StaticObjects.Parameters);
             TUB_PT_BR tubPT_BR = new TUB_PT_BR(Parameters, formatter);
 
-            tubPT_BR.ShowMessage += Logger_ShowMessage;
+            //tubPT_BR.ShowMessage += Logger_ShowMessage;
             tubPT_BR.ShowPaperNumber += ShowPaperNumber;
             tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
 
@@ -699,7 +722,7 @@ namespace UbStudyHelpGenerator
             ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
             List<TUB_TOC_Entry> tocEntries = ((TranslationEdit)((ParametersGenerator)StaticObjects.Parameters).TranslationRight).GetTranslationIndex(true);
 
-            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters.HtmlParam, tocEntries);
+            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
             string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
             toc_table.Html(pathTocTable);
             ShowMessage("Finished");
@@ -742,7 +765,7 @@ namespace UbStudyHelpGenerator
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
-            alternative.ShowMessage += Logger_ShowMessage;
+            //alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;
             alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
             alternative.ExportToDocx();
@@ -753,7 +776,7 @@ namespace UbStudyHelpGenerator
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
             PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
-            alternative.ShowMessage += Logger_ShowMessage;
+            //alternative.ShowMessage += Logger_ShowMessage;
             alternative.ShowPaperNumber += ShowPaperNumber;
             alternative.ShowStatusMessage += Alternative_ShowStatusMessage;
             alternative.ImportVoiceChangedFromWord();

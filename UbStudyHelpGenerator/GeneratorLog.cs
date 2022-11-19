@@ -17,6 +17,11 @@ namespace UbStudyHelpGenerator
             FireShowMessage(null);
         }
 
+        public override void Close()
+        {
+            throw new NotImplementedException();
+        }
+
         public override void Error(string message)
         {
             FireShowMessage(message, true);

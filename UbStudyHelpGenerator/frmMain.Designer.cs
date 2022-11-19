@@ -82,6 +82,7 @@ namespace UbStudyHelpGenerator
             this.label2 = new System.Windows.Forms.Label();
             this.txUfIndexDownloadeFiles = new System.Windows.Forms.TextBox();
             this.txUbIndexMessages = new System.Windows.Forms.TextBox();
+            this.btSpanishEscobar = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -550,6 +551,7 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainerFromHtml.Panel1
             // 
+            this.splitContainerFromHtml.Panel1.Controls.Add(this.btSpanishEscobar);
             this.splitContainerFromHtml.Panel1.Controls.Add(this.btSpanishDownload);
             this.splitContainerFromHtml.Panel1.Controls.Add(this.btHtmlFilesPath);
             this.splitContainerFromHtml.Panel1.Controls.Add(this.lblHtmlPath);
@@ -763,6 +765,17 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.Size = new System.Drawing.Size(1476, 695);
             this.txUbIndexMessages.TabIndex = 0;
             // 
+            // btSpanishEscobar
+            // 
+            this.btSpanishEscobar.Location = new System.Drawing.Point(312, 74);
+            this.btSpanishEscobar.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btSpanishEscobar.Name = "btSpanishEscobar";
+            this.btSpanishEscobar.Size = new System.Drawing.Size(150, 60);
+            this.btSpanishEscobar.TabIndex = 10;
+            this.btSpanishEscobar.Text = "Spanish Escobar";
+            this.btSpanishEscobar.UseVisualStyleBackColor = true;
+            this.btSpanishEscobar.Click += new System.EventHandler(this.btSpanishEscobar_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -871,6 +884,7 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.TextBox txUfIndexDownloadeFiles;
         private System.Windows.Forms.TextBox txUbIndexMessages;
         private System.Windows.Forms.Button btTocTable;
+        private System.Windows.Forms.Button btSpanishEscobar;
     }
 }
 
