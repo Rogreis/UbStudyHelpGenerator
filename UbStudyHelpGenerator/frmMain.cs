@@ -275,9 +275,11 @@ namespace UbStudyHelpGenerator
 
         private void btSpanishEscobar_Click(object sender, EventArgs e)
         {
-            string pathToWordFile = @"C:\Urantia\Textos\Escobar\Escobar_Import.docx";
+            string pathToWordFile = @"C:\Urantia\Textos\Escobar\Escobar_Import.txt";
             SpanishEscobar escobar = new SpanishEscobar();
-            escobar.Import(pathToWordFile);
+            Translation translation= escobar.Import(pathToWordFile);
+            ExportTranslation(translation);
+            ShowMessage("Finished");
 
         }
 
@@ -414,12 +416,6 @@ namespace UbStudyHelpGenerator
                 DeleteFile(pathRepositoryJson);
                 DeleteFile(pathRepositoryZipped);
 
-                // Delete also the application (TO DO: put as parameter)
-                string appFolder = @"C:\Trabalho\Github\Rogerio\UbStudyHelp\UbStudyHelpCore\UbStudyHelp\TUB_Files";
-                string pathAppZipped = Path.Combine(appFolder, fileNameWithoutExtension + ".gz");
-                string pathProgramDataJson = Path.Combine(appFolder, fileNameWithoutExtension + ".json");
-                DeleteFile(pathProgramDataJson);
-                DeleteFile(pathAppZipped);
 
                 File.WriteAllText(pathRepositoryJson, jsonPapers, Encoding.UTF8);
 
@@ -433,8 +429,6 @@ namespace UbStudyHelpGenerator
                         }
                     }
                 }
-                File.Copy(pathRepositoryZipped, pathAppZipped);
-
             }
             catch (Exception ex)
             {
