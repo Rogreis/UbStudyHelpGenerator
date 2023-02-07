@@ -4,6 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using UbStandardObjects.Objects;
 
 namespace UbStudyHelpGenerator.UbStandardObjects.Objects
@@ -273,7 +274,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 t.Hash = CalculateMD5(translatioPath);
                 StaticObjects.FireSendMessage($"{t}  {t.Hash}");
             }
-            SetTranslations(json);
+            SetTranslations(list);
             return list;
         }
 
@@ -283,11 +284,20 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         /// Data changes need to be done in the json file (Data/AvailableTranslations.json)
         /// </summary>
         /// <returns></returns>
-        public bool SetTranslations(string json)
+        public bool SetTranslations(List<Translation> translations)
         {
             try
             {
                 string path = TranslationsOutputPath();
+                var options = new JsonSerializerOptions
+                {
+                    AllowTrailingCommas = true,
+                    WriteIndented = true,
+                    IncludeFields = true
+                };
+
+                string json = JsonSerializer.Serialize<List<Translation>>(translations, options);
+
                 File.WriteAllText(path, json);
                 StaticObjects.FireSendMessage($"Translations stored into file: {path}");
                 return true;

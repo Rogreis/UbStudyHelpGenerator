@@ -409,7 +409,7 @@ namespace UbStudyHelpGenerator
             comboBoxTranslations.DisplayMember = "Identification";
             comboBoxTranslations.ValueMember = "LanguageID";
             List<Translation> list = new List<Translation>(StaticObjects.Book.Translations);
-            comboBoxTranslations.Items.Clear();
+            //comboBoxTranslations.Items.Clear();
             comboBoxTranslations.DataSource = list;
             comboBoxTranslations.SelectedIndex = 0;
             ShowMessage("«« Finished »»");
