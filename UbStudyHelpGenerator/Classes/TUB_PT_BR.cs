@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
-using System.Text.Json;
-using System.Threading.Tasks;
-using UbStandardObjects;
-using UbStandardObjects.Objects;
+using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 namespace UbStudyHelpGenerator.Classes
 {
@@ -17,7 +10,7 @@ namespace UbStudyHelpGenerator.Classes
 
         public event ShowStatusMessage ShowStatusMessage = null;
 
-        private ParametersGenerator Param = null;
+        private Parameters Param = null;
 
         private TUB_PT_BR_Page Formatter = null;
 
@@ -48,7 +41,7 @@ namespace UbStudyHelpGenerator.Classes
         }
         #endregion
 
-        public TUB_PT_BR(ParametersGenerator param, TUB_PT_BR_Page formatter)
+        public TUB_PT_BR(Parameters param, TUB_PT_BR_Page formatter)
         {
             Param = param;
             Formatter = formatter;
@@ -61,7 +54,7 @@ namespace UbStudyHelpGenerator.Classes
             //File.WriteAllText(mainPageFilePath, sb.ToString(), Encoding.UTF8);
         }
 
-        public bool RepositoryToBookHtmlPages(TUB_TOC_Html toc_table)
+        public bool RepositoryToBookHtmlPages(TUB_TOC_Html toc_table, Translation translatioLeft, Translation translatioRight)
         {
             try
             {
@@ -69,8 +62,9 @@ namespace UbStudyHelpGenerator.Classes
                 {
                     FireShowMessage($"Exporting paper {paperNo}");
                     FireShowPaperNumber((short)paperNo);
-                    PaperEdit paper = new PaperEdit(paperNo, Param.EditParagraphsRepositoryFolder);
-                    Formatter.GeneratePaper(Param.EditBookRepositoryFolder, Param.TranslationLeft, paper, toc_table, paperNo);
+                    Paper paperEnglish = translatioLeft.Paper(paperNo);
+                    PaperEdit paperEdit = new PaperEdit(paperNo, Param.EditParagraphsRepositoryFolder);
+                    Formatter.GenerateGitHubPage(Param.EditBookRepositoryFolder, paperEnglish, paperEdit, toc_table, paperNo);
                 }
                 FireShowMessage("Finished");
                 return true;

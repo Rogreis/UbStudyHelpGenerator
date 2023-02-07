@@ -1,12 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Common;
-using UbStandardObjects;
-using UbStandardObjects.Objects;
+using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 namespace UbStudyHelpGenerator.Database
 {
-    internal abstract class UbtDatabase
+	internal abstract class UbtDatabase
     {
 
 		public event ShowPaperNumber ShowPaperNumber = null;
@@ -43,7 +42,7 @@ namespace UbStudyHelpGenerator.Database
 				}
 				catch (Exception ex)
 				{
-					UbStandardObjects.StaticObjects.Logger.Error("Trying to open data connection", ex);
+					StaticObjects.Logger.Error("Trying to open data connection", ex);
 					return false;
 				}
 			}

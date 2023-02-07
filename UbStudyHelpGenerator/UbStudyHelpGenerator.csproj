@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\LibGit2Sharp.NativeBinaries.2.0.306\build\net46\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.2.0.306\build\net46\LibGit2Sharp.NativeBinaries.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -14,6 +15,7 @@
     <Deterministic>true</Deterministic>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -38,8 +40,20 @@
     <Reference Include="HtmlAgilityPack, Version=1.11.39.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.11.39\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
     <Reference Include="JsonFormatterPlus, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\UbStudyHelpWS\packages\JsonFormatterPlus.1.0.2\lib\net20\JsonFormatterPlus.dll</HintPath>
+    </Reference>
+    <Reference Include="LibGit2Sharp, Version=0.26.0.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
+      <HintPath>..\packages\LibGit2Sharp.0.26.2\lib\net46\LibGit2Sharp.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=2.0.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.15\lib\net45\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Lucene.Net, Version=3.0.3.0, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
+      <HintPath>..\packages\Lucene.Net.3.0.3\lib\NET40\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -54,6 +68,7 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -78,6 +93,7 @@
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -98,9 +114,8 @@
     <Compile Include="Classes\EventsControl.cs" />
     <Compile Include="Classes\Exemplar.cs" />
     <Compile Include="Classes\ExportToWord.cs" />
-    <Compile Include="Classes\GetDataFilesGenerator.cs" />
     <Compile Include="Classes\HtmlGenerator.cs" />
-    <Compile Include="Classes\ParametersGenerator.cs" />
+    <Compile Include="Classes\LogGenerator.cs" />
     <Compile Include="Classes\PTAlternative.cs" />
     <Compile Include="Classes\SpanishEscobar.cs" />
     <Compile Include="Classes\TUB_PT_BR.cs" />
@@ -117,6 +132,32 @@
     <Compile Include="GeneratorLog.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UbStandardObjects\Helpers\GitHelper.cs" />
+    <Compile Include="UbStandardObjects\Log.cs" />
+    <Compile Include="UbStandardObjects\Objects\AzureFunctionBook.cs" />
+    <Compile Include="UbStandardObjects\Objects\Book.cs" />
+    <Compile Include="UbStandardObjects\Objects\BookIndex.cs" />
+    <Compile Include="UbStandardObjects\Objects\BootstrapBook.cs" />
+    <Compile Include="UbStandardObjects\Objects\DataInitializer.cs" />
+    <Compile Include="UbStandardObjects\Objects\FormatTable.cs" />
+    <Compile Include="UbStandardObjects\Objects\GetDataFiles.cs" />
+    <Compile Include="UbStandardObjects\Objects\HtmlFormat.cs" />
+    <Compile Include="UbStandardObjects\Objects\HtmlFormatFullBook.cs" />
+    <Compile Include="UbStandardObjects\Objects\MergeEngine.cs" />
+    <Compile Include="UbStandardObjects\Objects\Note.cs" />
+    <Compile Include="UbStandardObjects\Objects\Paper.cs" />
+    <Compile Include="UbStandardObjects\Objects\PaperEdit.cs" />
+    <Compile Include="UbStandardObjects\Objects\Paragraph.cs" />
+    <Compile Include="UbStandardObjects\Objects\ParagraphMarkDown.cs" />
+    <Compile Include="UbStandardObjects\Objects\TOC_Entry.cs" />
+    <Compile Include="UbStandardObjects\Objects\TOC_Table.cs" />
+    <Compile Include="UbStandardObjects\Objects\Translation.cs" />
+    <Compile Include="UbStandardObjects\Objects\TranslationEdit.cs" />
+    <Compile Include="UbStandardObjects\Objects\TUB_PT_BR_Page.cs" />
+    <Compile Include="UbStandardObjects\Objects\TUB_TOC_Html.cs" />
+    <Compile Include="UbStandardObjects\Objects\UbAnnotationsStoreData.cs" />
+    <Compile Include="UbStandardObjects\Parameters.cs" />
+    <Compile Include="UbStandardObjects\StaticObjects.cs" />
     <Compile Include="Zip.cs" />
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
@@ -129,7 +170,11 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="Data\AvailableTranslations.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -173,12 +218,6 @@
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Ub\UbStandardObjects\UbStandardObjects.csproj">
-      <Project>{ea4c4302-2331-4e94-82ee-aad3e07a0d0c}</Project>
-      <Name>UbStandardObjects</Name>
-    </ProjectReference>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\System.Text.Json.6.0.1\build\System.Text.Json.targets" Condition="Exists('..\packages\System.Text.Json.6.0.1\build\System.Text.Json.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
@@ -186,5 +225,6 @@
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\System.Text.Json.6.0.1\build\System.Text.Json.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\System.Text.Json.6.0.1\build\System.Text.Json.targets'))" />
+    <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.2.0.306\build\net46\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.2.0.306\build\net46\LibGit2Sharp.NativeBinaries.props'))" />
   </Target>
 </Project>

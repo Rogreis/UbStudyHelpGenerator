@@ -1,5 +1,4 @@
-﻿using JsonFormatterPlus;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
@@ -7,10 +6,10 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Text;
 using System.Text.Json;
-using UbStandardObjects;
 using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Classes;
-using UbStudyHelpGenerator.Properties;
+using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 namespace UbStudyHelpGenerator.Database
 {
@@ -256,7 +255,7 @@ namespace UbStudyHelpGenerator.Database
                     AllowTrailingCommas = true
                 };
 
-                string filePath = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder, $@"{ParagraphMarkDown.FolderPath(paperNo)}\Notes.json");
+                string filePath = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder, $@"{ParagraphEdit.FolderPath(paperNo)}\Notes.json");
                 File.WriteAllText(filePath, jsonString);
                 return true;
             }
@@ -265,6 +264,11 @@ namespace UbStudyHelpGenerator.Database
                 throw;
             }
         }
+
+        //public override int GetTranslationPapers(Translation translation)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
 
         //public List<PT_AlternativeRecord> GetPT_FixedAlternativeRecords()

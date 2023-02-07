@@ -8,11 +8,12 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using UbStandardObjects;
-using UbStandardObjects.Objects;
+using UbStudyHelpGenerator.UbStandardObjects;
 using UbStudyHelpGenerator.Database;
 using UBT_Tools_WorkLib;
 
 using MyWord = Microsoft.Office.Interop.Word;
+using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 //using Xceed.Words.NET;
 //using Xceed.Document.NET;
@@ -11142,7 +11143,7 @@ namespace UbStudyHelpGenerator.Classes
         }
         public bool ImportVoiceChangedFromWord()
         {
-            string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre\134";
+            string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre\UB_000-056 edited";
             string ErrorMessage = "";
             foreach (string pathFile in Directory.GetFiles(folderDocx, "Paper*.docx"))
             {
@@ -11155,6 +11156,57 @@ namespace UbStudyHelpGenerator.Classes
         }
         #endregion
 
+        #region
+
+        private void DeleteFile(string pathFile)
+        {
+            if (File.Exists(pathFile))
+                File.Delete(pathFile);
+        }
+
+
+
+        public void ExportToUbStudyHelp()
+        {
+            try
+            {
+                var options = new JsonSerializerOptions
+                {
+                    AllowTrailingCommas = true,
+                    WriteIndented = true,
+                    IncludeFields = true
+                };
+
+                string jsonPapers = JsonSerializer.Serialize<Translation>(StaticObjects.Book.EditTranslation, options);
+
+                // Delete old files
+                string fileNameWithoutExtension = $"TR{StaticObjects.Book.EditTranslation.LanguageID:000}";
+                string pathRepositoryJson = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, fileNameWithoutExtension + ".json");
+                string pathRepositoryZipped = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, fileNameWithoutExtension + ".gz");
+                DeleteFile(pathRepositoryJson);
+                DeleteFile(pathRepositoryZipped);
+
+
+                File.WriteAllText(pathRepositoryJson, jsonPapers, Encoding.UTF8);
+
+                using (FileStream originalFileStream = File.Open(pathRepositoryJson, FileMode.Open))
+                {
+                    using (FileStream compressedFileStream = File.Create(pathRepositoryZipped))
+                    {
+                        using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
+                        {
+                            originalFileStream.CopyTo(compressor);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                StaticObjects.Logger.Error($"Exporting translation {StaticObjects.Book.EditTranslation}", ex);
+            }
+        }
+
+        #endregion
 
     }
 }

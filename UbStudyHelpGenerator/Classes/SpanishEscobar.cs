@@ -1,35 +1,32 @@
-﻿using Microsoft.Office.Interop.Word;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
-using System.Linq;
-using System.Security.AccessControl;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using UbStandardObjects;
-using UbStandardObjects.Objects;
-using static System.Net.Mime.MediaTypeNames;
+using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 
 namespace UbStudyHelpGenerator.Classes
 {
     internal class SpanishEscobar
     {
-        private FormatTable Format = StaticObjects.Book.GetFormatTable();
 
         public Translation Import(string pathToWordFile)
         {
+            GetDataFiles getDataFiles = new GetDataFiles();
+            if (!DataInitializer.GetFormatTable(getDataFiles))
+                return null;
+
+
             // Open an existing document
             StaticObjects.FireSendMessage(null);
             //string regExPattern = "(\"\\d{1,3}):(\\d{1,3}.)(\\d{1,3} )(\\(\\d{1,4}.)(\\d{1,3}\\))\"gm";
             // "(\d{1,3}):(\d{1,3}.)(\d{1,3} )(\(\d{1,4}.)(\d{1,3}\))"gm
             // /(\d{1,3}):(\d{1,3}.)(\d{1,3} )(\(\d{1,4}.)(\d{1,3}\))/gm
             StaticObjects.FireSendMessage("Importing Escobar word file");
-            int nrPar = 0, contType1= 0, contType2= 0;
-            char[] sep1= {')'}, sep2={' '}, sepIdent= { '.', ':', ' ' };
-            Translation translation= new Translation();
+            int nrPar = 0, contType1 = 0, contType2 = 0;
+            char[] sep1 = { ')' }, sep2 = { ' ' }, sepIdent = { '.', ':', ' ' };
+            Translation translation = new Translation();
             translation.LanguageID = 144;
             translation.Description = "Spanish Escobar";
             translation.Version = 1;
@@ -42,13 +39,13 @@ namespace UbStudyHelpGenerator.Classes
             translation.StartingYear = 2005;
             translation.EndingYear = 2022;
             translation.PaperTranslation = "Documento";
-            for(short i= 0; i<197; i++)
+            for (short i = 0; i < 197; i++)
             {
                 translation.Papers.Add(new Paper());
             }
 
- 
-            foreach (string s in File.ReadAllLines(pathToWordFile))
+
+            foreach (string s in File.ReadAllLines(pathToWordFile, Encoding.UTF8))
             {
                 nrPar++;
                 int lineType = 0;
@@ -70,26 +67,26 @@ namespace UbStudyHelpGenerator.Classes
                     lineType = 2;
                     contType2++;
                 }
-                string[] lines = lineType == 1 ? s.Split(sep1, StringSplitOptions.RemoveEmptyEntries) : s.Split(sep2,StringSplitOptions.RemoveEmptyEntries);
+                string[] lines = lineType == 1 ? s.Split(sep1, StringSplitOptions.RemoveEmptyEntries) : s.Split(sep2, StringSplitOptions.RemoveEmptyEntries);
                 string ident = lines[0];
-                string text= lines[1].Replace(")", "").Trim();
-                string[] partsIdent= ident.Split(sepIdent, StringSplitOptions.RemoveEmptyEntries);
+                string text = lines[1].Replace(")", "").Trim();
+                string[] partsIdent = ident.Split(sepIdent, StringSplitOptions.RemoveEmptyEntries);
 
-                UbStandardObjects.Objects.Paragraph par= new UbStandardObjects.Objects.Paragraph();
+                UbStandardObjects.Objects.Paragraph par = new UbStandardObjects.Objects.Paragraph();
                 par.Paper = short.Parse(partsIdent[0]);
                 par.Section = short.Parse(partsIdent[1]);
                 par.ParagraphNo = short.Parse(partsIdent[2]);
                 par.Text = text;
 
                 par.TranslationId = 144;
-                Format.GetParagraphFormatData(par);
+                StaticObjects.Book.FormatTableObject.GetParagraphFormatData(par);
 
                 translation.Papers[par.Paper].Paragraphs.Add(par);
 
                 //int maxSize = Math.Min(text.Length, 50);
                 //StaticObjects.FireSendMessage($"{text.Substring(0, maxSize)}");
             }
-            StaticObjects.FireSendMessage($"nPar= {nrPar} Type 0= {nrPar- contType1- contType2}  Type 1= {contType1}  Type 3= {contType2}  ");
+            StaticObjects.FireSendMessage($"nPar= {nrPar} Type 0= {nrPar - contType1 - contType2}  Type 1= {contType1}  Type 3= {contType2}  ");
             return translation;
         }
     }
