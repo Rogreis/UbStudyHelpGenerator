@@ -12,6 +12,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
     public class Translation
     {
+        [JsonIgnore]
         public const short NoTranslation = -1;
 
         public short LanguageID { get; set; }
@@ -29,6 +30,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         public bool IsEditingTranslation { get; set; } = false;
         public string Hash { get; set; } = "";
 
+        [JsonIgnore]
         public List<Paper> Papers { get; set; } = new List<Paper>();
 
         /// <summary>

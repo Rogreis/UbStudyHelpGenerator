@@ -296,7 +296,20 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                     IncludeFields = true
                 };
 
-                string json = JsonSerializer.Serialize<List<Translation>>(translations, options);
+
+
+                TranslationsRoot translationsRoot = new TranslationsRoot();
+                translationsRoot.AvailableTranslations= new Translation[translations.Count];
+                int i = 0;
+                foreach ( Translation t in translations ) 
+                {
+                    translationsRoot.AvailableTranslations[i++] = t;
+                }
+                List<Translation> list = new List<Translation>();
+                list.AddRange(translationsRoot.AvailableTranslations);
+
+
+                string json = JsonSerializer.Serialize<TranslationsRoot>(translationsRoot, options);
 
                 File.WriteAllText(path, json);
                 StaticObjects.FireSendMessage($"Translations stored into file: {path}");
