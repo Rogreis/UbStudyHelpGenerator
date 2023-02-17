@@ -199,6 +199,7 @@
 		{
 			"LanguageID": 2,
 			"Description": "Portuguese Alternative",
+			"RepositoryName": "PtAlternative", 
 			"Version": 1,
 			"TIN": "",
 			"TUB": "O livro de Urântia",
@@ -206,8 +207,8 @@
 			"CultureID": 1046,
 			"UseBold": false,
 			"RightToLeft": false,
-			"StartingYear": 2013,
-			"EndingYear": 2013,
+			"StartingYear": 2006,
+			"EndingYear": 2023,
 			"PaperTranslation": "Documento",
 			"IsEditingTranslation": true
 		},
