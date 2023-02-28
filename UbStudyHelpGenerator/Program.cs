@@ -36,6 +36,7 @@ namespace UbStudyHelpGenerator
         static void Main()
         {
             PathParameters = MakeProgramDataFolder("UbStudyHelpGenerator.json");
+            
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

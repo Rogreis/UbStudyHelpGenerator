@@ -36,9 +36,12 @@ namespace UbStudyHelpGenerator
             this.label4 = new System.Windows.Forms.Label();
             this.txRepositoryOutputFolder = new System.Windows.Forms.TextBox();
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
+            this.btGetTranslations = new System.Windows.Forms.Button();
+            this.comboBoxTranslations = new System.Windows.Forms.ComboBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageEditTranslation = new System.Windows.Forms.TabPage();
             this.splitContainerPtAlternative = new System.Windows.Forms.SplitContainer();
+            this.btRecreateTrans = new System.Windows.Forms.Button();
             this.btExportToUbHelp = new System.Windows.Forms.Button();
             this.btTocTable = new System.Windows.Forms.Button();
             this.btEditBookRepositoryFolder = new System.Windows.Forms.Button();
@@ -59,10 +62,8 @@ namespace UbStudyHelpGenerator
             this.btCheck = new System.Windows.Forms.Button();
             this.btGetTranslation = new System.Windows.Forms.Button();
             this.btGetAllTranslations = new System.Windows.Forms.Button();
-            this.comboBoxTranslations = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.txSqlServerConnectionString = new System.Windows.Forms.TextBox();
-            this.btGetTranslations = new System.Windows.Forms.Button();
             this.textBoxFromSqlServer = new System.Windows.Forms.TextBox();
             this.tabPageFromHtml = new System.Windows.Forms.TabPage();
             this.splitContainerFromHtml = new System.Windows.Forms.SplitContainer();
@@ -193,6 +194,27 @@ namespace UbStudyHelpGenerator
             this.splitContainerMain.SplitterWidth = 5;
             this.splitContainerMain.TabIndex = 2;
             // 
+            // btGetTranslations
+            // 
+            this.btGetTranslations.Location = new System.Drawing.Point(18, 44);
+            this.btGetTranslations.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btGetTranslations.Name = "btGetTranslations";
+            this.btGetTranslations.Size = new System.Drawing.Size(203, 41);
+            this.btGetTranslations.TabIndex = 0;
+            this.btGetTranslations.Text = "Get Translations";
+            this.btGetTranslations.UseVisualStyleBackColor = true;
+            this.btGetTranslations.Click += new System.EventHandler(this.btGenerateFromSql_Click);
+            // 
+            // comboBoxTranslations
+            // 
+            this.comboBoxTranslations.FormattingEnabled = true;
+            this.comboBoxTranslations.Location = new System.Drawing.Point(227, 51);
+            this.comboBoxTranslations.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.comboBoxTranslations.Name = "comboBoxTranslations";
+            this.comboBoxTranslations.Size = new System.Drawing.Size(404, 28);
+            this.comboBoxTranslations.TabIndex = 3;
+            this.comboBoxTranslations.SelectedIndexChanged += new System.EventHandler(this.comboBoxTranslations_SelectedIndexChanged);
+            // 
             // tabControlMain
             // 
             this.tabControlMain.Controls.Add(this.tabPageEditTranslation);
@@ -229,6 +251,7 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainerPtAlternative.Panel1
             // 
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btRecreateTrans);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btExportToUbHelp);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btTocTable);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btEditBookRepositoryFolder);
@@ -247,17 +270,29 @@ namespace UbStudyHelpGenerator
             // 
             this.splitContainerPtAlternative.Panel2.Controls.Add(this.txPTalternative);
             this.splitContainerPtAlternative.Size = new System.Drawing.Size(1476, 888);
-            this.splitContainerPtAlternative.SplitterDistance = 248;
+            this.splitContainerPtAlternative.SplitterDistance = 288;
             this.splitContainerPtAlternative.SplitterWidth = 5;
             this.splitContainerPtAlternative.TabIndex = 2;
+            // 
+            // btRecreateTrans
+            // 
+            this.btRecreateTrans.BackColor = System.Drawing.Color.PeachPuff;
+            this.btRecreateTrans.Location = new System.Drawing.Point(20, 211);
+            this.btRecreateTrans.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btRecreateTrans.Name = "btRecreateTrans";
+            this.btRecreateTrans.Size = new System.Drawing.Size(158, 43);
+            this.btRecreateTrans.TabIndex = 17;
+            this.btRecreateTrans.Text = "Trans GZ file";
+            this.btRecreateTrans.UseVisualStyleBackColor = false;
+            this.btRecreateTrans.Click += new System.EventHandler(this.btRecreateTrans_Click);
             // 
             // btExportToUbHelp
             // 
             this.btExportToUbHelp.BackColor = System.Drawing.Color.PeachPuff;
-            this.btExportToUbHelp.Location = new System.Drawing.Point(826, 172);
+            this.btExportToUbHelp.Location = new System.Drawing.Point(770, 158);
             this.btExportToUbHelp.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btExportToUbHelp.Name = "btExportToUbHelp";
-            this.btExportToUbHelp.Size = new System.Drawing.Size(158, 60);
+            this.btExportToUbHelp.Size = new System.Drawing.Size(158, 43);
             this.btExportToUbHelp.TabIndex = 16;
             this.btExportToUbHelp.Text = "To UB Study Help";
             this.btExportToUbHelp.UseVisualStyleBackColor = false;
@@ -266,10 +301,10 @@ namespace UbStudyHelpGenerator
             // btTocTable
             // 
             this.btTocTable.BackColor = System.Drawing.Color.PeachPuff;
-            this.btTocTable.Location = new System.Drawing.Point(464, 172);
+            this.btTocTable.Location = new System.Drawing.Point(412, 158);
             this.btTocTable.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btTocTable.Name = "btTocTable";
-            this.btTocTable.Size = new System.Drawing.Size(188, 60);
+            this.btTocTable.Size = new System.Drawing.Size(188, 43);
             this.btTocTable.TabIndex = 15;
             this.btTocTable.Text = "Generate TOC Table";
             this.btTocTable.UseVisualStyleBackColor = false;
@@ -306,7 +341,7 @@ namespace UbStudyHelpGenerator
             // 
             // btImportDocx
             // 
-            this.btImportDocx.Location = new System.Drawing.Point(1251, 172);
+            this.btImportDocx.Location = new System.Drawing.Point(1291, 172);
             this.btImportDocx.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btImportDocx.Name = "btImportDocx";
             this.btImportDocx.Size = new System.Drawing.Size(158, 60);
@@ -318,10 +353,10 @@ namespace UbStudyHelpGenerator
             // btGenerateNotes
             // 
             this.btGenerateNotes.BackColor = System.Drawing.Color.PeachPuff;
-            this.btGenerateNotes.Location = new System.Drawing.Point(660, 172);
+            this.btGenerateNotes.Location = new System.Drawing.Point(606, 158);
             this.btGenerateNotes.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btGenerateNotes.Name = "btGenerateNotes";
-            this.btGenerateNotes.Size = new System.Drawing.Size(158, 60);
+            this.btGenerateNotes.Size = new System.Drawing.Size(158, 43);
             this.btGenerateNotes.TabIndex = 10;
             this.btGenerateNotes.Text = "Generate Notes";
             this.btGenerateNotes.UseVisualStyleBackColor = false;
@@ -330,10 +365,10 @@ namespace UbStudyHelpGenerator
             // btExportPtAlternativeDocx
             // 
             this.btExportPtAlternativeDocx.Enabled = false;
-            this.btExportPtAlternativeDocx.Location = new System.Drawing.Point(1087, 172);
+            this.btExportPtAlternativeDocx.Location = new System.Drawing.Point(1127, 192);
             this.btExportPtAlternativeDocx.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btExportPtAlternativeDocx.Name = "btExportPtAlternativeDocx";
-            this.btExportPtAlternativeDocx.Size = new System.Drawing.Size(158, 60);
+            this.btExportPtAlternativeDocx.Size = new System.Drawing.Size(158, 40);
             this.btExportPtAlternativeDocx.TabIndex = 9;
             this.btExportPtAlternativeDocx.Text = "Export docx";
             this.btExportPtAlternativeDocx.UseVisualStyleBackColor = true;
@@ -343,10 +378,10 @@ namespace UbStudyHelpGenerator
             // btPtBrIndex
             // 
             this.btPtBrIndex.BackColor = System.Drawing.Color.PeachPuff;
-            this.btPtBrIndex.Location = new System.Drawing.Point(280, 172);
+            this.btPtBrIndex.Location = new System.Drawing.Point(230, 158);
             this.btPtBrIndex.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btPtBrIndex.Name = "btPtBrIndex";
-            this.btPtBrIndex.Size = new System.Drawing.Size(176, 60);
+            this.btPtBrIndex.Size = new System.Drawing.Size(176, 43);
             this.btPtBrIndex.TabIndex = 8;
             this.btPtBrIndex.Text = "Generate index.html";
             this.btPtBrIndex.UseVisualStyleBackColor = false;
@@ -384,10 +419,10 @@ namespace UbStudyHelpGenerator
             // btPTAlternativeGenerate
             // 
             this.btPTAlternativeGenerate.BackColor = System.Drawing.Color.PeachPuff;
-            this.btPTAlternativeGenerate.Location = new System.Drawing.Point(14, 172);
+            this.btPTAlternativeGenerate.Location = new System.Drawing.Point(15, 158);
             this.btPTAlternativeGenerate.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btPTAlternativeGenerate.Name = "btPTAlternativeGenerate";
-            this.btPTAlternativeGenerate.Size = new System.Drawing.Size(258, 60);
+            this.btPTAlternativeGenerate.Size = new System.Drawing.Size(209, 43);
             this.btPTAlternativeGenerate.TabIndex = 0;
             this.btPTAlternativeGenerate.Text = "Generate rogreis.github.io";
             this.btPTAlternativeGenerate.UseVisualStyleBackColor = false;
@@ -402,7 +437,7 @@ namespace UbStudyHelpGenerator
             this.txPTalternative.Multiline = true;
             this.txPTalternative.Name = "txPTalternative";
             this.txPTalternative.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txPTalternative.Size = new System.Drawing.Size(1476, 635);
+            this.txPTalternative.Size = new System.Drawing.Size(1476, 595);
             this.txPTalternative.TabIndex = 1;
             // 
             // tabPageFromSqlServer
@@ -490,16 +525,6 @@ namespace UbStudyHelpGenerator
             this.btGetAllTranslations.UseVisualStyleBackColor = true;
             this.btGetAllTranslations.Click += new System.EventHandler(this.btGetAllTranslations_Click);
             // 
-            // comboBoxTranslations
-            // 
-            this.comboBoxTranslations.FormattingEnabled = true;
-            this.comboBoxTranslations.Location = new System.Drawing.Point(227, 51);
-            this.comboBoxTranslations.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.comboBoxTranslations.Name = "comboBoxTranslations";
-            this.comboBoxTranslations.Size = new System.Drawing.Size(404, 28);
-            this.comboBoxTranslations.TabIndex = 3;
-            this.comboBoxTranslations.SelectedIndexChanged += new System.EventHandler(this.comboBoxTranslations_SelectedIndexChanged);
-            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -517,17 +542,6 @@ namespace UbStudyHelpGenerator
             this.txSqlServerConnectionString.Size = new System.Drawing.Size(1213, 26);
             this.txSqlServerConnectionString.TabIndex = 1;
             this.txSqlServerConnectionString.TextChanged += new System.EventHandler(this.txSqlServerConnectionString_TextChanged);
-            // 
-            // btGetTranslations
-            // 
-            this.btGetTranslations.Location = new System.Drawing.Point(18, 44);
-            this.btGetTranslations.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btGetTranslations.Name = "btGetTranslations";
-            this.btGetTranslations.Size = new System.Drawing.Size(203, 41);
-            this.btGetTranslations.TabIndex = 0;
-            this.btGetTranslations.Text = "Get Translations";
-            this.btGetTranslations.UseVisualStyleBackColor = true;
-            this.btGetTranslations.Click += new System.EventHandler(this.btGenerateFromSql_Click);
             // 
             // textBoxFromSqlServer
             // 
@@ -900,6 +914,7 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.Button btTocTable;
         private System.Windows.Forms.Button btSpanishEscobar;
         private System.Windows.Forms.Button btExportToUbHelp;
+        private System.Windows.Forms.Button btRecreateTrans;
     }
 }
 

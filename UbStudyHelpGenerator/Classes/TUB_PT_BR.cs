@@ -178,6 +178,11 @@ namespace UbStudyHelpGenerator.Classes
         {
             try
             {
+
+                //PaperDividers paperDividers = new PaperDividers();
+                //paperDividers.Load();
+                //foreach (short paperNo in paperDividers.Papers)
+
                 for (short paperNo = 0; paperNo < 197; paperNo++)
                 {
                     FireShowMessage($"Exporting paper {paperNo}");

@@ -139,6 +139,7 @@
     <Compile Include="UbStandardObjects\Objects\BookIndex.cs" />
     <Compile Include="UbStandardObjects\Objects\BootstrapBook.cs" />
     <Compile Include="UbStandardObjects\Objects\DataInitializer.cs" />
+    <Compile Include="UbStandardObjects\Objects\Divider.cs" />
     <Compile Include="UbStandardObjects\Objects\FormatTable.cs" />
     <Compile Include="UbStandardObjects\Objects\GetDataFiles.cs" />
     <Compile Include="UbStandardObjects\Objects\HtmlFormat.cs" />
@@ -173,6 +174,9 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Data\AvailableTranslations.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Data\Dividers.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />

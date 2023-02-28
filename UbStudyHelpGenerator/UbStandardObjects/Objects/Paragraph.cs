@@ -105,11 +105,21 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             }
         }
 
+        [JsonIgnore]
         public string ID
         {
             get
             {
                 return string.Format($"{Paper}:{Section}-{ParagraphNo}");
+            }
+        }
+
+        [JsonIgnore]
+        public bool IsDivider
+        {
+            get
+            {
+                return Text.StartsWith("* * *") || Text.StartsWith("~ ~ ~");
             }
         }
 

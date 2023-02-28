@@ -792,8 +792,7 @@ namespace UbStudyHelpGenerator
                 return;
             }
 
-            PrintUndo();
-            return;
+            //PrintUndo();
 
             ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
             List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(true);
@@ -926,6 +925,47 @@ namespace UbStudyHelpGenerator
             PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
             alternative.ExportToUbStudyHelp();
             ShowMessage("Finished.");
+        }
+
+
+
+        private void btRecreateTrans_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Json Files (*.json)|*.json";
+            openFileDialog.Title = "Translation Json File";
+            openFileDialog.InitialDirectory = StaticObjects.Parameters.EditBookRepositoryFolder;
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                string pathRepositoryZipped = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, fileNameWithoutExtension + ".gz");
+                DeleteFile(pathRepositoryZipped);
+
+
+                using (FileStream originalFileStream = File.Open(openFileDialog.FileName, FileMode.Open))
+                {
+                    using (FileStream compressedFileStream = File.Create(pathRepositoryZipped))
+                    {
+                        using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
+                        {
+                            originalFileStream.CopyTo(compressor);
+                        }
+                    }
+                }
+
+                //using (FileStream compressedFileStream = File.Open(openFileDialog.FileName, FileMode.Open))
+                //{
+                //    using (MemoryStream outputStream = new MemoryStream())
+                //    {
+                //        using (var decompressor = new GZipStream(compressedFileStream, CompressionMode.Decompress))
+                //        {
+                //            decompressor.CopyTo(outputStream);
+                //        }
+                //        string jsonString = System.Text.Encoding.UTF8.GetString(outputStream.ToArray(), 0, (int)outputStream.Length);
+                //        VerifyTranslation(jsonString);
+                //    }
+                //}
+            }
         }
     }
 }

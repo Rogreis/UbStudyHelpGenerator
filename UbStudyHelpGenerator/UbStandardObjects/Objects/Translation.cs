@@ -29,6 +29,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         public string PaperTranslation { get; set; }
         public bool IsEditingTranslation { get; set; } = false;
         public string Hash { get; set; } = "";
+        public string RepositoryName { get; set; } = "";
+        
 
         [JsonIgnore]
         public List<Paper> Papers { get; set; } = new List<Paper>();

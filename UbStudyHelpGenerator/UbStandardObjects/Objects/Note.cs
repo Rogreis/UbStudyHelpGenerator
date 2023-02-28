@@ -60,7 +60,14 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             Note note = list.Find(n => n.Paper == p.Paper && n.Section == p.Section && n.Paragraph == p.ParagraphNo);
             if (note == null)
             {
-                throw new Exception($"Could not get note for Paragraph {p}");
+                note= new Note();
+                note.Paper = p.Paper;
+                note.Section = p.Section;
+                note.Paragraph = p.ParagraphNo;
+
+                note.TranslatorNote = "";
+                note.Notes = "";
+                note.LastDate= DateTime.Now;
             }
             return note;
         }

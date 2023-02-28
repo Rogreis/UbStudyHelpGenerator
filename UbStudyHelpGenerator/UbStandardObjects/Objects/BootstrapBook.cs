@@ -67,7 +67,13 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             sb.AppendLine($"   </td>");
         }
 
-
+        // 
+        protected void MakeColumnText(StringBuilder sb, string text)
+        {
+            sb.AppendLine("   <td>");
+            sb.AppendLine($"      <div class=\"p-3 mb-2 parClosed\">{text}<div>");
+            sb.AppendLine("   </td>");
+        }
 
         protected void MakeColumnWithDiv(StringBuilder sb, Paragraph p)
         {
@@ -99,7 +105,21 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             sb.AppendLine("</tr>");
         }
 
+        protected void PrintTexts(StringBuilder sb, string textLeft = "* * * * *", string textRight = "* * * * *")
+        {
+            sb.AppendLine("<tr>");
+            MakeColumnText(sb, textLeft);
+            MakeColumnText(sb, textRight);
+            sb.AppendLine("</tr>");
+        }
 
+        protected void PrintError(StringBuilder sb, string errorMessage)
+        {
+            sb.AppendLine("<tr>");
+            PrintTexts(sb, "ERROR:");
+            PrintTexts(sb, errorMessage);
+            sb.AppendLine("</tr>");
+        }
 
         ///// <summary>
         ///// Main page structure
@@ -200,15 +220,27 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             // Text
             sb.AppendLine("	    <tbody> ");
 
+
+
+            int rightCounter = 0;
             for (int i = 0; i < leftPaper.Paragraphs.Count; i++)
             {
                 try
                 {
-                    PrintLine(sb, leftPaper.Paragraphs[i], rightPaper.Paragraphs[i]);
+                    if (leftPaper.Paragraphs[i].IsDivider) 
+                    {
+                        PrintTexts(sb);
+                    }
+                    else 
+                    {
+                        rightPaper.Paragraphs[rightCounter].FormatInt = leftPaper.Paragraphs[i].FormatInt;
+                        PrintLine(sb, leftPaper.Paragraphs[i], rightPaper.Paragraphs[rightCounter]);
+                        rightCounter++;
+                    }
                 }
                 catch (Exception EX)
                 {
-                    string SSS = EX.Message;
+                    PrintError(sb, $"Error generating this paragraph: {EX.Message}");
                 }
             }
 

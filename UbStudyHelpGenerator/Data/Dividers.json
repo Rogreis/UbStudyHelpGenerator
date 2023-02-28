@@ -1,0 +1,70 @@
+{
+	"Dividers": [
+		{
+			"Paper": 31,
+			"Section": 10,
+			"Paragraph": 22,
+			"PK_Seq": 92
+		},
+		{
+			"Paper": 56,
+			"Section": 10,
+			"Paragraph": 22,
+			"PK_Seq": 92
+		},
+		{
+			"Paper": 120,
+			"Section": 3,
+			"Paragraph": 10,
+			"PK_Seq": 41
+		},
+		{
+			"Paper": 134,
+			"Section": 6,
+			"Paragraph": 14,
+			"PK_Seq": 70
+		},
+		{
+			"Paper": 144,
+			"Section": 5,
+			"Paragraph": 11,
+			"PK_Seq": 70
+		},
+		{
+			"Paper": 144,
+			"Section": 5,
+			"Paragraph": 25,
+			"PK_Seq": 84
+		},
+		{
+			"Paper": 144,
+			"Section": 5,
+			"Paragraph": 38,
+			"PK_Seq": 97
+		},
+		{
+			"Paper": 144,
+			"Section": 5,
+			"Paragraph": 54,
+			"PK_Seq": 113
+		},
+		{
+			"Paper": 144,
+			"Section": 5,
+			"Paragraph": 73,
+			"PK_Seq": 132
+		},
+		{
+			"Paper": 144,
+			"Section": 5,
+			"Paragraph": 87,
+			"PK_Seq": 146
+		},
+		{
+			"Paper": 196,
+			"Section": 3,
+			"Paragraph": 36,
+			"PK_Seq": 78
+		}
+	]
+}
