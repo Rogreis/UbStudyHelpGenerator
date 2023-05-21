@@ -7,7 +7,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
     /// <summary>
     /// Export a book for Azure Function
     /// </summary>
-    public class AzureFunctionBook : BootstrapBook
+    public class AzureFunctionBook : HtmlFormat_Palternative
     {
         public AzureFunctionBook(Parameters parameters) : base(parameters)
         {

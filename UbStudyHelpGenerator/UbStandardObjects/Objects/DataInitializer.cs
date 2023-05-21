@@ -73,7 +73,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         }
 
 
-        private static bool InitTranslation(GetDataFiles dataFiles, short translationId, ref Translation trans)
+        public static bool InitTranslation(GetDataFiles dataFiles, short translationId, ref Translation trans)
         {
             EventsControl.FireShowMessage($"Getting translation {translationId}");
             trans = null;
@@ -248,7 +248,37 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             }
         }
 
+        public static void InitAll()
+        {
+            if (!InitLogger())
+            {
+                throw new Exception("Could not initialize logger.");
+            }
+
+            if (!InitParameters())
+            {
+                throw new Exception("Could not initialize parameters.");
+            }
+
+            if (!VerifyRepositories())
+            {
+                throw new Exception("Could not initialize repositories.");
+            }
 
 
+            // Verify respository existence
+            if (!InitTranslations())
+            {
+                throw new Exception("Could not initialize translations.");
+            }
+
+
+        }
+
+        public static void StoreTranslationsList()
+        {
+            GetDataFiles dataFiles = new GetDataFiles();
+            dataFiles.SetTranslations(StaticObjects.Book.Translations);
+        }
     }
 }

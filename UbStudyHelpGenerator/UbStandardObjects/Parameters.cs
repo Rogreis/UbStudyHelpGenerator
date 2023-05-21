@@ -36,8 +36,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects
 
 	public class Parameters
 	{
-        private string darkTheme { get; set; } = "bg-dark text-white";
-        private string lightTheme { get; set; } = "bg-light text-black";
 
         //// From https://getbootstrap.com/docs/5.0/utilities/background/
         //// https://www.w3schools.com/tags/ref_colornames.asp
@@ -60,6 +58,10 @@ namespace UbStudyHelpGenerator.UbStandardObjects
 		public short EditTranslationId { get; set; } = 2;
 
         public short WorkTranslationId { get; set; } = -1;  // -1 indicate not to be shown
+
+        public string TextReferenceFilePath { get; set; } = "";
+
+        public string LastCommitUsedForPTAlternative { get; set; } = "b46a5f308920f4182a066c1e79ece2864d37c8b2";
 
 
         public bool ShowCompare { get; set; } = false;
@@ -181,58 +183,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects
 
         public bool IsDarkTheme { get; set; } = true;
 
-        public string DarkText { get; set; } = "black";
 
-        public string LightText { get; set; } = "white";
-
-        public string DarkTextHighlihted { get; set; } = "yellow";
-
-        public string LightTextHighlihted { get; set; } = "blue";
-
-        public string DarkTextGray { get; set; } = "yellow";
-
-        public string LightTextGray { get; set; } = "bisque";
-
-		public string BackTextColor
-		{
-			get
-			{
-				return IsDarkTheme ? darkTheme : lightTheme;
-			}
-		}
-
-        /// <summary>
-        /// Returns the classes for a paragraph depending on IsEditTranslation and IsDarkTheme
-        /// </summary>
-        /// <param name="ParagraphStatus"></param>
-        /// <returns></returns>
-        public virtual string ParagraphClass(Paragraph p)
-        {
-            if (p != null && p.IsEditTranslation)
-            {
-                switch (p.Status)
-                {
-                    case ParagraphStatus.Started:
-                        return "parStarted";
-                    case ParagraphStatus.Working:
-                        return "parWorking";
-                    case ParagraphStatus.Doubt:
-                        return "parDoubt";
-                    case ParagraphStatus.Ok:
-                        return "parOk";
-                    case ParagraphStatus.Closed:
-                        return "parClosed";
-                }
-            }
-            return "parClosed";
-        }
-
-
-        public virtual string BackgroundParagraphColor(ParagraphStatus ParagraphStatus)
-		{
-            return IsDarkTheme ? darkTheme : lightTheme;
-        }
-
+ 
         /// <summary>
         /// Serialize the parameters instance
         /// </summary>

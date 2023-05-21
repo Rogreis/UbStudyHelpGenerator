@@ -10,10 +10,52 @@ using System.Diagnostics;
 namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 {
 
+    /// <summary>
+    /// Class used to serialize the translation to a list avoiding the inclusion of the papers 
+    /// </summary>
+    public class ConditionalTranslationConverter : JsonConverter<Translation>
+    {
+
+        public ConditionalTranslationConverter()
+        {
+        }
+
+        public override Translation Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            // Implement deserialization if needed
+            throw new NotImplementedException();
+        }
+
+        public override void Write(Utf8JsonWriter writer, Translation value, JsonSerializerOptions options)
+        {
+            writer.WriteStartObject();
+            writer.WriteNumber("LanguageID", value.LanguageID);
+            writer.WriteString("Description", value.Description);
+
+            writer.WriteNumber("Version", value.Version);
+            writer.WriteString("TIN", value.TIN);
+            writer.WriteString("TUB", value.TUB);
+            writer.WriteString("TextButton", value.TextButton);
+            writer.WriteNumber("CultureID", value.CultureID);
+            writer.WriteBoolean("UseBold", value.UseBold);
+            writer.WriteBoolean("RightToLeft", value.RightToLeft);
+
+            writer.WriteNumber("StartingYear", value.StartingYear);
+            writer.WriteNumber("EndingYear", value.EndingYear);
+            writer.WriteString("PaperTranslation", value.PaperTranslation);
+            writer.WriteBoolean("IsEditingTranslation", value.IsEditingTranslation);
+            writer.WriteString("Hash", value.Hash);
+
+            writer.WriteEndObject();
+        }
+    }
+
+    /// <summary>
+    /// Implements a translations list
+    /// </summary>
     public class Translation
     {
-        [JsonIgnore]
-        public const short NoTranslation = -1;
+        public const short NoTranslation  = -1;
 
         public short LanguageID { get; set; }
         public string Description { get; set; }
@@ -32,7 +74,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         public string RepositoryName { get; set; } = "";
         
 
-        [JsonIgnore]
         public List<Paper> Papers { get; set; } = new List<Paper>();
 
         /// <summary>

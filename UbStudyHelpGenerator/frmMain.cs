@@ -14,6 +14,7 @@ using UbStudyHelpGenerator.Properties;
 using UbStudyHelpGenerator.UbStandardObjects;
 using UbStudyHelpGenerator.UbStandardObjects.Helpers;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
+using UBT_WebSite.Classes;
 using static Lucene.Net.Search.FieldValueHitQueue;
 using static System.Environment;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -132,6 +133,9 @@ namespace UbStudyHelpGenerator
                     break;
                 case "Index":
                     tx = txUbIndexMessages;
+                    break;
+                case "Translations":
+                    tx = textBoxTranslations;
                     break;
                 default:
                     MessageBox.Show(message);
@@ -451,8 +455,8 @@ namespace UbStudyHelpGenerator
                 DeleteFile(pathRepositoryJson);
                 DeleteFile(pathRepositoryZipped);
 
-
-                File.WriteAllText(pathRepositoryJson, jsonPapers, Encoding.UTF8);
+                Encoding utf8WithoutBOM = new UTF8Encoding(false);
+                File.WriteAllText(pathRepositoryJson, jsonPapers, utf8WithoutBOM);
 
                 using (FileStream originalFileStream = File.Open(pathRepositoryJson, FileMode.Open))
                 {
@@ -651,13 +655,54 @@ namespace UbStudyHelpGenerator
 
         private void Test()
         {
-            TUB_PT_BR_Page formatter = new TUB_PT_BR_Page(StaticObjects.Parameters);
+            HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
             TUB_PT_BR tubPT_BR = new TUB_PT_BR(StaticObjects.Parameters, formatter);
-            tubPT_BR.Test();
+            //tubPT_BR.Test();
+        }
+
+        private List<short> GetChangedDocumentsList()
+        {
+            string[] expressions = {
+            "Doc100/Par_100_005_004.md",
+            "Doc104/Par_104_005_002.md",
+            "Doc104/Par_104_005_006.md",
+            "Doc104/Par_104_005_011.md",
+            "Doc105/Par_105_000_001.md",
+            "Doc105/Par_105_001_000.md",
+            "Doc105/Par_105_001_002.md",
+            "Doc105/Par_105_001_004.md",
+            "Doc105/Par_105_001_005.md",
+            "Doc105/Par_105_001_006.md",
+            "Doc105/Par_105_001_008.md"
+            };
+
+            string pattern = @"\b\d{3}\b";
+            List<short> list = new List<short>();
+
+            foreach (string expression in expressions)
+            {
+                Match match = Regex.Match(expression, pattern);
+                if (match.Success)
+                {
+                    list.Add(Convert.ToInt16(match.Value));
+                    ShowMessage($"First 3-digit number in '{expression}': {match.Value}");
+                }
+                else
+                {
+                    ShowMessage($"No 3-digit number found in '{expression}'");
+                }
+            }
+            return list;
         }
 
         private void btPTAlternativeGenerate_Click(object sender, EventArgs e)
         {
+            // Get a list of files changed since last commit
+            // git diff --name-only b46a5f308920f4182a066c1e79ece2864d37c8b2 HEAD
+            // 
+            string gitCommand = $"git diff --name-only {StaticObjects.Parameters.LastCommitUsedForPTAlternative} HEAD";
+
+
             if (!Initialize())
                 return;
             StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
@@ -694,7 +739,7 @@ namespace UbStudyHelpGenerator
             string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
             toc_table.Html(pathTocTable);
 
-            TUB_PT_BR_Page formatter = new TUB_PT_BR_Page(StaticObjects.Parameters);
+            HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
             TUB_PT_BR tubPT_BR = new TUB_PT_BR(StaticObjects.Parameters, formatter);
 
             //tubPT_BR.ShowMessage += Logger_ShowMessage;
@@ -702,7 +747,7 @@ namespace UbStudyHelpGenerator
             tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
 
             string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
-            tubPT_BR.MainPage(mainPageFilePath);
+            tubPT_BR.MainPage(formatter, mainPageFilePath);
 
             tubPT_BR.RepositoryToBookHtmlPages(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation);
             ShowMessage("Finished");
@@ -710,6 +755,55 @@ namespace UbStudyHelpGenerator
             Process.Start("chrome.exe", "localhost");
 
         }
+
+        private void btTest_Click(object sender, EventArgs e)
+        {
+
+            if (!Initialize())
+                return;
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+
+            // Verify respository existence
+            if (!DataInitializer.VerifyRepositories())
+            {
+                return;
+            }
+
+
+            // Verify respository existence
+            if (!DataInitializer.InitTranslations())
+            {
+                return;
+            }
+
+
+            ShowMessage("Starting rogreis.github.io page 100");
+
+            // TOC Table not forced
+            ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
+            List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
+            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
+            string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
+            toc_table.Html(pathTocTable);
+
+            HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
+            TUB_PT_BR tubPT_BR = new TUB_PT_BR(StaticObjects.Parameters, formatter);
+
+            //tubPT_BR.ShowMessage += Logger_ShowMessage;
+            tubPT_BR.ShowPaperNumber += ShowPaperNumber;
+            tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
+
+            string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
+            tubPT_BR.MainPage(formatter, mainPageFilePath);
+
+            tubPT_BR.RepositoryToBookHtmlPages(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, 100);
+            ShowMessage("Finished");
+
+            Process.Start("chrome.exe", "localhost");
+        }
+
 
         /// <summary>
         /// Generate the index.html page for rogreis.github.io
@@ -731,7 +825,7 @@ namespace UbStudyHelpGenerator
             }
 
             ShowMessage("Generating index.html");
-            TUB_PT_BR_Page formatter = new TUB_PT_BR_Page(StaticObjects.Parameters);
+            HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
             TUB_PT_BR tubPT_BR = new TUB_PT_BR(StaticObjects.Parameters, formatter);
 
             //tubPT_BR.ShowMessage += Logger_ShowMessage;
@@ -739,7 +833,7 @@ namespace UbStudyHelpGenerator
             tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
 
             string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
-            tubPT_BR.MainPage(mainPageFilePath);
+            tubPT_BR.MainPage(formatter, mainPageFilePath);
             ShowMessage("Finished");
             Process.Start("chrome.exe", "localhost");
         }
@@ -751,7 +845,7 @@ namespace UbStudyHelpGenerator
 
         private void PrintUndo()
         {
-            foreach(string filePath in Directory.GetFiles(StaticObjects.Parameters.EditParagraphsRepositoryFolder, "Par_*.md", SearchOption.AllDirectories)) 
+            foreach (string filePath in Directory.GetFiles(StaticObjects.Parameters.EditParagraphsRepositoryFolder, "Par_*.md", SearchOption.AllDirectories))
             {
                 ParagraphEdit edit = new ParagraphEdit(filePath);
                 if (edit.Paper < 57)
@@ -915,7 +1009,7 @@ namespace UbStudyHelpGenerator
                 return;
             }
 
-            for(short paperNo= 0; paperNo<197; paperNo++)
+            for (short paperNo = 0; paperNo < 197; paperNo++)
             {
                 ShowMessage($"Getting paper {paperNo}");
                 StaticObjects.Book.EditTranslation.Paper(paperNo);
@@ -924,9 +1018,73 @@ namespace UbStudyHelpGenerator
             ShowMessage("Exporting PtAlternative...");
             PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
             alternative.ExportToUbStudyHelp();
+            DataInitializer.StoreTranslationsList();
             ShowMessage("Finished.");
         }
 
+        /// <summary>
+        /// Initialize the basic data for this app: checking folders, translation list, and English data
+        /// </summary>
+        /// <returns></returns>
+        private bool InitializeApp()
+        {
+            if (!Initialize()) return false;
+
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+
+            // Verify respository existence
+            if (!DataInitializer.VerifyRepositories())
+            {
+                return false;
+            }
+
+            // Verify respository existence
+            if (!DataInitializer.InitTranslations())
+            {
+                ShowMessage("Translations not initialized");
+                return false;
+            }
+
+            StaticObjects.Book.EnglishTranslation = new Translation();
+
+            GetDataFiles dataFiles = new GetDataFiles();
+            return DataInitializer.InitTranslation(dataFiles, 0, ref StaticObjects.Book.EnglishTranslation);
+        }
+
+
+        private void btPtAlternativeCompare_Click(object sender, EventArgs e)
+        {
+            if (!InitializeApp()) return;
+
+            // Avoid calls, keep code
+            return;
+
+            PaperCheckingUsingChatGPT gpt = new PaperCheckingUsingChatGPT();
+            short paperNo = 100;
+            ShowMessage($"Generating Compare for paper {paperNo}");
+
+
+            ShowMessage("Finished.");
+        }
+
+        private void btCompare2_Click(object sender, EventArgs e)
+        {
+            if (!InitializeApp()) return;
+            PaperCheckingUsingChatGPT gpt = new PaperCheckingUsingChatGPT();
+            short paperNo = 100;
+            ShowMessage($"Generating Merge & Compare for paper {paperNo}");
+            string pathDocsIn = @"C:\Urantia\Textos\ChatGPT\Paper_100.docx";
+            if (gpt.ImportListFromWord(pathDocsIn))
+            {
+                ShowMessage("Succesfully finished.");
+            }
+            else
+            {
+                ShowMessage("Finished with error.");
+            }
+        }
 
 
         private void btRecreateTrans_Click(object sender, EventArgs e)
@@ -967,5 +1125,116 @@ namespace UbStudyHelpGenerator
                 //}
             }
         }
+
+        private void btAlternativaEdit_Click(object sender, EventArgs e)
+        {
+            frmEdit frmEdit = new frmEdit();
+            frmEdit.ShowDialog();
+        }
+
+        #region Translations functions
+        private void btWordToList_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Word docx only files (*.docx)|*.docx";
+            openFileDialog.Title = "Input docx word file";
+            openFileDialog.InitialDirectory = @"C:\Urantia\Traduções";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                ShowMessage($"Importing {openFileDialog.FileName}");
+                PaperCheckingUsingChatGPT translator = new PaperCheckingUsingChatGPT();
+                if (translator.ImportListFromWord(openFileDialog.FileName))
+                {
+                    ShowMessage($"Succesfully finished. No. Paragrafhs found: {translator.TranslationListData.Count}");
+                }
+                else
+                {
+                    ShowMessage("Finished with error.");
+                }
+            }
+        }
+
+
+
+        private void btWordCompare_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Word docx only files (*.docx)|*.docx";
+            openFileDialog.Title = "Input docx word file to compare";
+            openFileDialog.InitialDirectory = @"C:\Urantia\Traduções";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                ShowMessage($"Importing {openFileDialog.FileName}");
+                PaperCheckingUsingChatGPT translator = new PaperCheckingUsingChatGPT();
+                if (translator.ImportListFromWord(openFileDialog.FileName))
+                {
+                    ShowMessage($"Succesfully finished. No. Paragrafhs found: {translator.TranslationListData.Count}");
+                }
+                else
+                {
+                    ShowMessage("Finished with error.");
+                }
+            }
+        }
+
+        private void btImportGpt4Translation_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Word docx only files (*.docx)|*.docx";
+            openFileDialog.Title = "docx word file to store imported text";
+            openFileDialog.InitialDirectory = @"C:\Urantia\Traduções";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                ShowMessage($"Importing text translation to {openFileDialog.FileName}");
+                PaperCheckingUsingChatGPT translator = new PaperCheckingUsingChatGPT();
+                if (translator.ImportTextFile(openFileDialog.FileName))
+                {
+                    ShowMessage($"Succesfully finished. No. Paragrafhs found: {translator.TranslationListData.Count}");
+                }
+                else
+                {
+                    ShowMessage("Finished with error.");
+                }
+            }
+        }
+
+        private void btGeneratePtAlternativeCompare_Click(object sender, EventArgs e)
+        {
+
+            if (!Initialize())
+                return;
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+
+            // Verify respository existence
+            if (!DataInitializer.VerifyRepositories())
+            {
+                return;
+            }
+
+
+            // Verify respository existence
+            if (!DataInitializer.InitTranslations())
+            {
+                return;
+            }
+
+
+            string workFolder = @"C:\Urantia\Traduções\PtAlternative";
+            PaperCheckingUsingChatGPT translator = new PaperCheckingUsingChatGPT();
+            if (translator.GeneratePtAlternativeWord(workFolder, 100))
+            {
+                ShowMessage($"Succesfully finished. No. Paragrafhs found: {translator.TranslationListData.Count}");
+            }
+            else
+            {
+                ShowMessage("Finished with error.");
+            }
+
+        }
+
+        #endregion
+
     }
 }

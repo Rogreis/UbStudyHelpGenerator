@@ -278,11 +278,11 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             return list;
         }
 
-
         /// <summary>
-        /// Get loca translations list and store in the repository
-        /// Data changes need to be done in the json file (Data/AvailableTranslations.json)
+        /// Serialize the translation to a translation list
+        /// Avoid include papers
         /// </summary>
+        /// <param name="translations"></param>
         /// <returns></returns>
         public bool SetTranslations(List<Translation> translations)
         {
@@ -293,21 +293,17 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 {
                     AllowTrailingCommas = true,
                     WriteIndented = true,
-                    IncludeFields = true
                 };
-
+                options.Converters.Add(new ConditionalTranslationConverter());
 
 
                 TranslationsRoot translationsRoot = new TranslationsRoot();
-                translationsRoot.AvailableTranslations= new Translation[translations.Count];
+                translationsRoot.AvailableTranslations = new Translation[translations.Count];
                 int i = 0;
-                foreach ( Translation t in translations ) 
+                foreach (Translation t in translations)
                 {
                     translationsRoot.AvailableTranslations[i++] = t;
                 }
-                List<Translation> list = new List<Translation>();
-                list.AddRange(translationsRoot.AvailableTranslations);
-
 
                 string json = JsonSerializer.Serialize<TranslationsRoot>(translationsRoot, options);
 

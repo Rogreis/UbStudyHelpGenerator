@@ -117,7 +117,7 @@ namespace UBT_WebSite.Classes
     /// </summary>
     class CommentOff
     {
-        static public string BeginTag = "<span style=\"text-decoration: line-through; color: red\">"; 
+        static public string BeginTag = "<span class=\"TextRemoved\">"; 
         static public string EndTag = "</span>";
     }
 
@@ -128,7 +128,7 @@ namespace UBT_WebSite.Classes
     /// </summary>
     class Added
     {
-        static public string BeginTag = "<span style=\"background: SpringGreen\">"; 
+        static public string BeginTag = "<span class=\"TextInserted\">"; 
         static public string EndTag = "</span>";
     }
 

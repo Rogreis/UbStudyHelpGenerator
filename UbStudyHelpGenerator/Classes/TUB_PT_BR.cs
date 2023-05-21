@@ -15,7 +15,7 @@ namespace UbStudyHelpGenerator.Classes
 
         private Parameters Param = null;
 
-        private TUB_PT_BR_Page Formatter = null;
+        private HtmlFormat_Palternative Formatter = null;
 
         #region events
         private void FireShowMessage(string message)
@@ -44,7 +44,7 @@ namespace UbStudyHelpGenerator.Classes
         }
         #endregion
 
-        public TUB_PT_BR(Parameters param, TUB_PT_BR_Page formatter)
+        public TUB_PT_BR(Parameters param, HtmlFormat_Palternative formatter)
         {
             Param = param;
             Formatter = formatter;
@@ -67,7 +67,7 @@ namespace UbStudyHelpGenerator.Classes
             return GetIso8601WeekOfYear(currentDate);
         }
 
-        public void MainPage(string mainPageFilePath)
+        public void MainPage(HtmlFormat_Palternative formatter, string mainPageFilePath)
         {
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<!DOCTYPE html> ");
@@ -84,6 +84,9 @@ namespace UbStudyHelpGenerator.Classes
             sb.AppendLine("	<script type=\"module\">  ");
             sb.AppendLine("		import { Octokit } from \"https://cdn.skypack.dev/@octokit/core\";  ");
             sb.AppendLine("	</script>  ");
+
+            formatter.Styles(sb);
+
             sb.AppendLine("</head>  ");
             sb.AppendLine("<html> ");
             sb.AppendLine("	<body class=\"bg-dark text-white\" onload=\"StartPage()\"> ");
@@ -174,22 +177,29 @@ namespace UbStudyHelpGenerator.Classes
             File.WriteAllText(mainPageFilePath, sb.ToString(), Encoding.UTF8);
         }
 
-        public bool RepositoryToBookHtmlPages(TUB_TOC_Html toc_table, Translation translatioLeft, Translation translatioRight)
+        private void PrintPaper(TUB_TOC_Html toc_table, Translation translatioLeft, Translation translatioRight, short paperNoToPrint)
+        {
+            FireShowMessage($"Exporting paper {paperNoToPrint}");
+            FireShowPaperNumber(paperNoToPrint);
+            Paper paperEnglish = translatioLeft.Paper(paperNoToPrint);
+            PaperEdit paperEdit = new PaperEdit(paperNoToPrint, Param.EditParagraphsRepositoryFolder);
+            Formatter.GenerateGitHubPage(Param.EditBookRepositoryFolder, paperNoToPrint, paperEnglish, paperEdit, toc_table);
+        }
+
+        public bool RepositoryToBookHtmlPages(TUB_TOC_Html toc_table, Translation translatioLeft, Translation translatioRight, short paperNoToPrint = -1)
         {
             try
             {
-
-                //PaperDividers paperDividers = new PaperDividers();
-                //paperDividers.Load();
-                //foreach (short paperNo in paperDividers.Papers)
-
-                for (short paperNo = 0; paperNo < 197; paperNo++)
+                if (paperNoToPrint >= 0) 
                 {
-                    FireShowMessage($"Exporting paper {paperNo}");
-                    FireShowPaperNumber((short)paperNo);
-                    Paper paperEnglish = translatioLeft.Paper(paperNo);
-                    PaperEdit paperEdit = new PaperEdit(paperNo, Param.EditParagraphsRepositoryFolder);
-                    Formatter.GenerateGitHubPage(Param.EditBookRepositoryFolder, paperEnglish, paperEdit, toc_table, paperNo);
+                    PrintPaper(toc_table, translatioLeft, translatioRight, paperNoToPrint);
+                }
+                else 
+                {
+                    for (short paperNo = 0; paperNo < 197; paperNo++)
+                    {
+                        PrintPaper(toc_table, translatioLeft, translatioRight, paperNo);
+                    }
                 }
                 FireShowMessage("Finished");
                 return true;
@@ -202,7 +212,7 @@ namespace UbStudyHelpGenerator.Classes
             }
         }
 
-        public void Test() => Formatter.Test();
+        //public void Test() => Formatter.Test();
 
     }
 }

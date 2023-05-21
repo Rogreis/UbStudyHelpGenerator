@@ -41,6 +41,9 @@ namespace UbStudyHelpGenerator
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageEditTranslation = new System.Windows.Forms.TabPage();
             this.splitContainerPtAlternative = new System.Windows.Forms.SplitContainer();
+            this.btCompare2 = new System.Windows.Forms.Button();
+            this.btPtAlternativeCompare = new System.Windows.Forms.Button();
+            this.btAlternativaEdit = new System.Windows.Forms.Button();
             this.btRecreateTrans = new System.Windows.Forms.Button();
             this.btExportToUbHelp = new System.Windows.Forms.Button();
             this.btTocTable = new System.Windows.Forms.Button();
@@ -85,6 +88,14 @@ namespace UbStudyHelpGenerator
             this.label2 = new System.Windows.Forms.Label();
             this.txUfIndexDownloadeFiles = new System.Windows.Forms.TextBox();
             this.txUbIndexMessages = new System.Windows.Forms.TextBox();
+            this.tabPageTranslations = new System.Windows.Forms.TabPage();
+            this.splitContainerTranslations = new System.Windows.Forms.SplitContainer();
+            this.btGeneratePtAlternativeCompare = new System.Windows.Forms.Button();
+            this.btImportGpt4Translation = new System.Windows.Forms.Button();
+            this.btWordCompare = new System.Windows.Forms.Button();
+            this.btWordToList = new System.Windows.Forms.Button();
+            this.textBoxTranslations = new System.Windows.Forms.TextBox();
+            this.btTest = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -111,6 +122,11 @@ namespace UbStudyHelpGenerator
             this.splitContainer2.Panel1.SuspendLayout();
             this.splitContainer2.Panel2.SuspendLayout();
             this.splitContainer2.SuspendLayout();
+            this.tabPageTranslations.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerTranslations)).BeginInit();
+            this.splitContainerTranslations.Panel1.SuspendLayout();
+            this.splitContainerTranslations.Panel2.SuspendLayout();
+            this.splitContainerTranslations.SuspendLayout();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -221,6 +237,7 @@ namespace UbStudyHelpGenerator
             this.tabControlMain.Controls.Add(this.tabPageFromSqlServer);
             this.tabControlMain.Controls.Add(this.tabPageFromHtml);
             this.tabControlMain.Controls.Add(this.tabPageUbIndex);
+            this.tabControlMain.Controls.Add(this.tabPageTranslations);
             this.tabControlMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControlMain.Location = new System.Drawing.Point(0, 0);
             this.tabControlMain.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
@@ -228,6 +245,7 @@ namespace UbStudyHelpGenerator
             this.tabControlMain.SelectedIndex = 0;
             this.tabControlMain.Size = new System.Drawing.Size(1484, 921);
             this.tabControlMain.TabIndex = 1;
+            this.tabControlMain.Tag = "translations";
             // 
             // tabPageEditTranslation
             // 
@@ -251,6 +269,10 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainerPtAlternative.Panel1
             // 
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btTest);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btCompare2);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btPtAlternativeCompare);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btAlternativaEdit);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btRecreateTrans);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btExportToUbHelp);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btTocTable);
@@ -274,13 +296,49 @@ namespace UbStudyHelpGenerator
             this.splitContainerPtAlternative.SplitterWidth = 5;
             this.splitContainerPtAlternative.TabIndex = 2;
             // 
+            // btCompare2
+            // 
+            this.btCompare2.BackColor = System.Drawing.Color.PeachPuff;
+            this.btCompare2.Location = new System.Drawing.Point(668, 211);
+            this.btCompare2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btCompare2.Name = "btCompare2";
+            this.btCompare2.Size = new System.Drawing.Size(176, 43);
+            this.btCompare2.TabIndex = 20;
+            this.btCompare2.Text = "Merge && Compare";
+            this.btCompare2.UseVisualStyleBackColor = false;
+            this.btCompare2.Click += new System.EventHandler(this.btCompare2_Click);
+            // 
+            // btPtAlternativeCompare
+            // 
+            this.btPtAlternativeCompare.BackColor = System.Drawing.Color.PeachPuff;
+            this.btPtAlternativeCompare.Location = new System.Drawing.Point(486, 211);
+            this.btPtAlternativeCompare.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btPtAlternativeCompare.Name = "btPtAlternativeCompare";
+            this.btPtAlternativeCompare.Size = new System.Drawing.Size(176, 43);
+            this.btPtAlternativeCompare.TabIndex = 19;
+            this.btPtAlternativeCompare.Text = "Generate Compare";
+            this.btPtAlternativeCompare.UseVisualStyleBackColor = false;
+            this.btPtAlternativeCompare.Click += new System.EventHandler(this.btPtAlternativeCompare_Click);
+            // 
+            // btAlternativaEdit
+            // 
+            this.btAlternativaEdit.BackColor = System.Drawing.Color.PeachPuff;
+            this.btAlternativaEdit.Location = new System.Drawing.Point(230, 211);
+            this.btAlternativaEdit.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btAlternativaEdit.Name = "btAlternativaEdit";
+            this.btAlternativaEdit.Size = new System.Drawing.Size(234, 43);
+            this.btAlternativaEdit.TabIndex = 18;
+            this.btAlternativaEdit.Text = "Edit";
+            this.btAlternativaEdit.UseVisualStyleBackColor = false;
+            this.btAlternativaEdit.Click += new System.EventHandler(this.btAlternativaEdit_Click);
+            // 
             // btRecreateTrans
             // 
             this.btRecreateTrans.BackColor = System.Drawing.Color.PeachPuff;
-            this.btRecreateTrans.Location = new System.Drawing.Point(20, 211);
+            this.btRecreateTrans.Location = new System.Drawing.Point(14, 211);
             this.btRecreateTrans.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btRecreateTrans.Name = "btRecreateTrans";
-            this.btRecreateTrans.Size = new System.Drawing.Size(158, 43);
+            this.btRecreateTrans.Size = new System.Drawing.Size(209, 43);
             this.btRecreateTrans.TabIndex = 17;
             this.btRecreateTrans.Text = "Trans GZ file";
             this.btRecreateTrans.UseVisualStyleBackColor = false;
@@ -289,19 +347,19 @@ namespace UbStudyHelpGenerator
             // btExportToUbHelp
             // 
             this.btExportToUbHelp.BackColor = System.Drawing.Color.PeachPuff;
-            this.btExportToUbHelp.Location = new System.Drawing.Point(770, 158);
+            this.btExportToUbHelp.Location = new System.Drawing.Point(486, 158);
             this.btExportToUbHelp.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btExportToUbHelp.Name = "btExportToUbHelp";
-            this.btExportToUbHelp.Size = new System.Drawing.Size(158, 43);
+            this.btExportToUbHelp.Size = new System.Drawing.Size(234, 43);
             this.btExportToUbHelp.TabIndex = 16;
-            this.btExportToUbHelp.Text = "To UB Study Help";
+            this.btExportToUbHelp.Text = "Generate PTAlternatice .gz";
             this.btExportToUbHelp.UseVisualStyleBackColor = false;
             this.btExportToUbHelp.Click += new System.EventHandler(this.btExportToUbHelp_Click);
             // 
             // btTocTable
             // 
             this.btTocTable.BackColor = System.Drawing.Color.PeachPuff;
-            this.btTocTable.Location = new System.Drawing.Point(412, 158);
+            this.btTocTable.Location = new System.Drawing.Point(924, 158);
             this.btTocTable.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btTocTable.Name = "btTocTable";
             this.btTocTable.Size = new System.Drawing.Size(188, 43);
@@ -353,10 +411,10 @@ namespace UbStudyHelpGenerator
             // btGenerateNotes
             // 
             this.btGenerateNotes.BackColor = System.Drawing.Color.PeachPuff;
-            this.btGenerateNotes.Location = new System.Drawing.Point(606, 158);
+            this.btGenerateNotes.Location = new System.Drawing.Point(924, 211);
             this.btGenerateNotes.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btGenerateNotes.Name = "btGenerateNotes";
-            this.btGenerateNotes.Size = new System.Drawing.Size(158, 43);
+            this.btGenerateNotes.Size = new System.Drawing.Size(188, 43);
             this.btGenerateNotes.TabIndex = 10;
             this.btGenerateNotes.Text = "Generate Notes";
             this.btGenerateNotes.UseVisualStyleBackColor = false;
@@ -378,7 +436,7 @@ namespace UbStudyHelpGenerator
             // btPtBrIndex
             // 
             this.btPtBrIndex.BackColor = System.Drawing.Color.PeachPuff;
-            this.btPtBrIndex.Location = new System.Drawing.Point(230, 158);
+            this.btPtBrIndex.Location = new System.Drawing.Point(742, 158);
             this.btPtBrIndex.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btPtBrIndex.Name = "btPtBrIndex";
             this.btPtBrIndex.Size = new System.Drawing.Size(176, 43);
@@ -804,6 +862,110 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.Size = new System.Drawing.Size(1476, 695);
             this.txUbIndexMessages.TabIndex = 0;
             // 
+            // tabPageTranslations
+            // 
+            this.tabPageTranslations.Controls.Add(this.splitContainerTranslations);
+            this.tabPageTranslations.Location = new System.Drawing.Point(4, 29);
+            this.tabPageTranslations.Name = "tabPageTranslations";
+            this.tabPageTranslations.Size = new System.Drawing.Size(1476, 888);
+            this.tabPageTranslations.TabIndex = 4;
+            this.tabPageTranslations.Tag = "Translations";
+            this.tabPageTranslations.Text = "Translations";
+            this.tabPageTranslations.UseVisualStyleBackColor = true;
+            // 
+            // splitContainerTranslations
+            // 
+            this.splitContainerTranslations.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerTranslations.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+            this.splitContainerTranslations.Location = new System.Drawing.Point(0, 0);
+            this.splitContainerTranslations.Name = "splitContainerTranslations";
+            // 
+            // splitContainerTranslations.Panel1
+            // 
+            this.splitContainerTranslations.Panel1.Controls.Add(this.btGeneratePtAlternativeCompare);
+            this.splitContainerTranslations.Panel1.Controls.Add(this.btImportGpt4Translation);
+            this.splitContainerTranslations.Panel1.Controls.Add(this.btWordCompare);
+            this.splitContainerTranslations.Panel1.Controls.Add(this.btWordToList);
+            // 
+            // splitContainerTranslations.Panel2
+            // 
+            this.splitContainerTranslations.Panel2.Controls.Add(this.textBoxTranslations);
+            this.splitContainerTranslations.Size = new System.Drawing.Size(1476, 888);
+            this.splitContainerTranslations.SplitterDistance = 256;
+            this.splitContainerTranslations.TabIndex = 0;
+            // 
+            // btGeneratePtAlternativeCompare
+            // 
+            this.btGeneratePtAlternativeCompare.BackColor = System.Drawing.Color.NavajoWhite;
+            this.btGeneratePtAlternativeCompare.ForeColor = System.Drawing.Color.Black;
+            this.btGeneratePtAlternativeCompare.Location = new System.Drawing.Point(30, 232);
+            this.btGeneratePtAlternativeCompare.Name = "btGeneratePtAlternativeCompare";
+            this.btGeneratePtAlternativeCompare.Size = new System.Drawing.Size(187, 45);
+            this.btGeneratePtAlternativeCompare.TabIndex = 3;
+            this.btGeneratePtAlternativeCompare.Text = "Pt Alternative Compare";
+            this.btGeneratePtAlternativeCompare.UseVisualStyleBackColor = false;
+            this.btGeneratePtAlternativeCompare.Click += new System.EventHandler(this.btGeneratePtAlternativeCompare_Click);
+            // 
+            // btImportGpt4Translation
+            // 
+            this.btImportGpt4Translation.BackColor = System.Drawing.Color.NavajoWhite;
+            this.btImportGpt4Translation.ForeColor = System.Drawing.Color.Black;
+            this.btImportGpt4Translation.Location = new System.Drawing.Point(30, 169);
+            this.btImportGpt4Translation.Name = "btImportGpt4Translation";
+            this.btImportGpt4Translation.Size = new System.Drawing.Size(187, 45);
+            this.btImportGpt4Translation.TabIndex = 2;
+            this.btImportGpt4Translation.Text = "Import Text Translation";
+            this.btImportGpt4Translation.UseVisualStyleBackColor = false;
+            this.btImportGpt4Translation.Click += new System.EventHandler(this.btImportGpt4Translation_Click);
+            // 
+            // btWordCompare
+            // 
+            this.btWordCompare.BackColor = System.Drawing.Color.NavajoWhite;
+            this.btWordCompare.ForeColor = System.Drawing.Color.Black;
+            this.btWordCompare.Location = new System.Drawing.Point(30, 108);
+            this.btWordCompare.Name = "btWordCompare";
+            this.btWordCompare.Size = new System.Drawing.Size(187, 45);
+            this.btWordCompare.TabIndex = 1;
+            this.btWordCompare.Text = "Compare Word File";
+            this.btWordCompare.UseVisualStyleBackColor = false;
+            this.btWordCompare.Click += new System.EventHandler(this.btWordCompare_Click);
+            // 
+            // btWordToList
+            // 
+            this.btWordToList.BackColor = System.Drawing.Color.NavajoWhite;
+            this.btWordToList.ForeColor = System.Drawing.Color.Black;
+            this.btWordToList.Location = new System.Drawing.Point(30, 47);
+            this.btWordToList.Name = "btWordToList";
+            this.btWordToList.Size = new System.Drawing.Size(187, 45);
+            this.btWordToList.TabIndex = 0;
+            this.btWordToList.Text = "Word To List";
+            this.btWordToList.UseVisualStyleBackColor = false;
+            this.btWordToList.Click += new System.EventHandler(this.btWordToList_Click);
+            // 
+            // textBoxTranslations
+            // 
+            this.textBoxTranslations.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxTranslations.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.textBoxTranslations.Location = new System.Drawing.Point(0, 0);
+            this.textBoxTranslations.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.textBoxTranslations.Multiline = true;
+            this.textBoxTranslations.Name = "textBoxTranslations";
+            this.textBoxTranslations.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxTranslations.Size = new System.Drawing.Size(1216, 888);
+            this.textBoxTranslations.TabIndex = 2;
+            // 
+            // btTest
+            // 
+            this.btTest.BackColor = System.Drawing.Color.PeachPuff;
+            this.btTest.Location = new System.Drawing.Point(230, 158);
+            this.btTest.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btTest.Name = "btTest";
+            this.btTest.Size = new System.Drawing.Size(234, 43);
+            this.btTest.TabIndex = 21;
+            this.btTest.Text = "Test";
+            this.btTest.UseVisualStyleBackColor = false;
+            this.btTest.Click += new System.EventHandler(this.btTest_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
@@ -852,6 +1014,12 @@ namespace UbStudyHelpGenerator
             this.splitContainer2.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer2)).EndInit();
             this.splitContainer2.ResumeLayout(false);
+            this.tabPageTranslations.ResumeLayout(false);
+            this.splitContainerTranslations.Panel1.ResumeLayout(false);
+            this.splitContainerTranslations.Panel2.ResumeLayout(false);
+            this.splitContainerTranslations.Panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainerTranslations)).EndInit();
+            this.splitContainerTranslations.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -915,6 +1083,17 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.Button btSpanishEscobar;
         private System.Windows.Forms.Button btExportToUbHelp;
         private System.Windows.Forms.Button btRecreateTrans;
+        private System.Windows.Forms.Button btAlternativaEdit;
+        private System.Windows.Forms.Button btPtAlternativeCompare;
+        private System.Windows.Forms.Button btCompare2;
+        private System.Windows.Forms.TabPage tabPageTranslations;
+        private System.Windows.Forms.SplitContainer splitContainerTranslations;
+        private System.Windows.Forms.Button btGeneratePtAlternativeCompare;
+        private System.Windows.Forms.Button btImportGpt4Translation;
+        private System.Windows.Forms.Button btWordCompare;
+        private System.Windows.Forms.Button btWordToList;
+        private System.Windows.Forms.TextBox textBoxTranslations;
+        private System.Windows.Forms.Button btTest;
     }
 }
 

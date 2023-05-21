@@ -99,8 +99,5 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 throw;
             }
         }
-
-
-
     }
 }

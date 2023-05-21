@@ -10835,7 +10835,8 @@ namespace UbStudyHelpGenerator.Classes
                 StringBuilder sb = new StringBuilder(text);
                 ToMarkdown(sb);
                 string s = sb.ToString();
-                File.WriteAllText(pathParagraphFile, sb.ToString(), Encoding.UTF8);
+                Encoding utf8WithoutBOM = new UTF8Encoding(false);
+                File.WriteAllText(pathParagraphFile, sb.ToString(), utf8WithoutBOM);
                 return true;
             }
             catch (Exception ex)
@@ -11013,7 +11014,8 @@ namespace UbStudyHelpGenerator.Classes
                     if (File.Exists(pathFile))
                         File.Delete(pathFile);
                     string html = htmlGenerator.FormatPaper(list);
-                    File.WriteAllText(pathFile, html, Encoding.UTF8);
+                    Encoding utf8WithoutBOM = new UTF8Encoding(false);
+                    File.WriteAllText(pathFile, html, utf8WithoutBOM);
 
                     //string pathDocx = Path.Combine(UbStandardObjects.StaticObjects.Parameters.TranslationRepositoryFolder, $"Paper{paperNo:000}.docx");
                     //if (File.Exists(pathDocx))
@@ -11186,8 +11188,8 @@ namespace UbStudyHelpGenerator.Classes
                 DeleteFile(pathRepositoryJson);
                 DeleteFile(pathRepositoryZipped);
 
-
-                File.WriteAllText(pathRepositoryJson, jsonPapers, Encoding.UTF8);
+                Encoding utf8WithoutBOM = new UTF8Encoding(false);
+                File.WriteAllText(pathRepositoryJson, jsonPapers, utf8WithoutBOM);
 
                 using (FileStream originalFileStream = File.Open(pathRepositoryJson, FileMode.Open))
                 {

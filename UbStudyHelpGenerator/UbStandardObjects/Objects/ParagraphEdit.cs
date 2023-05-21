@@ -19,6 +19,8 @@ namespace UbStandardObjects.Objects
 
         public DateTime LastDate { get; set; }
 
+        public string MarkdownContent { get; set; } = "";
+
 
         public static string RelativeFilePath(Paragraph p)
         {
@@ -47,9 +49,16 @@ namespace UbStandardObjects.Objects
             return Path.Combine(repositoryPath, RelativeFilePathWindows(p));
         }
 
+        public static string FullPath(string repositoryPath, TOC_Entry entry)
+        {
+            return FullPath(repositoryPath, entry.Paper, entry.Section, entry.ParagraphNo);
+        }
+
+
         public ParagraphEdit(string filePath)
         {
-            Text = MarkdownToHtml(File.ReadAllText(filePath));
+            MarkdownContent = File.ReadAllText(filePath);
+            Text = MarkdownToHtml(MarkdownContent);
             char[] sep = { '_' };
             string fileName = Path.GetFileNameWithoutExtension(filePath).Remove(0, 4);
             string[] parts = fileName.Split(sep, StringSplitOptions.RemoveEmptyEntries);
