@@ -778,8 +778,10 @@ namespace UbStudyHelpGenerator
                 return;
             }
 
+            short paperNo = 101;
 
-            ShowMessage("Starting rogreis.github.io page 100");
+
+            ShowMessage($"Starting rogreis.github.io page {paperNo}");
 
             // TOC Table not forced
             ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
@@ -798,7 +800,7 @@ namespace UbStudyHelpGenerator
             string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
             tubPT_BR.MainPage(formatter, mainPageFilePath);
 
-            tubPT_BR.RepositoryToBookHtmlPages(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, 100);
+            tubPT_BR.RepositoryToBookHtmlPages(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, paperNo);
             ShowMessage("Finished");
 
             Process.Start("chrome.exe", "localhost");
@@ -1223,7 +1225,7 @@ namespace UbStudyHelpGenerator
 
             string workFolder = @"C:\Urantia\Traduções\PtAlternative";
             PaperCheckingUsingChatGPT translator = new PaperCheckingUsingChatGPT();
-            if (translator.GeneratePtAlternativeWord(workFolder, 100))
+            if (translator.GeneratePtAlternativeWord(workFolder, 101))
             {
                 ShowMessage($"Succesfully finished. No. Paragrafhs found: {translator.TranslationListData.Count}");
             }
@@ -1232,6 +1234,34 @@ namespace UbStudyHelpGenerator
                 ShowMessage("Finished with error.");
             }
 
+        }
+        private void btGetEnglishText_Click(object sender, EventArgs e)
+        {
+            if (!Initialize())
+                return;
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+
+            // Verify respository existence
+            if (!DataInitializer.VerifyRepositories())
+            {
+                return;
+            }
+
+
+            // Verify respository existence
+            if (!DataInitializer.InitTranslations())
+            {
+                return;
+            }
+
+            Paper paperEnglish = StaticObjects.Book.EnglishTranslation.Paper(101);
+            ShowMessage(null);
+            foreach (Paragraph p in paperEnglish.Paragraphs)
+            {
+                ShowMessage(p.Text);
+            }
         }
 
         #endregion

@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
+﻿using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -78,7 +79,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
             // Links used onlu for the edit translation
             private string Href { get => $"https://github.com/Rogreis/PtAlternative/blob/correcoes/Doc{PaperNo:000}/Par_{PaperNo:000}_{SectionNo:000}_{ParagraphNo:000}.md"; }
-            private string IdentLink { get => $"<a href=\"{Href}\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\">{EnglishParagraph.Identification}</a>"; }
+            private string IdentLink { get => $"<a href=\"{Href}\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\"><small>{EnglishParagraph.Identification}</small></a>"; }
             private string FulltextLink(string htmlText) 
             { 
                 return $"<a href=\"{Href}\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\">{htmlText}</a>"; 
@@ -150,7 +151,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                     return TextLeft;
                 }
                 // When not divider or header, middle is always the edit column
-                string fullTextLink = EnglishParagraph.IsPaperTitle || EnglishParagraph.IsSectionTitle ? FulltextLink(TextLeft) : TextMidle;
+                string fullTextLink = EnglishParagraph.IsPaperTitle || EnglishParagraph.IsSectionTitle ? FulltextLink(TextMidle) : TextMidle;
                 return GetHtmlText(TextMidle, IdentLink, "", fullTextLink);
             }
 
@@ -164,10 +165,10 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 // When help translation is available right is not the edit one
                 if (HasHelpTranslation)
                 {
-                    // When there is Help translation, middle is the edit one 
-                    return GetHtmlText(TextRight, Identification, "", TextRight);
+                    // When there is Help translation, right is the help translation, then no identification
+                    return GetHtmlText(TextRight, "", "", TextRight);
                 }
-                string fullTextLink = EnglishParagraph.IsPaperTitle || EnglishParagraph.IsSectionTitle ? FulltextLink(TextLeft) : TextRight;
+                string fullTextLink = EnglishParagraph.IsPaperTitle || EnglishParagraph.IsSectionTitle ? FulltextLink(TextRight) : TextRight;
                 return GetHtmlText(TextRight, IdentLink, "", fullTextLink);
             }
 
@@ -177,18 +178,22 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 {
                     return TextLeft;
                 }
-                return GetHtmlText(TextCompare, Identification, "", TextCompare);
+                return GetHtmlText(TextCompare, "", "", TextCompare);
             }
 
             private void PrintColumn(StringBuilder sb, HtmlTextFunctionDelegate htmlTextFunction, string cssClass= null)
             {
                 if (string.IsNullOrEmpty(cssClass)) cssClass = HtmlFormatAbstract.CssNormalText;
-                string tag = IsHeader ? "th" : "td";
-                sb.AppendLine($"<{tag}>");
+                sb.AppendLine($"<td>");
                 sb.AppendLine($"   <div class=\"{CssClassesDivSize} {cssClass}\">");
                 sb.AppendLine($"       {htmlTextFunction()}");
                 sb.AppendLine($"   <div>");
-                sb.AppendLine($"</{tag}>");
+                sb.AppendLine($"</td>");
+            }
+
+            private void PrintColumnHeader(StringBuilder sb, string text)
+            {
+                sb.AppendLine($"<th><div class=\"{CssClassesDivSize} bg-dark text-warning\"><h2>{text}</h2></div></th>");
             }
 
 
@@ -245,7 +250,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 TextLeft = TextMidle = TextRight = TextCompare = DividerString;
             }
 
-
             public void PrintError(StringBuilder sb, string errorMessage)
             {
                 IsDivider = false;
@@ -266,12 +270,24 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 PrintLine(sb);
             }
 
-
             public void PrintHeader(StringBuilder sb)
             {
                 // Page title
                 sb.AppendLine("<thead>");
-                PrintLine(sb);
+                sb.AppendLine("<tr>");
+                PrintColumnHeader(sb, TextLeft);
+                if (HasHelpTranslation)
+                {
+                    PrintColumnHeader(sb, TextMidle);
+                    PrintColumnHeader(sb, TextRight);
+                    PrintColumnHeader(sb, TextCompare);
+                }
+                else
+                {
+                    PrintColumnHeader(sb, TextRight);
+                }
+                sb.AppendLine("</tr>");
+
                 sb.AppendLine("</thead>");
             }
 
@@ -309,7 +325,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
             // Verify exitence of GPT translation file 
             LineFormatParameters formatParameters = new LineFormatParameters();
-            string gptFilePath = Path.Combine(destinationFolder, $"PaperTranslations\\PtAlternative_{paperNo:000}.txt");
+            string gptFilePath = System.IO.Path.Combine(destinationFolder, $"PaperTranslations\\PtAlternative_{paperNo:000}.txt");
             formatParameters.HasHelpTranslation = File.Exists(gptFilePath);
             string[] gptTranslationLines = null;
             if (formatParameters.HasHelpTranslation)
@@ -349,7 +365,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                             mergedLine = "";
                             if (gptText != null)
                             {
-                                mergedLine = HtmlCompare(ptAlternativeText, gptText);
+                                mergedLine = HtmlCompare(ptAlternativePaper.Paragraphs[i].TextNoHtml, gptText);
                             }
 
                         }
@@ -367,7 +383,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             sb.AppendLine("	    </tbody> ");
             sb.AppendLine("	  </table> ");
 
-            var filePath = Path.Combine(destinationFolder, $@"content\Doc{paperNo:000}.html");
+            var filePath = System.IO.Path.Combine(destinationFolder, $@"content\Doc{paperNo:000}.html");
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);

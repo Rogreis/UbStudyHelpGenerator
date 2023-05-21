@@ -41,6 +41,7 @@ namespace UbStudyHelpGenerator
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageEditTranslation = new System.Windows.Forms.TabPage();
             this.splitContainerPtAlternative = new System.Windows.Forms.SplitContainer();
+            this.btTest = new System.Windows.Forms.Button();
             this.btCompare2 = new System.Windows.Forms.Button();
             this.btPtAlternativeCompare = new System.Windows.Forms.Button();
             this.btAlternativaEdit = new System.Windows.Forms.Button();
@@ -95,7 +96,7 @@ namespace UbStudyHelpGenerator
             this.btWordCompare = new System.Windows.Forms.Button();
             this.btWordToList = new System.Windows.Forms.Button();
             this.textBoxTranslations = new System.Windows.Forms.TextBox();
-            this.btTest = new System.Windows.Forms.Button();
+            this.btGetEnglishText = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -295,6 +296,18 @@ namespace UbStudyHelpGenerator
             this.splitContainerPtAlternative.SplitterDistance = 288;
             this.splitContainerPtAlternative.SplitterWidth = 5;
             this.splitContainerPtAlternative.TabIndex = 2;
+            // 
+            // btTest
+            // 
+            this.btTest.BackColor = System.Drawing.Color.PeachPuff;
+            this.btTest.Location = new System.Drawing.Point(230, 158);
+            this.btTest.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btTest.Name = "btTest";
+            this.btTest.Size = new System.Drawing.Size(234, 43);
+            this.btTest.TabIndex = 21;
+            this.btTest.Text = "Test";
+            this.btTest.UseVisualStyleBackColor = false;
+            this.btTest.Click += new System.EventHandler(this.btTest_Click);
             // 
             // btCompare2
             // 
@@ -882,6 +895,7 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainerTranslations.Panel1
             // 
+            this.splitContainerTranslations.Panel1.Controls.Add(this.btGetEnglishText);
             this.splitContainerTranslations.Panel1.Controls.Add(this.btGeneratePtAlternativeCompare);
             this.splitContainerTranslations.Panel1.Controls.Add(this.btImportGpt4Translation);
             this.splitContainerTranslations.Panel1.Controls.Add(this.btWordCompare);
@@ -896,13 +910,13 @@ namespace UbStudyHelpGenerator
             // 
             // btGeneratePtAlternativeCompare
             // 
-            this.btGeneratePtAlternativeCompare.BackColor = System.Drawing.Color.NavajoWhite;
+            this.btGeneratePtAlternativeCompare.BackColor = System.Drawing.Color.GreenYellow;
             this.btGeneratePtAlternativeCompare.ForeColor = System.Drawing.Color.Black;
-            this.btGeneratePtAlternativeCompare.Location = new System.Drawing.Point(30, 232);
+            this.btGeneratePtAlternativeCompare.Location = new System.Drawing.Point(35, 371);
             this.btGeneratePtAlternativeCompare.Name = "btGeneratePtAlternativeCompare";
             this.btGeneratePtAlternativeCompare.Size = new System.Drawing.Size(187, 45);
             this.btGeneratePtAlternativeCompare.TabIndex = 3;
-            this.btGeneratePtAlternativeCompare.Text = "Pt Alternative Compare";
+            this.btGeneratePtAlternativeCompare.Text = "Gera DOC 101";
             this.btGeneratePtAlternativeCompare.UseVisualStyleBackColor = false;
             this.btGeneratePtAlternativeCompare.Click += new System.EventHandler(this.btGeneratePtAlternativeCompare_Click);
             // 
@@ -954,17 +968,17 @@ namespace UbStudyHelpGenerator
             this.textBoxTranslations.Size = new System.Drawing.Size(1216, 888);
             this.textBoxTranslations.TabIndex = 2;
             // 
-            // btTest
+            // btGetEnglishText
             // 
-            this.btTest.BackColor = System.Drawing.Color.PeachPuff;
-            this.btTest.Location = new System.Drawing.Point(230, 158);
-            this.btTest.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btTest.Name = "btTest";
-            this.btTest.Size = new System.Drawing.Size(234, 43);
-            this.btTest.TabIndex = 21;
-            this.btTest.Text = "Test";
-            this.btTest.UseVisualStyleBackColor = false;
-            this.btTest.Click += new System.EventHandler(this.btTest_Click);
+            this.btGetEnglishText.BackColor = System.Drawing.Color.GreenYellow;
+            this.btGetEnglishText.ForeColor = System.Drawing.Color.Black;
+            this.btGetEnglishText.Location = new System.Drawing.Point(35, 422);
+            this.btGetEnglishText.Name = "btGetEnglishText";
+            this.btGetEnglishText.Size = new System.Drawing.Size(187, 45);
+            this.btGetEnglishText.TabIndex = 4;
+            this.btGetEnglishText.Text = "DOC 101 for GPT 4";
+            this.btGetEnglishText.UseVisualStyleBackColor = false;
+            this.btGetEnglishText.Click += new System.EventHandler(this.btGetEnglishText_Click);
             // 
             // frmMain
             // 
@@ -1094,6 +1108,7 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.Button btWordToList;
         private System.Windows.Forms.TextBox textBoxTranslations;
         private System.Windows.Forms.Button btTest;
+        private System.Windows.Forms.Button btGetEnglishText;
     }
 }
 

@@ -81,7 +81,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         private void ParagraphCssClass(StringBuilder sb, string cssName, string textColor, string backColor)
         {
             sb.AppendLine($".{cssName} {{ color:{textColor}; background-color:{backColor}; }}");
-            sb.AppendLine($"a.{cssName} {{ text-decoration: none; }}");
+            sb.AppendLine($"a.{cssName} {{ color:{textColor}; text-decoration: none; }}");
             sb.AppendLine($"a.{cssName}:hover {{ text-decoration: underline; }}");
             sb.AppendLine(" ");
         }

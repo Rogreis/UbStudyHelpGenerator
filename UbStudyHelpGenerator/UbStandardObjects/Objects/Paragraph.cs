@@ -7,6 +7,7 @@ using System.Xml;
 using System.Globalization;
 using System.Text.Json.Serialization;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 {
@@ -164,6 +165,11 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         [JsonIgnore]
         public bool IsEditTranslation { get; set; } = false;
 
+        [JsonIgnore]
+        public string TextNoHtml
+        {
+            get => Regex.Replace(Text, "<.*?>", String.Empty);
+        }
 
         public Paragraph()
         {
