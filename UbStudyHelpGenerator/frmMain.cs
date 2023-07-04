@@ -10,12 +10,11 @@ using System.Windows.Forms;
 using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.Database;
+using UbStudyHelpGenerator.HtmlFormatters;
 using UbStudyHelpGenerator.Properties;
+using UbStudyHelpGenerator.PtBr;
 using UbStudyHelpGenerator.UbStandardObjects;
-using UbStudyHelpGenerator.UbStandardObjects.Helpers;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
-using UBT_WebSite.Classes;
-using static Lucene.Net.Search.FieldValueHitQueue;
 using static System.Environment;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 
@@ -110,6 +109,7 @@ namespace UbStudyHelpGenerator
             txSqlServerConnectionString.Text = Settings.Default.SqlServerConnectionString;
             txTranslationRepositoryFolder.Text = StaticObjects.Parameters.EditParagraphsRepositoryFolder;
             txEditBookRepositoryFolder.Text = StaticObjects.Parameters.EditBookRepositoryFolder;
+            numericUpDownPaperNo.Value = StaticObjects.Parameters.LastGTPPaper;
         }
 
 
@@ -310,6 +310,34 @@ namespace UbStudyHelpGenerator
             ShowMessage("Finished");
 
         }
+
+        private void ZipAFile()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Gz Files (*.txt)|*.txt|JSon files (*.json)|*.json|All files (*.*)|*.*";
+            openFileDialog.Title = "GZip a File";
+            if (openFileDialog.ShowDialog() == DialogResult.OK)
+            {
+                string fileName = Path.Combine(Path.GetDirectoryName(openFileDialog.FileName) , Path.GetFileNameWithoutExtension(openFileDialog.FileName) + ".gz");
+                DeleteFile(fileName);
+                using (FileStream originalFileStream = File.Open(openFileDialog.FileName, FileMode.Open))
+                {
+                    using (FileStream compressedFileStream = File.Create(fileName))
+                    {
+                        using (var compressor = new GZipStream(compressedFileStream, CompressionMode.Compress))
+                        {
+                            originalFileStream.CopyTo(compressor);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void btGZipFile_Click(object sender, EventArgs e)
+        {
+            ZipAFile();
+        }
+
 
         private void btUfIndex_Click(object sender, EventArgs e)
         {
@@ -574,25 +602,6 @@ namespace UbStudyHelpGenerator
             ShowMessage("Finished");
 
 
-            //OpenFileDialog openFileDialog = new OpenFileDialog();
-            //openFileDialog.Filter = "Gz Files (*.gz)|*.gz";
-            //openFileDialog.Title = "Verify GZ Translation File";
-            //openFileDialog.InitialDirectory = StaticObjects.Parameters.RepositoryOutputFolder;
-            //if (openFileDialog.ShowDialog() == DialogResult.OK)
-            //{
-            //    using (FileStream compressedFileStream = File.Open(openFileDialog.FileName, FileMode.Open))
-            //    {
-            //        using (MemoryStream outputStream = new MemoryStream())
-            //        {
-            //            using (var decompressor = new GZipStream(compressedFileStream, CompressionMode.Decompress))
-            //            {
-            //                decompressor.CopyTo(outputStream);
-            //            }
-            //            string jsonString = System.Text.Encoding.UTF8.GetString(outputStream.ToArray(), 0, (int)outputStream.Length);
-            //            VerifyTranslation(jsonString);
-            //        }
-            //    }
-            //}
 
         }
 
@@ -656,7 +665,7 @@ namespace UbStudyHelpGenerator
         private void Test()
         {
             HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
-            TUB_PT_BR tubPT_BR = new TUB_PT_BR(StaticObjects.Parameters, formatter);
+            PtBr_Website tubPT_BR = new PtBr_Website(StaticObjects.Parameters, formatter);
             //tubPT_BR.Test();
         }
 
@@ -740,7 +749,7 @@ namespace UbStudyHelpGenerator
             toc_table.Html(pathTocTable);
 
             HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
-            TUB_PT_BR tubPT_BR = new TUB_PT_BR(StaticObjects.Parameters, formatter);
+            PtBr_Website tubPT_BR = new PtBr_Website(StaticObjects.Parameters, formatter);
 
             //tubPT_BR.ShowMessage += Logger_ShowMessage;
             tubPT_BR.ShowPaperNumber += ShowPaperNumber;
@@ -748,8 +757,8 @@ namespace UbStudyHelpGenerator
 
             string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
             tubPT_BR.MainPage(formatter, mainPageFilePath);
-
-            tubPT_BR.RepositoryToBookHtmlPages(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation);
+            // Print(TUB_TOC_Html toc_table, Translation englishTranslation, Translation portuguse2007Translation, Translation ptAlternativeTranslation, short paperNoToPrint= -1)
+            //tubPT_BR.Print(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.WorkTranslation, StaticObjects.Book.EditTranslation);
             ShowMessage("Finished");
 
             Process.Start("chrome.exe", "localhost");
@@ -778,32 +787,36 @@ namespace UbStudyHelpGenerator
                 return;
             }
 
-            short paperNo = 101;
+            ShowMessage(null);
+            GitHistory gitHistory = new GitHistory();
+            gitHistory.ShowMessage += Logger_ShowMessage;
+            gitHistory.Get(StaticObjects.Parameters.EditParagraphsRepositoryFolder, "Doc044/Par_044_006_005.md", StaticObjects.Parameters.EditBookRepositoryFolder);
 
+            //short paperNo = 101;
 
-            ShowMessage($"Starting rogreis.github.io page {paperNo}");
+            //ShowMessage($"Starting rogreis.github.io page {paperNo}");
 
-            // TOC Table not forced
-            ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
-            List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
-            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
-            string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
-            toc_table.Html(pathTocTable);
+            //// TOC Table not forced
+            //ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
+            //List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
+            //TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
+            //string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
+            //toc_table.Html(pathTocTable);
 
-            HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
-            TUB_PT_BR tubPT_BR = new TUB_PT_BR(StaticObjects.Parameters, formatter);
+            //HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
+            //TUB_PT_BR tubPT_BR = new TUB_PT_BR(StaticObjects.Parameters, formatter);
 
-            //tubPT_BR.ShowMessage += Logger_ShowMessage;
-            tubPT_BR.ShowPaperNumber += ShowPaperNumber;
-            tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
+            ////tubPT_BR.ShowMessage += Logger_ShowMessage;
+            //tubPT_BR.ShowPaperNumber += ShowPaperNumber;
+            //tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
 
-            string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
-            tubPT_BR.MainPage(formatter, mainPageFilePath);
+            //string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
+            //tubPT_BR.MainPage(formatter, mainPageFilePath);
 
-            tubPT_BR.RepositoryToBookHtmlPages(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, paperNo);
-            ShowMessage("Finished");
+            //tubPT_BR.RepositoryToBookHtmlPages(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, paperNo);
+            //ShowMessage("Finished");
 
-            Process.Start("chrome.exe", "localhost");
+            //Process.Start("chrome.exe", "localhost");
         }
 
 
@@ -828,7 +841,7 @@ namespace UbStudyHelpGenerator
 
             ShowMessage("Generating index.html");
             HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
-            TUB_PT_BR tubPT_BR = new TUB_PT_BR(StaticObjects.Parameters, formatter);
+            PtBr_Website tubPT_BR = new PtBr_Website(StaticObjects.Parameters, formatter);
 
             //tubPT_BR.ShowMessage += Logger_ShowMessage;
             tubPT_BR.ShowPaperNumber += ShowPaperNumber;
@@ -1074,18 +1087,55 @@ namespace UbStudyHelpGenerator
         private void btCompare2_Click(object sender, EventArgs e)
         {
             if (!InitializeApp()) return;
-            PaperCheckingUsingChatGPT gpt = new PaperCheckingUsingChatGPT();
-            short paperNo = 100;
-            ShowMessage($"Generating Merge & Compare for paper {paperNo}");
-            string pathDocsIn = @"C:\Urantia\Textos\ChatGPT\Paper_100.docx";
-            if (gpt.ImportListFromWord(pathDocsIn))
+
+            // Get a list of files changed since last commit
+            // git diff --name-only b46a5f308920f4182a066c1e79ece2864d37c8b2 HEAD
+            // 
+            //string gitCommand = $"git diff --name-only {StaticObjects.Parameters.LastCommitUsedForPTAlternative} HEAD";
+
+            string folderCompare = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "Compare");
+
+            if (MessageBox.Show($"Are you sure to generate all compare pages for rogreis.github.io into {folderCompare}?",
+                        "Confirmation",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.No)
             {
-                ShowMessage("Succesfully finished.");
+                return;
             }
-            else
+
+
+            // 34 - Portuguese 2007
+            StaticObjects.Book.WorkTranslation= new Translation();
+            GetDataFiles dataFiles = new GetDataFiles();
+            if (!DataInitializer.InitTranslation(dataFiles, 34, ref StaticObjects.Book.WorkTranslation))
             {
-                ShowMessage("Finished with error.");
+                ShowMessage("Could not initialize portuguese 2007 translation");
+                return;
             }
+            ShowMessage("Starting rogreis.github.io pages");
+
+            // TOC Table not forced
+            ShowMessage($"Creating TOC table to be stored in: {folderCompare}");
+            List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
+
+            HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
+            PtBr_Website tubPT_BR = new PtBr_Website(StaticObjects.Parameters, formatter);
+
+            //tubPT_BR.ShowMessage += Logger_ShowMessage;
+            tubPT_BR.ShowPaperNumber += ShowPaperNumber;
+            tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
+
+            string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
+            tubPT_BR.MainPage(formatter, mainPageFilePath);
+            // Print(TUB_TOC_Html toc_table, Translation englishTranslation, Translation portuguse2007Translation, Translation ptAlternativeTranslation, short paperNoToPrint= -1)
+            string destinationFolder = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "Compare");
+            Directory.CreateDirectory(destinationFolder);
+            tubPT_BR.Compare(StaticObjects.Book.EnglishTranslation, StaticObjects.Book.WorkTranslation, StaticObjects.Book.EditTranslation, destinationFolder);
+            ShowMessage("Finished");
+
+            //Process.Start("chrome.exe", "localhost");
+
+
         }
 
 
@@ -1256,11 +1306,14 @@ namespace UbStudyHelpGenerator
                 return;
             }
 
-            Paper paperEnglish = StaticObjects.Book.EnglishTranslation.Paper(101);
+            StaticObjects.Parameters.LastGTPPaper = (short)numericUpDownPaperNo.Value;
+
+            Paper paperEnglish = StaticObjects.Book.EnglishTranslation.Paper(StaticObjects.Parameters.LastGTPPaper);
             ShowMessage(null);
             foreach (Paragraph p in paperEnglish.Paragraphs)
             {
-                ShowMessage(p.Text);
+                if (p.IsPaperTitle || p.IsSectionTitle || p.IsDivider) ShowMessage("");
+                ShowMessage(p.TextNoHtml);
             }
         }
 

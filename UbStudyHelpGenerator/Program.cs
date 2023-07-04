@@ -1,5 +1,7 @@
 ﻿using System;
 using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.UbStandardObjects;
@@ -28,15 +30,13 @@ namespace UbStudyHelpGenerator
             return Path.Combine(folder, fileName);
         }
 
-
-        /// <summary>
+          /// <summary>
         /// The main entry point for the application.
         /// </summary>
         [STAThread]
         static void Main()
         {
             PathParameters = MakeProgramDataFolder("UbStudyHelpGenerator.json");
-            
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);

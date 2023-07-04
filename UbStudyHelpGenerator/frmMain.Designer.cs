@@ -91,12 +91,15 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages = new System.Windows.Forms.TextBox();
             this.tabPageTranslations = new System.Windows.Forms.TabPage();
             this.splitContainerTranslations = new System.Windows.Forms.SplitContainer();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.numericUpDownPaperNo = new System.Windows.Forms.NumericUpDown();
+            this.btGetEnglishText = new System.Windows.Forms.Button();
             this.btGeneratePtAlternativeCompare = new System.Windows.Forms.Button();
             this.btImportGpt4Translation = new System.Windows.Forms.Button();
             this.btWordCompare = new System.Windows.Forms.Button();
             this.btWordToList = new System.Windows.Forms.Button();
             this.textBoxTranslations = new System.Windows.Forms.TextBox();
-            this.btGetEnglishText = new System.Windows.Forms.Button();
+            this.btGZipFile = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -128,6 +131,8 @@ namespace UbStudyHelpGenerator
             this.splitContainerTranslations.Panel1.SuspendLayout();
             this.splitContainerTranslations.Panel2.SuspendLayout();
             this.splitContainerTranslations.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPaperNo)).BeginInit();
             this.SuspendLayout();
             // 
             // statusStrip1
@@ -764,6 +769,7 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainer2.Panel1
             // 
+            this.splitContainer2.Panel1.Controls.Add(this.btGZipFile);
             this.splitContainer2.Panel1.Controls.Add(this.btUfIndexDownload);
             this.splitContainer2.Panel1.Controls.Add(this.btUfIndexOutputFiles);
             this.splitContainer2.Panel1.Controls.Add(this.label3);
@@ -777,7 +783,7 @@ namespace UbStudyHelpGenerator
             // 
             this.splitContainer2.Panel2.Controls.Add(this.txUbIndexMessages);
             this.splitContainer2.Size = new System.Drawing.Size(1476, 888);
-            this.splitContainer2.SplitterDistance = 188;
+            this.splitContainer2.SplitterDistance = 215;
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 1;
             // 
@@ -872,7 +878,7 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.Multiline = true;
             this.txUbIndexMessages.Name = "txUbIndexMessages";
             this.txUbIndexMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txUbIndexMessages.Size = new System.Drawing.Size(1476, 695);
+            this.txUbIndexMessages.Size = new System.Drawing.Size(1476, 668);
             this.txUbIndexMessages.TabIndex = 0;
             // 
             // tabPageTranslations
@@ -895,7 +901,7 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainerTranslations.Panel1
             // 
-            this.splitContainerTranslations.Panel1.Controls.Add(this.btGetEnglishText);
+            this.splitContainerTranslations.Panel1.Controls.Add(this.groupBox1);
             this.splitContainerTranslations.Panel1.Controls.Add(this.btGeneratePtAlternativeCompare);
             this.splitContainerTranslations.Panel1.Controls.Add(this.btImportGpt4Translation);
             this.splitContainerTranslations.Panel1.Controls.Add(this.btWordCompare);
@@ -908,9 +914,56 @@ namespace UbStudyHelpGenerator
             this.splitContainerTranslations.SplitterDistance = 256;
             this.splitContainerTranslations.TabIndex = 0;
             // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.numericUpDownPaperNo);
+            this.groupBox1.Controls.Add(this.btGetEnglishText);
+            this.groupBox1.Location = new System.Drawing.Point(30, 450);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(200, 240);
+            this.groupBox1.TabIndex = 5;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Chat GTP";
+            // 
+            // numericUpDownPaperNo
+            // 
+            this.numericUpDownPaperNo.Location = new System.Drawing.Point(16, 57);
+            this.numericUpDownPaperNo.Maximum = new decimal(new int[] {
+            120,
+            0,
+            0,
+            0});
+            this.numericUpDownPaperNo.Minimum = new decimal(new int[] {
+            99,
+            0,
+            0,
+            0});
+            this.numericUpDownPaperNo.Name = "numericUpDownPaperNo";
+            this.numericUpDownPaperNo.Size = new System.Drawing.Size(120, 26);
+            this.numericUpDownPaperNo.TabIndex = 5;
+            this.numericUpDownPaperNo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.numericUpDownPaperNo.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            // 
+            // btGetEnglishText
+            // 
+            this.btGetEnglishText.BackColor = System.Drawing.Color.GreenYellow;
+            this.btGetEnglishText.ForeColor = System.Drawing.Color.Black;
+            this.btGetEnglishText.Location = new System.Drawing.Point(5, 112);
+            this.btGetEnglishText.Name = "btGetEnglishText";
+            this.btGetEnglishText.Size = new System.Drawing.Size(187, 93);
+            this.btGetEnglishText.TabIndex = 4;
+            this.btGetEnglishText.Text = "Show Above English Text Paper for GPT 4";
+            this.btGetEnglishText.UseVisualStyleBackColor = false;
+            this.btGetEnglishText.Click += new System.EventHandler(this.btGetEnglishText_Click);
+            // 
             // btGeneratePtAlternativeCompare
             // 
             this.btGeneratePtAlternativeCompare.BackColor = System.Drawing.Color.GreenYellow;
+            this.btGeneratePtAlternativeCompare.Enabled = false;
             this.btGeneratePtAlternativeCompare.ForeColor = System.Drawing.Color.Black;
             this.btGeneratePtAlternativeCompare.Location = new System.Drawing.Point(35, 371);
             this.btGeneratePtAlternativeCompare.Name = "btGeneratePtAlternativeCompare";
@@ -968,17 +1021,17 @@ namespace UbStudyHelpGenerator
             this.textBoxTranslations.Size = new System.Drawing.Size(1216, 888);
             this.textBoxTranslations.TabIndex = 2;
             // 
-            // btGetEnglishText
+            // btGZipFile
             // 
-            this.btGetEnglishText.BackColor = System.Drawing.Color.GreenYellow;
-            this.btGetEnglishText.ForeColor = System.Drawing.Color.Black;
-            this.btGetEnglishText.Location = new System.Drawing.Point(35, 422);
-            this.btGetEnglishText.Name = "btGetEnglishText";
-            this.btGetEnglishText.Size = new System.Drawing.Size(187, 45);
-            this.btGetEnglishText.TabIndex = 4;
-            this.btGetEnglishText.Text = "DOC 101 for GPT 4";
-            this.btGetEnglishText.UseVisualStyleBackColor = false;
-            this.btGetEnglishText.Click += new System.EventHandler(this.btGetEnglishText_Click);
+            this.btGZipFile.BackColor = System.Drawing.Color.SandyBrown;
+            this.btGZipFile.Location = new System.Drawing.Point(310, 145);
+            this.btGZipFile.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btGZipFile.Name = "btGZipFile";
+            this.btGZipFile.Size = new System.Drawing.Size(126, 60);
+            this.btGZipFile.TabIndex = 9;
+            this.btGZipFile.Text = "GZip a file";
+            this.btGZipFile.UseVisualStyleBackColor = false;
+            this.btGZipFile.Click += new System.EventHandler(this.btGZipFile_Click);
             // 
             // frmMain
             // 
@@ -1034,6 +1087,8 @@ namespace UbStudyHelpGenerator
             this.splitContainerTranslations.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerTranslations)).EndInit();
             this.splitContainerTranslations.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPaperNo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1109,6 +1164,9 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.TextBox textBoxTranslations;
         private System.Windows.Forms.Button btTest;
         private System.Windows.Forms.Button btGetEnglishText;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.NumericUpDown numericUpDownPaperNo;
+        private System.Windows.Forms.Button btGZipFile;
     }
 }
 

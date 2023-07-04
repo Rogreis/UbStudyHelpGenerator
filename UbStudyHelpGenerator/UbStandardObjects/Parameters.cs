@@ -183,6 +183,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects
 
         public bool IsDarkTheme { get; set; } = true;
 
+        public short LastGTPPaper { get; set; } = 101;
+
 
  
         /// <summary>
