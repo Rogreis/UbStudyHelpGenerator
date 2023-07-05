@@ -757,8 +757,7 @@ namespace UbStudyHelpGenerator
 
             string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
             tubPT_BR.MainPage(formatter, mainPageFilePath);
-            // Print(TUB_TOC_Html toc_table, Translation englishTranslation, Translation portuguse2007Translation, Translation ptAlternativeTranslation, short paperNoToPrint= -1)
-            //tubPT_BR.Print(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.WorkTranslation, StaticObjects.Book.EditTranslation);
+            tubPT_BR.Print(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.WorkTranslation, StaticObjects.Book.EditTranslation);
             ShowMessage("Finished");
 
             Process.Start("chrome.exe", "localhost");

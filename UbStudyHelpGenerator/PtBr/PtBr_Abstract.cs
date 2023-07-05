@@ -88,6 +88,7 @@ namespace UbStudyHelpGenerator.PtBr
             sb.AppendLine("	<meta charset=\"utf-8\">  ");
             sb.AppendLine("	<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">  ");
             sb.AppendLine("	<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css\" rel=\"stylesheet\">  ");
+            sb.AppendLine("	<link href=\"https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap\" rel=\"stylesheet\"> ");
             sb.AppendLine("	<link href=\"css/tub_pt_br.css\" rel=\"stylesheet\">  ");
             sb.AppendLine("	<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js\"></script> ");
             sb.AppendLine("	<script src=\"https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js\"></script> ");
@@ -96,7 +97,8 @@ namespace UbStudyHelpGenerator.PtBr
             sb.AppendLine("		import { Octokit } from \"https://cdn.skypack.dev/@octokit/core\";  ");
             sb.AppendLine("	</script>  ");
 
-            formatter.Styles(sb);
+            // Styles are now in the file css\tub_pt_br.css
+            //formatter.Styles(sb);
 
             sb.AppendLine("</head>  ");
             sb.AppendLine("<html> ");
@@ -105,7 +107,7 @@ namespace UbStudyHelpGenerator.PtBr
             sb.AppendLine("			<div class=\"container-fluid\"> ");
             sb.AppendLine("				<ul class=\"navbar-nav\"> ");
             sb.AppendLine("					<li class=\"nav-item bg-primary text-white\"> ");
-            sb.AppendLine($"						<span>O Livro de Urântia - Tradução/Revisão PT BR -  v Week {WeekDay()}-{DateTime.Now.ToString("dd/MM/yyyy")}&nbsp;&nbsp;&nbsp;Status:&nbsp;</span> ");
+            sb.AppendLine($"						<span>O Livro de Urântia - Tradução/Revisão PT BR -  v {DateTime.Now.ToString("dd/MM/yyyy hh/mm")}&nbsp;&nbsp;&nbsp;Status:&nbsp;</span> ");
             sb.AppendLine("					</li> ");
             sb.AppendLine("					<li class=\"nav-item bg-primary text-white\"> ");
             sb.AppendLine("						<span class=\"nav-link badge badgeStarted\">Started</span>&nbsp;");

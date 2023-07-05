@@ -96,10 +96,6 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             {
                 if (!IsHeader && p.IsEditTranslation)
                 {
-                    if (p.Status != ParagraphStatus.Closed)
-                    {
-                        int ggg = 1;
-                    }
                     switch (p.Status)
                     {
                         case ParagraphStatus.Started:
@@ -110,6 +106,8 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                             return HtmlFormat_Abstract.CssClassParagraphDoubt;
                         case ParagraphStatus.Ok:
                             return HtmlFormat_Abstract.CssClassParagraphOk;
+                        case ParagraphStatus.Closed:
+                            return HtmlFormat_Abstract.CssClassParagraphClosed;
                     }
                 }
                 return HtmlFormat_Abstract.CssNormalText;
@@ -308,13 +306,14 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         #region Styles
 
         // Bootstrap definitions
-        private const string darkTheme = "bg-dark text-white";
-        private const string lightTheme = "bg-light text-black";
+        private const string darkTheme = "bg-dark text-white parClosed";
+        private const string lightTheme = "bg-light text-black parClosed";
 
         protected const string CssClassParagraphStarted = "parStarted";
         protected const string CssClassParagraphWorking = "parWorking";
         protected const string CssClassParagraphDoubt = "parDoubt";
         protected const string CssClassParagraphOk = "parOk";
+        protected const string CssClassParagraphClosed = "parClosed";
         public static string CssNormalText
         {
             get
@@ -327,8 +326,8 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         private void CssVariables(StringBuilder sb)
         {
             sb.AppendLine(":root { ");
-            sb.AppendLine(" font-family: var(--font);");
-            sb.AppendLine(" font-size: var(--fontSize);");
+            sb.AppendLine(" --font: 'Roboto Slab', serif;");
+            sb.AppendLine(" --fontSize: 16px;");
             sb.AppendLine("} ");
         }
 
