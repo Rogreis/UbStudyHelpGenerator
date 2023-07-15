@@ -80,6 +80,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromHtml = new System.Windows.Forms.TextBox();
             this.tabPageUbIndex = new System.Windows.Forms.TabPage();
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
+            this.btGZipFile = new System.Windows.Forms.Button();
             this.btUfIndexDownload = new System.Windows.Forms.Button();
             this.btUfIndexOutputFiles = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
@@ -99,7 +100,6 @@ namespace UbStudyHelpGenerator
             this.btWordCompare = new System.Windows.Forms.Button();
             this.btWordToList = new System.Windows.Forms.Button();
             this.textBoxTranslations = new System.Windows.Forms.TextBox();
-            this.btGZipFile = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -305,7 +305,7 @@ namespace UbStudyHelpGenerator
             // btTest
             // 
             this.btTest.BackColor = System.Drawing.Color.PeachPuff;
-            this.btTest.Location = new System.Drawing.Point(230, 158);
+            this.btTest.Location = new System.Drawing.Point(1078, 158);
             this.btTest.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btTest.Name = "btTest";
             this.btTest.Size = new System.Drawing.Size(234, 43);
@@ -317,7 +317,7 @@ namespace UbStudyHelpGenerator
             // btCompare2
             // 
             this.btCompare2.BackColor = System.Drawing.Color.PeachPuff;
-            this.btCompare2.Location = new System.Drawing.Point(668, 211);
+            this.btCompare2.Location = new System.Drawing.Point(498, 211);
             this.btCompare2.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btCompare2.Name = "btCompare2";
             this.btCompare2.Size = new System.Drawing.Size(176, 43);
@@ -329,7 +329,7 @@ namespace UbStudyHelpGenerator
             // btPtAlternativeCompare
             // 
             this.btPtAlternativeCompare.BackColor = System.Drawing.Color.PeachPuff;
-            this.btPtAlternativeCompare.Location = new System.Drawing.Point(486, 211);
+            this.btPtAlternativeCompare.Location = new System.Drawing.Point(498, 158);
             this.btPtAlternativeCompare.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btPtAlternativeCompare.Name = "btPtAlternativeCompare";
             this.btPtAlternativeCompare.Size = new System.Drawing.Size(176, 43);
@@ -341,10 +341,10 @@ namespace UbStudyHelpGenerator
             // btAlternativaEdit
             // 
             this.btAlternativaEdit.BackColor = System.Drawing.Color.PeachPuff;
-            this.btAlternativaEdit.Location = new System.Drawing.Point(230, 211);
+            this.btAlternativaEdit.Location = new System.Drawing.Point(283, 211);
             this.btAlternativaEdit.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btAlternativaEdit.Name = "btAlternativaEdit";
-            this.btAlternativaEdit.Size = new System.Drawing.Size(234, 43);
+            this.btAlternativaEdit.Size = new System.Drawing.Size(209, 43);
             this.btAlternativaEdit.TabIndex = 18;
             this.btAlternativaEdit.Text = "Edit";
             this.btAlternativaEdit.UseVisualStyleBackColor = false;
@@ -353,7 +353,7 @@ namespace UbStudyHelpGenerator
             // btRecreateTrans
             // 
             this.btRecreateTrans.BackColor = System.Drawing.Color.PeachPuff;
-            this.btRecreateTrans.Location = new System.Drawing.Point(14, 211);
+            this.btRecreateTrans.Location = new System.Drawing.Point(283, 158);
             this.btRecreateTrans.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btRecreateTrans.Name = "btRecreateTrans";
             this.btRecreateTrans.Size = new System.Drawing.Size(209, 43);
@@ -364,11 +364,11 @@ namespace UbStudyHelpGenerator
             // 
             // btExportToUbHelp
             // 
-            this.btExportToUbHelp.BackColor = System.Drawing.Color.PeachPuff;
-            this.btExportToUbHelp.Location = new System.Drawing.Point(486, 158);
+            this.btExportToUbHelp.BackColor = System.Drawing.Color.Chartreuse;
+            this.btExportToUbHelp.Location = new System.Drawing.Point(20, 211);
             this.btExportToUbHelp.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btExportToUbHelp.Name = "btExportToUbHelp";
-            this.btExportToUbHelp.Size = new System.Drawing.Size(234, 43);
+            this.btExportToUbHelp.Size = new System.Drawing.Size(244, 43);
             this.btExportToUbHelp.TabIndex = 16;
             this.btExportToUbHelp.Text = "Generate PTAlternatice .gz";
             this.btExportToUbHelp.UseVisualStyleBackColor = false;
@@ -494,11 +494,11 @@ namespace UbStudyHelpGenerator
             // 
             // btPTAlternativeGenerate
             // 
-            this.btPTAlternativeGenerate.BackColor = System.Drawing.Color.PeachPuff;
-            this.btPTAlternativeGenerate.Location = new System.Drawing.Point(15, 158);
+            this.btPTAlternativeGenerate.BackColor = System.Drawing.Color.Chartreuse;
+            this.btPTAlternativeGenerate.Location = new System.Drawing.Point(20, 158);
             this.btPTAlternativeGenerate.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
             this.btPTAlternativeGenerate.Name = "btPTAlternativeGenerate";
-            this.btPTAlternativeGenerate.Size = new System.Drawing.Size(209, 43);
+            this.btPTAlternativeGenerate.Size = new System.Drawing.Size(244, 43);
             this.btPTAlternativeGenerate.TabIndex = 0;
             this.btPTAlternativeGenerate.Text = "Generate rogreis.github.io";
             this.btPTAlternativeGenerate.UseVisualStyleBackColor = false;
@@ -787,6 +787,18 @@ namespace UbStudyHelpGenerator
             this.splitContainer2.SplitterWidth = 5;
             this.splitContainer2.TabIndex = 1;
             // 
+            // btGZipFile
+            // 
+            this.btGZipFile.BackColor = System.Drawing.Color.SandyBrown;
+            this.btGZipFile.Location = new System.Drawing.Point(310, 145);
+            this.btGZipFile.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
+            this.btGZipFile.Name = "btGZipFile";
+            this.btGZipFile.Size = new System.Drawing.Size(126, 60);
+            this.btGZipFile.TabIndex = 9;
+            this.btGZipFile.Text = "GZip a file";
+            this.btGZipFile.UseVisualStyleBackColor = false;
+            this.btGZipFile.Click += new System.EventHandler(this.btGZipFile_Click);
+            // 
             // btUfIndexDownload
             // 
             this.btUfIndexDownload.Enabled = false;
@@ -1020,18 +1032,6 @@ namespace UbStudyHelpGenerator
             this.textBoxTranslations.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxTranslations.Size = new System.Drawing.Size(1216, 888);
             this.textBoxTranslations.TabIndex = 2;
-            // 
-            // btGZipFile
-            // 
-            this.btGZipFile.BackColor = System.Drawing.Color.SandyBrown;
-            this.btGZipFile.Location = new System.Drawing.Point(310, 145);
-            this.btGZipFile.Margin = new System.Windows.Forms.Padding(3, 5, 3, 5);
-            this.btGZipFile.Name = "btGZipFile";
-            this.btGZipFile.Size = new System.Drawing.Size(126, 60);
-            this.btGZipFile.TabIndex = 9;
-            this.btGZipFile.Text = "GZip a file";
-            this.btGZipFile.UseVisualStyleBackColor = false;
-            this.btGZipFile.Click += new System.EventHandler(this.btGZipFile_Click);
             // 
             // frmMain
             // 
