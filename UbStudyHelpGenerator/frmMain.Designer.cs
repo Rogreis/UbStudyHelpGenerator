@@ -100,6 +100,7 @@ namespace UbStudyHelpGenerator
             this.btWordCompare = new System.Windows.Forms.Button();
             this.btWordToList = new System.Windows.Forms.Button();
             this.textBoxTranslations = new System.Windows.Forms.TextBox();
+            this.btBylaws = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -913,6 +914,7 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainerTranslations.Panel1
             // 
+            this.splitContainerTranslations.Panel1.Controls.Add(this.btBylaws);
             this.splitContainerTranslations.Panel1.Controls.Add(this.groupBox1);
             this.splitContainerTranslations.Panel1.Controls.Add(this.btGeneratePtAlternativeCompare);
             this.splitContainerTranslations.Panel1.Controls.Add(this.btImportGpt4Translation);
@@ -1032,6 +1034,18 @@ namespace UbStudyHelpGenerator
             this.textBoxTranslations.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxTranslations.Size = new System.Drawing.Size(1216, 888);
             this.textBoxTranslations.TabIndex = 2;
+            // 
+            // btBylaws
+            // 
+            this.btBylaws.BackColor = System.Drawing.Color.Yellow;
+            this.btBylaws.ForeColor = System.Drawing.Color.Black;
+            this.btBylaws.Location = new System.Drawing.Point(30, 251);
+            this.btBylaws.Name = "btBylaws";
+            this.btBylaws.Size = new System.Drawing.Size(187, 45);
+            this.btBylaws.TabIndex = 6;
+            this.btBylaws.Text = "Bylaws";
+            this.btBylaws.UseVisualStyleBackColor = false;
+            this.btBylaws.Click += new System.EventHandler(this.btBylaws_Click);
             // 
             // frmMain
             // 
@@ -1167,6 +1181,7 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.NumericUpDown numericUpDownPaperNo;
         private System.Windows.Forms.Button btGZipFile;
+        private System.Windows.Forms.Button btBylaws;
     }
 }
 

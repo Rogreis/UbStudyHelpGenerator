@@ -6,18 +6,16 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.Objects;
 using UBT_WebSite.Classes;
+using File = System.IO.File;
+using Paragraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
+using Path = System.IO.Path;
 using Run = DocumentFormat.OpenXml.Wordprocessing.Run;
 using Table = DocumentFormat.OpenXml.Wordprocessing.Table;
-using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
 using TableRow = DocumentFormat.OpenXml.Wordprocessing.TableRow;
-using Path = System.IO.Path;
-using File = System.IO.File;
-using UbStudyHelpGenerator.UbStandardObjects.Objects;
-using UbStudyHelpGenerator.UbStandardObjects;
-using Paragraph = DocumentFormat.OpenXml.Wordprocessing.Paragraph;
-using HtmlAgilityPack;
-using DocumentFormat.OpenXml.Drawing.Diagrams;
+using Text = DocumentFormat.OpenXml.Wordprocessing.Text;
 
 
 namespace UbStudyHelpGenerator.Classes
@@ -569,6 +567,60 @@ namespace UbStudyHelpGenerator.Classes
         }
 
         #endregion
+
+
+        private List<List<string>> ReadTableFromDocx(string pathToDocxFile)
+        {
+            List<List<string>> list = new List<List<string>>();
+
+            using (var document = WordprocessingDocument.Open(pathToDocxFile, false))
+            {
+                var body = document.MainDocumentPart.Document.Body;
+                var table = body.Elements<Table>().First();  // assumes the table you want is the first one
+
+                foreach (var row in table.Elements<TableRow>())
+                {
+                    List<string> line = new List<string>();
+                    foreach (var cell in row.Elements<TableCell>())
+                    {
+                        var cellText = cell.InnerText;
+                        line.Add(cellText);
+                    }
+                    list.Add(line);
+                }
+            }
+            return list;
+        }
+
+        public void ModifyThirdCellInTable(string pathToInputDocxFile, string pathToOutputDocxFile)
+        {
+            List<List<string>> list = ReadTableFromDocx(pathToInputDocxFile);
+            int indRow = 0;
+            
+
+            using (WordprocessingDocument doc = WordprocessingDocument.Open(pathToOutputDocxFile, true))
+            {
+                Body body = doc.MainDocumentPart.Document.Body;
+
+                // Assume the table you want to modify is the first one in the document.
+                Table table = body.Elements<Table>().First();
+
+                // Iterate through the rows in the table.
+                foreach (TableRow row in table.Elements<TableRow>())
+                {
+                    string newText = list[indRow][1];
+                    indRow++;
+                    // Get the third cell in the row (0-based index).
+                    TableCell cell = row.Elements<TableCell>().ElementAt(2);
+
+                    // Clear the existing cell content.
+                    cell.RemoveAllChildren<Paragraph>();
+
+                    // Add the new text to the cell.
+                    cell.Append(new Paragraph(new Run(new Text(newText))));
+                }
+            }
+        }
 
 
     }

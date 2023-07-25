@@ -1318,5 +1318,17 @@ namespace UbStudyHelpGenerator
 
         #endregion
 
+        private void btBylaws_Click(object sender, EventArgs e)
+        {
+            PaperCheckingUsingChatGPT gpt = new PaperCheckingUsingChatGPT();
+
+            string pathInputDocx = @"C:\Urantia\Traduções\UAI\UAI Bylaws 2023 EN-PT 2-Angela.docx";
+            string pathOutputDocx = @"C:\Urantia\Traduções\UAI\UAI Bylaws 2023 EN-PT 2_PT_BR_Final.docx";
+            gpt.ModifyThirdCellInTable(pathInputDocx, pathOutputDocx);
+
+
+
+            ShowMessage("Finished.");
+        }
     }
 }
