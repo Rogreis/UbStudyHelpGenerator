@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Lucene.Net.Messages;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,7 +7,10 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Web.UI.WebControls.WebParts;
 using System.Windows.Forms;
+using System.Xml.Schema;
+using System.Xml;
 using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.Database;
@@ -14,9 +18,11 @@ using UbStudyHelpGenerator.HtmlFormatters;
 using UbStudyHelpGenerator.Properties;
 using UbStudyHelpGenerator.PtBr;
 using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.Helpers;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 using static System.Environment;
 using JsonSerializer = System.Text.Json.JsonSerializer;
+using System.Web;
 
 namespace UbStudyHelpGenerator
 {
@@ -318,7 +324,7 @@ namespace UbStudyHelpGenerator
             openFileDialog.Title = "GZip a File";
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
-                string fileName = Path.Combine(Path.GetDirectoryName(openFileDialog.FileName) , Path.GetFileNameWithoutExtension(openFileDialog.FileName) + ".gz");
+                string fileName = Path.Combine(Path.GetDirectoryName(openFileDialog.FileName), Path.GetFileNameWithoutExtension(openFileDialog.FileName) + ".gz");
                 DeleteFile(fileName);
                 using (FileStream originalFileStream = File.Open(openFileDialog.FileName, FileMode.Open))
                 {
@@ -764,6 +770,134 @@ namespace UbStudyHelpGenerator
 
         }
 
+        private bool ValidateXHTML(string xhtmlFilePath)
+        {
+            try
+            {
+                // Create an XML Reader Settings with validation enabled
+                XmlReaderSettings settings = new XmlReaderSettings();
+                settings.DtdProcessing = DtdProcessing.Parse; // Enable DTD processing
+                settings.ValidationType = ValidationType.Schema;
+
+                // Load the XHTML schema (XHTML 1.0 or 1.1)
+                settings.Schemas.Add("http://www.w3.org/1999/xhtml", "C:\\Trabalho\\Github\\Rogerio\\g\\UbStudyHelpGenerator\\xhtml11.dtd");
+
+                // Create an XML reader and load the XHTML file
+                using (XmlReader reader = XmlReader.Create(xhtmlFilePath, settings))
+                {
+                    while (reader.Read()) ;
+                }
+
+                // If no exceptions are thrown during validation, the file is valid
+                return true;
+            }
+            catch (XmlSchemaValidationException ex)
+            {
+                // Handle validation errors here
+                ShowMessage($"Validation error: {ex.Message}");
+                return false;
+            }
+            catch (Exception ex)
+            {
+                // Handle other exceptions
+                Console.WriteLine($"Error: {ex.Message}");
+                return false;
+            }
+        }
+
+
+        private void btEpub_Click(object sender, EventArgs e)
+        {
+
+            if (!Initialize())
+                return;
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+
+            // Verify respository existence
+            if (!DataInitializer.VerifyRepositories())
+            {
+                return;
+            }
+
+
+            // Verify respository existence
+            if (!DataInitializer.InitTranslations())
+            {
+                return;
+            }
+
+            Logger_ShowMessage(null);
+            string outputEpubFolder = $@"C:\Urantia\Epub";
+
+            if (MessageBox.Show($"Are you sure to generate the epub version into {outputEpubFolder}?",
+                        "Confirmation",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.No)
+            {
+                return;
+            }
+
+            ShowMessage($"Starting generation of {outputEpubFolder}");
+
+            List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
+            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
+
+            // Get all PT alternative papers
+            if (StaticObjects.Book.EditTranslation.Papers.Count == 0)
+            {
+                for (short paperNo = 0; paperNo < 197; paperNo++)
+                {
+                    Logger_ShowMessage($"Getting paper {paperNo}");
+                    Paper leftPaper = StaticObjects.Book.EnglishTranslation.Papers[paperNo];
+                    PaperEdit rightPaper = new PaperEdit(paperNo);
+                    StaticObjects.Book.EditTranslation.Papers.Add(rightPaper);
+                    foreach (Paragraph p in StaticObjects.Book.EnglishTranslation.Papers[paperNo].Paragraphs)
+                    {
+                        string pathMdFile = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder,
+                                                           $@"Doc{p.Paper:000}\Par_{p.Paper:000}_{p.Section:000}_{p.ParagraphNo:000}.md");
+                        if (File.Exists(pathMdFile))
+                        {
+                            rightPaper.AddParagraph(pathMdFile);
+                        }
+                        else
+                        {
+                            ShowMessage("Parágrafo não encontrado: " + pathMdFile);
+                        }
+                    }
+                 }
+            }
+
+            EpubGenerator epubGenerator = new EpubGenerator();
+            epubGenerator.ShowMessage += Logger_ShowMessage;
+            epubGenerator.GenerateEpubWithTOC(tocEntries, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, outputEpubFolder);
+            ShowMessage("Finished");
+
+            //Process.Start("chrome.exe", "localhost");
+
+        }
+
+        private void btValidate_Click(object sender, EventArgs e)
+        {
+
+            string pathParagraphFile = @"C:\Trabalho\Github\Rogerio\p\Doc031\Par_031_010_022.md";
+            ParagraphEdit p = new ParagraphEdit(pathParagraphFile);
+
+            //FolderBrowserDialog dialog = new FolderBrowserDialog();
+            //dialog.SelectedPath = @"C:\Urantia\Epub\EN-PT\EPUB\content";
+            //if (dialog.ShowDialog() == DialogResult.OK)
+            //{
+            //    foreach (string xhtmlFilePath in Directory.GetFiles(dialog.SelectedPath, "*.xhtml"))
+            //    {
+            //        ShowMessage("");
+            //        ShowMessage("xhtmlFilePath");
+            //        ShowMessage($"{(ValidateXHTML(xhtmlFilePath) ? "Ok" : "INVALID")}");
+            //    }
+            //}
+        }
+
+
         private void btTest_Click(object sender, EventArgs e)
         {
 
@@ -1032,6 +1166,12 @@ namespace UbStudyHelpGenerator
             ShowMessage("Exporting PtAlternative...");
             PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
             alternative.ExportToUbStudyHelp();
+            // Verify respository existence
+            if (!DataInitializer.ReInicializeTranslations())
+            {
+                return;
+            }
+
             DataInitializer.StoreTranslationsList();
             ShowMessage("Finished.");
         }
@@ -1104,7 +1244,7 @@ namespace UbStudyHelpGenerator
 
 
             // 34 - Portuguese 2007
-            StaticObjects.Book.WorkTranslation= new Translation();
+            StaticObjects.Book.WorkTranslation = new Translation();
             GetDataFiles dataFiles = new GetDataFiles();
             if (!DataInitializer.InitTranslation(dataFiles, 34, ref StaticObjects.Book.WorkTranslation))
             {
@@ -1309,10 +1449,18 @@ namespace UbStudyHelpGenerator
 
             Paper paperEnglish = StaticObjects.Book.EnglishTranslation.Paper(StaticObjects.Parameters.LastGTPPaper);
             ShowMessage(null);
+            int count = 0;
             foreach (Paragraph p in paperEnglish.Paragraphs)
             {
                 if (p.IsPaperTitle || p.IsSectionTitle || p.IsDivider) ShowMessage("");
-                ShowMessage(p.TextNoHtml);
+                ShowMessage($"{p.ID} {p.TextNoHtml}");
+                count++;
+                if ((count % 30) == 0)
+                {
+                    ShowMessage("");
+                    ShowMessage("");
+                    ShowMessage("");
+                }
             }
         }
 
@@ -1330,5 +1478,6 @@ namespace UbStudyHelpGenerator
 
             ShowMessage("Finished.");
         }
+
     }
 }

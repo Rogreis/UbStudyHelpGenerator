@@ -10,11 +10,27 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         private string RepositoryFolder { get; set; } = "";
         private short paperEditNo = -1;
 
+        public PaperEdit(short paperNo)
+        {
+            paperEditNo = paperNo;
+        }
+
+
         public PaperEdit(short paperNo, string repositoryFolder)
         {
             paperEditNo = paperNo;
             RepositoryFolder = repositoryFolder;
             GetParagraphsFromRepository();
+        }
+
+        public bool AddParagraph(string pathParagraphFile)
+        {
+            ParagraphEdit p = new ParagraphEdit(pathParagraphFile);
+            StaticObjects.Book.FormatTableObject.GetParagraphFormatData(p);
+            Note note = Notes.GetNote(p);
+            p._status = note.Status;
+            Paragraphs.Add(p);
+            return true;
         }
 
         /// <summary>

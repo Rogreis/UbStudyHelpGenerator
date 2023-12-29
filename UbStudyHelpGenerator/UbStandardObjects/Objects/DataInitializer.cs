@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UbStandardObjects;
 using UbStudyHelp.Classes;
 using UbStudyHelpGenerator.Classes;
@@ -51,6 +53,42 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 return false;
             }
         }
+
+        /// <summary>
+        /// Inicialize the list of available translations
+        /// </summary>
+        /// <param name="dataFiles"></param>
+        /// <returns></returns>
+        private static bool ReInicializeTranslations(GetDataFiles dataFiles)
+        {
+            try
+            {
+                
+                if (StaticObjects.Book.Translations == null || StaticObjects.Book.Translations.Count == 0)
+                {
+                    StaticObjects.Book.Translations = dataFiles.GetTranslations();
+                    return true;
+                }
+                List<Translation> translations= new List<Translation>(StaticObjects.Book.Translations);
+                StaticObjects.Book.Translations = dataFiles.GetTranslations();
+                foreach (var (trans1, trans2) in StaticObjects.Book.Translations.Zip(translations, (first, second) => (first, second)))
+                {
+                    if (trans1.Hash != trans2.Hash)
+                    {
+                        StaticObjects.FireSendMessage($"{trans1.Description} has new edition");
+                    }
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                string message = $"Could not initialize available translations. See log.";
+                StaticObjects.Logger.Error(message, ex);
+                StaticObjects.Logger.FatalError(message);
+                return false;
+            }
+        }
+
 
         /// <summary>
         /// Initialize the format table used for editing translations
@@ -237,6 +275,30 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 }
                 StaticObjects.Book.EditTranslation = (TranslationEdit)trans;
 
+                return true;
+            }
+            catch (Exception ex)
+            {
+                string message = "Could not initialize translations 2. See log.";
+                StaticObjects.Logger.Error(message, ex);
+                StaticObjects.Logger.FatalError(message);
+                return false;
+            }
+        }
+
+        public static bool ReInicializeTranslations()
+        {
+            try
+            {
+
+                GetDataFiles dataFiles = new GetDataFiles();
+                StaticObjects.Book = new Book();
+                StaticObjects.FireSendMessage("Getting translations list");
+                if (!ReInicializeTranslations(dataFiles))
+                {
+                    StaticObjects.FireSendMessage("InicializeTranslations failed");
+                    return false;
+                }
                 return true;
             }
             catch (Exception ex)

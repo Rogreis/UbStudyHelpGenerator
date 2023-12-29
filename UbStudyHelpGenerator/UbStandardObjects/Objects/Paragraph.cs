@@ -8,6 +8,7 @@ using System.Globalization;
 using System.Text.Json.Serialization;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 {
@@ -33,7 +34,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         PaperTitle = 1,
         SectionTitle = 2,
         NormalParagraph = 3,
-        IdentedParagraph = 4
+        IdentedParagraph = 4,
+        Divider= 5
     }
 
 
@@ -175,15 +177,37 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         {
         }
 
+        public Paragraph(Paragraph fromParagraph)
+        {
+            Text = "** text not found: error";
+            FormatInt = fromParagraph.FormatInt;
+            Paper = fromParagraph.Paper;
+            Section = fromParagraph.Section;
+            ParagraphNo = fromParagraph.ParagraphNo;
+            TranslationId = fromParagraph.TranslationId;
+            Line = fromParagraph.Line;
+            Page = fromParagraph.Page;
+        }
+
+
+        public static Paragraph DefaultParagraph(Paragraph fromParagraph)
+        {
+                Paragraph paragraph = new Paragraph();
+                paragraph.Text = "** text not found: error";
+                paragraph.FormatInt = (int)ParagraphHtmlType.NormalParagraph;
+                return paragraph;
+        }
+
 
         public Paragraph(short translationId)
         {
             TranslationId = translationId;
         }
 
-        private void FormatText(StringBuilder sb, bool isEdit, bool insertAnchor, string startTag, string endTag)
+        public string FormatText(bool useAnchor, string startTag, string endTag= "")
         {
-            sb.Append($"{startTag}{(insertAnchor ? $"<a name =\"{AName}\"/>" : "")} {ID} {Text}{endTag}");
+            if (endTag == "") endTag = startTag;
+            return $"<{startTag}{(useAnchor ? $" id=\"{AName}\"" : "" )}>{ID} {Text}</{endTag}>";
         }
 
 

@@ -6,6 +6,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
+using System.Xml.Schema;
+using System.Xml;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 namespace UbStandardObjects.Objects
@@ -114,7 +116,7 @@ namespace UbStandardObjects.Objects
                 position = newText.IndexOf('*');
                 if (position >= 0)
                 {
-                    newText = regex.Replace(newText, openItalics ? "<i>" : "</i>", 1);
+                    newText = regex.Replace(newText, openItalics ? "<em>" : "</em>", 1);
                     openItalics = !openItalics;
                 }
             }

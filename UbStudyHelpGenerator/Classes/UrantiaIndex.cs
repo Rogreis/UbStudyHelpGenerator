@@ -336,6 +336,7 @@ namespace UbStudyHelpGenerator.Classes
                                     {
                                         detail.Text = node.InnerText;
                                         Regex re = new Regex("&nbsp;");
+                                        // Used in previous version to informe about a margin what is not more used in Amadon
                                         detail.DetailType = 100 + re.Matches(detail.Text).Count;
                                         detail.Text = detail.Text.Replace("&nbsp;", "").Replace("&rsquo;", "'").Trim();
                                     }

@@ -86,10 +86,10 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             return new TUB_TOC_Entry()
             {
                 Text = paperNoParam > 0 ? paperNoParam.ToString() + " - " + text : text,
-                PaperNo= paperNo,
+                PaperNo = paperNo,
                 SectionNo = sectionNo,
-                ParagraphNo = paperNo,
-                Expanded= sectionNo == 0
+                ParagraphNo = paragraphNo,
+                Expanded = sectionNo == 0
             };
         }
 
@@ -106,7 +106,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         /// Create an object with all the index entry for the editing translation
         /// </summary>
         /// <returns></returns>
-        public List<TUB_TOC_Entry> GetTranslation_TOC_Table(bool forceGeneration= false)
+        public List<TUB_TOC_Entry> GetTranslation_TOC_Table(bool forceGeneration = false)
         {
             string indexJsonFilePath = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder, TocTableFileName);
             var options = new JsonSerializerOptions
@@ -119,8 +119,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             if (File.Exists(indexJsonFilePath) && !forceGeneration)
             {
                 string json = File.ReadAllText(indexJsonFilePath);
-                //var data= JsonSerializer.Deserialize(json, options);
-                //return null;
                 return JsonSerializer.Deserialize<List<TUB_TOC_Entry>>(json, options);
             }
 
@@ -180,11 +178,11 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 };
             }
 
-            //// Serialize the index
-            //string jsonString = JsonSerializer.Serialize<List<TUB_TOC_Entry>>(list, options);
-            //File.WriteAllText(indexJsonFilePath, jsonString);
-            ////File.WriteAllText(Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, TocTableFileName), jsonString);
-            ////File.WriteAllText(Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, TocTableFileName), jsonString);
+            // Serialize the index
+            string jsonString = JsonSerializer.Serialize<List<TUB_TOC_Entry>>(list, options);
+            File.WriteAllText(indexJsonFilePath, jsonString);
+            //File.WriteAllText(Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, TocTableFileName), jsonString);
+            //File.WriteAllText(Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, TocTableFileName), jsonString);
 
             return list;
         }
