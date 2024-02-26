@@ -1,0 +1,38 @@
+﻿a.link-button {
+background-color: white;
+color: black;
+border: none;
+padding: 10px 20px;
+margin-bottom: 10px;
+text-align: center;
+font-size: smaller;
+text-decoration: none;
+display: inline-block;
+}
+
+
+a.link-normal {
+background-color: white;
+color: black;
+padding: 10px 20px;
+margin-bottom: 10px;
+text-align: left;
+font-size: smaller;
+text-decoration: none;
+display: inline-block;
+border: none;
+}
+
+ol.no_number {
+list-style-type: none;
+}
+
+p.parag {
+padding-top: 0px;
+padding-right: 10px;
+padding-bottom: 0px;
+padding-left: 0px;
+}
+
+
+

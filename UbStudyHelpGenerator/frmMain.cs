@@ -839,6 +839,9 @@ namespace UbStudyHelpGenerator
                 return;
             }
 
+            short startDoc = 0;
+            short endDoc =197;
+
             ShowMessage($"Starting generation of {outputEpubFolder}");
 
             List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
@@ -847,7 +850,7 @@ namespace UbStudyHelpGenerator
             // Get all PT alternative papers
             if (StaticObjects.Book.EditTranslation.Papers.Count == 0)
             {
-                for (short paperNo = 0; paperNo < 197; paperNo++)
+                for (short paperNo = startDoc; paperNo < endDoc; paperNo++)
                 {
                     Logger_ShowMessage($"Getting paper {paperNo}");
                     Paper leftPaper = StaticObjects.Book.EnglishTranslation.Papers[paperNo];
@@ -871,7 +874,7 @@ namespace UbStudyHelpGenerator
 
             EpubGenerator epubGenerator = new EpubGenerator();
             epubGenerator.ShowMessage += Logger_ShowMessage;
-            epubGenerator.GenerateEpubWithTOC(tocEntries, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, outputEpubFolder);
+            epubGenerator.GenerateEpubWithTOC(tocEntries, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, outputEpubFolder, startDoc, endDoc);
             ShowMessage("Finished");
 
             //Process.Start("chrome.exe", "localhost");
