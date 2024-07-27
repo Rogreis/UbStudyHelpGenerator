@@ -561,7 +561,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             string[] description = { "Edição Bilingüe do Livro de Urântia EN / PT-BR", $"Versão de {DateTime.Now.ToString("dd/MM/yyyy HH:mm")}"};
             CoverPage(title, description, contentFolder, epubFolder);
 
-            //TableOfContents(toc_entries, title, tocFile);
+            List<TUB_TOC_Entry> tocEntries = rightPaper.GetToc();
+            TableOfContents(tocEntries, title, tocFile);
             //LandmarkPages(epubFolder, PaperList(rightTranslation));
 
             EpubPaper(leftPaper, rightPaper, epubFolder);
@@ -573,7 +574,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             return true;
         }
 
-        public void GenerateEpubWithTOC(List<TUB_TOC_Entry> toc_entries, Translation leftTranslation, Translation rightTranslation, string outputPath, short startDoc, short endDoc)
+        public void GenerateEpubWithTOC(Translation leftTranslation, Translation rightTranslation, string outputPath, short startDoc, short endDoc)
         {
             // Title for the book and folder name
             string title = $"LU - EN-PT - {DateTime.Now:yyyy-MM-dd}";

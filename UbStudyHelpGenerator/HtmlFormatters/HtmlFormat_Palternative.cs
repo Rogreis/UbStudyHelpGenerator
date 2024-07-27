@@ -72,7 +72,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
 
             sb.AppendLine("<table class=\"table table-borderless\"> ");
 
-            formatParameters.SetHeader($"English {paperNo}", "Portuguese PT BR", "GPT 4 Translation", "Compare");
+            formatParameters.SetHeader($"English {paperNo}", "GPT 4 Translation", "Portuguese PT BR", "Compare");
             formatParameters.PrintHeader(sb);
 
             // Text

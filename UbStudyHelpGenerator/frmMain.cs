@@ -840,12 +840,12 @@ namespace UbStudyHelpGenerator
             }
 
             short startDoc = 0;
-            short endDoc =197;
+            short endDoc = 197;
 
             ShowMessage($"Starting generation of {outputEpubFolder}");
 
-            List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
-            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
+            //List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
+            //TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
 
             // Get all PT alternative papers
             if (StaticObjects.Book.EditTranslation.Papers.Count == 0)
@@ -869,16 +869,16 @@ namespace UbStudyHelpGenerator
                             ShowMessage("Parágrafo não encontrado: " + pathMdFile);
                         }
                     }
-                 }
+                }
+
+                EpubGenerator epubGenerator = new EpubGenerator();
+                epubGenerator.ShowMessage += Logger_ShowMessage;
+                epubGenerator.GenerateEpubWithTOC(StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, outputEpubFolder, startDoc, endDoc);
+                ShowMessage("Finished");
+
+                //Process.Start("chrome.exe", "localhost");
+
             }
-
-            EpubGenerator epubGenerator = new EpubGenerator();
-            epubGenerator.ShowMessage += Logger_ShowMessage;
-            epubGenerator.GenerateEpubWithTOC(tocEntries, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, outputEpubFolder, startDoc, endDoc);
-            ShowMessage("Finished");
-
-            //Process.Start("chrome.exe", "localhost");
-
         }
 
         private void btValidate_Click(object sender, EventArgs e)

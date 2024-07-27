@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Linq;
 
 namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 {
@@ -81,6 +82,30 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             Paragraphs.AddRange(fullPaper.Paragraphs);
             fullPaper = null;
         }
+
+        /// <summary>
+        /// Create a TOC index for this paper
+        /// </summary>
+        /// <returns></returns>
+        public List<TUB_TOC_Entry> GetToc()
+        {
+            List<TUB_TOC_Entry> list = new List<TUB_TOC_Entry>();
+
+            var sections = this.Paragraphs.FindAll(p => p.ParagraphNo == 0);
+
+            foreach (Paragraph par in sections)
+            {
+                TUB_TOC_Entry index= new TUB_TOC_Entry();
+                index.PaperNo= par.Paper;
+                index.SectionNo = par.Section;
+                index.ParagraphNo = par.ParagraphNo;
+                index.Text = par.Text;
+                list.Add(index);
+            }
+
+            return list;
+        }
+
 
 
         public virtual Paragraph GetParagraph(TOC_Entry entry)

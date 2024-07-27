@@ -107,7 +107,7 @@ namespace UbStudyHelpGenerator.PtBr
             sb.AppendLine("			<div class=\"container-fluid\"> ");
             sb.AppendLine("				<ul class=\"navbar-nav\"> ");
             sb.AppendLine("					<li class=\"nav-item bg-primary text-white\"> ");
-            sb.AppendLine($"						<span>O Livro de Urântia - Tradução/Revisão PT BR -  v {DateTime.Now.ToString("dd/MM/yyyy hh/mm")}&nbsp;&nbsp;&nbsp;Status:&nbsp;</span> ");
+            sb.AppendLine($"						<span>O Livro de Urântia - Tradução/Revisão PT BR -  v {DateTime.Now.ToString("dd/MM/yyyy hh:mm")}&nbsp;&nbsp;&nbsp;Status:&nbsp;</span> ");
             sb.AppendLine("					</li> ");
             sb.AppendLine("					<li class=\"nav-item bg-primary text-white\"> ");
             sb.AppendLine("						<span class=\"nav-link badge badgeStarted\">Started</span>&nbsp;");
@@ -115,7 +115,7 @@ namespace UbStudyHelpGenerator.PtBr
             sb.AppendLine("						<span class=\"badge badgeDoubt\">Doubt</span>&nbsp;");
             sb.AppendLine("						<span class=\"badge badgeOk\">Ok</span>&nbsp;");
             sb.AppendLine("						<span class=\"badge badgeClosed\">Closed</span>");
-            sb.AppendLine("						<span class=\"badge btn btn-warning\" onclick=\"loadCompare()\">Show Compare</span>");
+            //sb.AppendLine("						<span class=\"badge btn btn-warning\" onclick=\"loadCompare()\">Show Compare</span>");
             sb.AppendLine("					</li> ");
             sb.AppendLine("				</ul> ");
             sb.AppendLine("			</div> ");
