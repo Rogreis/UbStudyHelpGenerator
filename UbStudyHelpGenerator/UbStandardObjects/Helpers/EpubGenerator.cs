@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
-using static Lucene.Net.Index.SegmentReader;
 using Paragraph = UbStudyHelpGenerator.UbStandardObjects.Objects.Paragraph;
 
 namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
@@ -18,15 +17,17 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
     /// </summary>
     public class EpubGenerator
     {
-        private const string PackageFilePath = "EPUB/package.opf";
+        private const string PackageFilePath = @"EPUB\package.opf";
+        private const string PackageFileHtmlPath = "EPUB/package.opf";
         protected const string DividerString = "* * * * *";
         protected const string HtmlSpace = "&nbsp;";
         public event dlShowMessage ShowMessage = null;
+        private const string CssLocation = @"EPUB\content\Epub.css";
 
         private string GenerateLink(string text, string href, bool useButtonFormat= true)
         {
             if (useButtonFormat)
-                return $"<a class=\"link-button\" href=\"{href}\">{text}</a>";
+                return $" <a class=\"link-button\" href=\"{href}\">{text}</a>";
             else
                 return $"<a class=\"link-normal\" href=\"{href}\">{text}</a>";
         }
@@ -84,6 +85,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
         }
 
 
+ 
         /// <summary>
         /// Write the mime type file and copy the css
         /// </summary>
@@ -96,8 +98,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             // Write the content to the file with UTF-8 encoding
             File.WriteAllText(mimeTypeFile, content, Encoding.ASCII);
 
-            string cssSource = Path.Combine(System.Windows.Forms.Application.StartupPath, @"Epub/Epub.css");
-            string cssDestination = Path.Combine(outputPath, @"EPUB/content/Epub.css");
+            string cssSource = Path.Combine(System.Windows.Forms.Application.StartupPath, @"Epub\Epub.css");
+            string cssDestination = Path.Combine(outputPath, CssLocation);
             File.Copy(cssSource, cssDestination, true);
         }
 
@@ -115,7 +117,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             string containerXml = $@"<?xml version=""1.0""?>
             <container version=""1.0"" xmlns=""urn:oasis:names:tc:opendocument:xmlns:container"">
                 <rootfiles>
-                    <rootfile full-path=""{PackageFilePath}"" media-type=""application/oebps-package+xml"" />
+                    <rootfile full-path=""{PackageFileHtmlPath}"" media-type=""application/oebps-package+xml"" />
                 </rootfiles>
             </container>";
             File.WriteAllText(containerFile, containerXml, Encoding.UTF8);
@@ -125,16 +127,16 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
 
         private void CoverPage(string title, string[] description, string outputPath, string epubFolder)
         {
-            const string imagesFolderName = "images";
-            string pathImages = Path.Combine(epubFolder, imagesFolderName);
-            Directory.CreateDirectory(pathImages);
+            //const string imagesFolderName = "images";
+            //string pathImages = Path.Combine(epubFolder, imagesFolderName);
+            //Directory.CreateDirectory(pathImages);
  
             StringBuilder sb = new StringBuilder();
             sb.AppendLine("<?xml version=\"1.0\" encoding=\"UTF-8\"?>  ");
             sb.AppendLine("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en-US\" lang=\"en-US\">  ");
             sb.AppendLine("	<head>  ");
             sb.AppendLine($"		<title>{title}</title>  ");
-            sb.AppendLine("		<link rel=\"stylesheet\" type=\"text/css\" href=\"content/epub.css\"/>  ");
+            sb.AppendLine("		<link rel=\"stylesheet\" type=\"text/css\" href=\"content/Epub.css\"/>  ");
             sb.AppendLine("		<meta charset=\"utf-8\"/>  ");
             sb.AppendLine("		<style> ");
             sb.AppendLine("			body { ");
@@ -189,7 +191,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             File.WriteAllText(coverFilePath, sb.ToString(), Encoding.UTF8);
         }
 
-        private void PackageFile(string title, string opfFile)
+        private void PackageFile(string title, string opfFile, short paperNo)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -223,14 +225,16 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             sb.AppendLine("   </metadata> ");
             sb.AppendLine("   <manifest> ");
             sb.AppendLine("      <item href=\"cover.xhtml\" id=\"cover\" media-type=\"application/xhtml+xml\"/>  ");
-            sb.AppendLine("	     <item href=\"images/logo.png\" id=\"cover-image\" properties=\"cover-image\" media-type=\"image/png\"/> ");
-            sb.AppendLine("      <item href=\"css/epub.css\" id=\"css1\" media-type=\"text/css\"/>  ");
-            sb.AppendLine("      <item href=\"css/synth.css\" id=\"css2\" media-type=\"text/css\"/>  ");
+            //sb.AppendLine("	     <item href=\"images/logo.png\" id=\"cover-image\" properties=\"cover-image\" media-type=\"image/png\"/> ");
+            sb.AppendLine("      <item href=\"content/Epub.css\" id=\"css1\" media-type=\"text/css\"/>  ");
+            //sb.AppendLine("      <item href=\"css/synth.css\" id=\"css2\" media-type=\"text/css\"/>  ");
 
             // Link for the content files
-            for (int i = 0; i < 197; i++)
-                sb.AppendLine($"      <item href=\"content/bl_en_pt{i:000}.xhtml\" id=\"paper{i:000}\" media-type=\"application/xhtml+xml\"/>  ");
-            //sb.AppendLine("      <item href=\"toc.ncx\" id=\"ncx\" media-type=\"application/x-dtbncx+xml\"/> ");
+            //foreach (int i in paperSet)
+            //    sb.AppendLine($"      <item href=\"content/bl_en_pt{i:000}.xhtml\" id=\"paper{i:000}\" media-type=\"application/xhtml+xml\"/>  ");
+
+            sb.AppendLine($"      <item href=\"content/bl_en_pt{paperNo:000}.xhtml\" id=\"paper{paperNo:000}\" media-type=\"application/xhtml+xml\"/>  ");
+
             // Toc must be after the content pages
             sb.AppendLine("     <item href=\"toc.xhtml\" id=\"toc\" media-type=\"application/xhtml+xml\" properties=\"nav\"/>  ");
 
@@ -241,6 +245,21 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             //    if (landmark.ShouldGenerate)
             //        sb.AppendLine($"		<item id=\"{landmark.Id}\" href=\"{landmark.Href}\" media-type=\"application/xhtml+xml\"/> ");
             //}
+
+
+            // Copia as fontes de texto
+            string sourceDirectory = @"C:\Urantia\Epub\fonts";
+            string destinationDirectory = Path.Combine(Path.GetDirectoryName(opfFile), "fonts");
+            // Create the destination directory if it doesn't exist
+            Directory.CreateDirectory(destinationDirectory);
+            // Copy all files from the source directory to the destination directory
+            foreach (string file in Directory.GetFiles(sourceDirectory))
+            {
+                string destinationFile = Path.Combine(destinationDirectory, Path.GetFileName(file));
+                File.Copy(file, destinationFile, true);
+            }
+
+
 
             // Fonts
             sb.AppendLine("		<item id=\"epub.embedded.font.1\" href=\"fonts/UbuntuMono-B.ttf\" media-type=\"application/vnd.ms-opentype\"/> ");
@@ -264,10 +283,11 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             //}
             //sb.AppendLine("      <itemref idref=\"toc\" linear=\"no\"/> ");
 
-            for (int i = 0; i < 197; i++)
-            {
-                sb.AppendLine($"      <itemref idref=\"paper{i:000}\"/> ");
-            }
+            //foreach (int i in paperSet)
+            //{
+            //    sb.AppendLine($"      <itemref idref=\"paper{i:000}\"/> ");
+            //}
+            sb.AppendLine($"      <itemref idref=\"paper{paperNo:000}\"/> ");
             sb.AppendLine("   </spine> ");
 
             sb.AppendLine("</package> ");
@@ -394,22 +414,22 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             sb.AppendLine("	lang=\"en\"> ");
             sb.AppendLine("	<head> ");
             sb.AppendLine($"<title>{title}</title> ");
-            sb.AppendLine("		<link rel=\"stylesheet\" type=\"text/css\" href=\"Epub.css\" /> ");
+            sb.AppendLine("		<link rel=\"stylesheet\" type=\"text/css\" href=\"content/Epub.css\" /> ");
             sb.AppendLine("	</head> ");
             sb.AppendLine("	<body> ");
             sb.AppendLine($"<h1>{title}</h1> ");
 
-            // landmarks
-            sb.AppendLine("<nav epub:type=\"landmarks\" id=\"landmarks\" hidden=\"\"> ");
-            sb.AppendLine("   <h2>Conteúdo desta edição</h2> ");
-            sb.AppendLine("   <ol class=\"no_number\"> ");
-            sb.AppendLine("       <li><a epub:type=\"toc\" href=\"#toc\">Documentos</a></li> ");
-            //foreach (Landmark landmark in LandmarkList)
-            //{
-            //    sb.AppendLine($"       <li><a epub:type=\"{landmark.Id}\" href=\"{landmark.Href}\">{landmark.Title}</a></li> ");
-            //}
-            sb.AppendLine("   </ol> ");
-            sb.AppendLine("</nav> ");
+            //// landmarks
+            //sb.AppendLine("<nav epub:type=\"landmarks\" id=\"landmarks\" hidden=\"\"> ");
+            //sb.AppendLine("   <h2>Conteúdo desta edição</h2> ");
+            //sb.AppendLine("   <ol class=\"no_number\"> ");
+            //sb.AppendLine("       <li><a epub:type=\"toc\" href=\"#toc\">Documentos</a></li> ");
+            ////foreach (Landmark landmark in LandmarkList)
+            ////{
+            ////    sb.AppendLine($"       <li><a epub:type=\"{landmark.Id}\" href=\"{landmark.Href}\">{landmark.Title}</a></li> ");
+            ////}
+            //sb.AppendLine("   </ol> ");
+            //sb.AppendLine("</nav> ");
 
 
             sb.AppendLine("<nav epub:type=\"toc\" id=\"toc\" role=\"doc-toc\"> ");
@@ -455,35 +475,35 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
         {
             // Fix to the data; reason: divider is not in the paper json file as a paragraph type, but as a property
             ParagraphHtmlType type = parLeft.IsDivider ? ParagraphHtmlType.Divider : parLeft.Format;
+            string padding = "style=\"padding: 20px;\"";
+            string paddingDivider = "style=\"padding: 20px;\" text-align: center";
 
             sb.AppendLine("<tr>");
             switch (type)
             {
                 case ParagraphHtmlType.BookTitle:
-                    sb.AppendLine($"<td>{parLeft.FormatText(false, startTag: "h2")}</td>");
-                    sb.AppendLine($"<td>{parRight.FormatText(true, startTag: "h2")}</td>");
+                    sb.AppendLine($"<td {padding}>{parLeft.FormatText(false, startTag: "h2")}</td>");
+                    sb.AppendLine($"<td {padding}>{parRight.FormatText(true, startTag: "h2")}</td>");
                     break;
                 case ParagraphHtmlType.PaperTitle:
-                    sb.AppendLine($"<td>{parLeft.FormatText(false, startTag: "h3")}</td>");
-                    sb.AppendLine($"<td>{parRight.FormatText(true, startTag: "h3")}</td>");
+                    sb.AppendLine($"<td {padding}>{parLeft.FormatText(false, startTag: "h3")}</td>");
+                    sb.AppendLine($"<td {padding}>{parRight.FormatText(true, startTag: "h3")}</td>");
                     break;
                 case ParagraphHtmlType.SectionTitle:
-                    sb.AppendLine($"<td>{parLeft.FormatText(false, startTag: "h4")}</td>");
-                    sb.AppendLine($"<td>{parRight.FormatText(true, startTag: "h4")}</td>");
+                    sb.AppendLine($"<td {padding}>{parLeft.FormatText(false, startTag: "h4")}</td>");
+                    sb.AppendLine($"<td {padding}>{parRight.FormatText(true, startTag: "h4")}</td>");
                     break;
                 case ParagraphHtmlType.Divider:
-                    sb.AppendLine($"<td style=\"text-align: center;\">{DividerString}</td>");
-                    sb.AppendLine($"<td style=\"text-align: center;\">{DividerString}</td>");
+                    sb.AppendLine($"<td {paddingDivider}>{DividerString}</td>");
+                    sb.AppendLine($"<td {paddingDivider}>{DividerString}</td>");
                     break;
                 case ParagraphHtmlType.NormalParagraph:
-                    //sb.AppendLine($"<td>{parLeft.FormatText(false, startTag: "p class=\"parag\"")}{BackToTopLink("Back to Top")}</td>");
-                    //sb.AppendLine($"<td>{parRight.FormatText(true, startTag: "p class=\"parag\"")}{BackToTopLink("Voltar ao Início")}</td>");
-                    sb.AppendLine($"<td cellpadding=\"20\">{parLeft.FormatText(false, startTag: "p ")}{BackToTopLink("Back to Top")}</td>");
-                    sb.AppendLine($"<td cellpadding=\"20\">{parRight.FormatText(true, startTag: "p ")}{BackToTopLink("Voltar ao Início")}</td>");
+                    sb.AppendLine($"<td {padding}>{parLeft.FormatText(false, startTag: "p ")}{BackToTopLink("Back to Top")}</td>");
+                    sb.AppendLine($"<td {padding}>{parRight.FormatText(true, startTag: "p ")}{BackToTopLink("Voltar ao Início")}</td>");
                     break;
                 case ParagraphHtmlType.IdentedParagraph:
-                    sb.AppendLine($"<td>{parLeft.FormatText(false, startTag: "bloquote><p", "p></bloquote")}{BackToTopLink("Back to Top")}</td>");
-                    sb.AppendLine($"<td>{parRight.FormatText(true, startTag: "bloquote><p", "p></bloquote")}{BackToTopLink("Voltar ao Início")}</td>");
+                    sb.AppendLine($"<td class=\"blockquote-cell\">{parLeft.FormatText(false, startTag: "p")}{BackToTopLink("Back to Top")}</td>");
+                    sb.AppendLine($"<td class=\"blockquote-cell\">{parRight.FormatText(true, startTag: "p")}{BackToTopLink("Voltar ao Início")}</td>");
                     break;
             }
             sb.AppendLine("</tr>");
@@ -503,9 +523,9 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             sb.AppendLine("		<link rel=\"stylesheet\" type=\"text/css\" href=\"Epub.css\" /> ");
             sb.AppendLine("	</head> ");
             sb.AppendLine("	<body> ");
+            sb.AppendLine($" <a id=\"top\"></a>");
             sb.AppendLine("	<table> ");
 
-            sb.AppendLine($"<a id=\"top\"></a>");
             PrintLine(sb, "<h2>" + leftPaper.Title + "</h2>", "<h2>" + rightPaper.Title + "</h2>");
             PrintLine(sb, PageTopIndex(leftPaper), PageTopIndex(rightPaper));
 
@@ -555,7 +575,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             ContainerFile(ebookFolder);
 
             // Print the package file
-            PackageFile(title, opfFile);
+            PackageFile(title, opfFile, paperNo);
 
             // Print the cover page
             string[] description = { "Edição Bilingüe do Livro de Urântia EN / PT-BR", $"Versão de {DateTime.Now.ToString("dd/MM/yyyy HH:mm")}"};
@@ -574,7 +594,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             return true;
         }
 
-        public void GenerateEpubWithTOC(Translation leftTranslation, Translation rightTranslation, string outputPath, short startDoc, short endDoc)
+        public void GenerateEpubWithTOC(Translation leftTranslation, Translation rightTranslation, string outputPath, HashSet<short> paperSet)
         {
             // Title for the book and folder name
             string title = $"LU - EN-PT - {DateTime.Now:yyyy-MM-dd}";
@@ -584,7 +604,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             Directory.CreateDirectory(ebookFolder);
 
             // Create a folder for each paper
-            for(short paperNo= startDoc; paperNo< endDoc; paperNo++)
+            foreach(short paperNo in paperSet)
             {
                 string paperPolder = Path.Combine(ebookFolder, $"Doc{paperNo:000}");
                 Directory.CreateDirectory(paperPolder);

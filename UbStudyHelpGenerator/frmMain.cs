@@ -805,6 +805,26 @@ namespace UbStudyHelpGenerator
             }
         }
 
+        private void CreateEpup(short paperNo)
+        {
+            Logger_ShowMessage($"Getting paper {paperNo}");
+            Paper leftPaper = StaticObjects.Book.EnglishTranslation.Papers[paperNo];
+            PaperEdit rightPaper = new PaperEdit(paperNo);
+            StaticObjects.Book.EditTranslation.Papers.Add(rightPaper);
+            foreach (Paragraph p in StaticObjects.Book.EnglishTranslation.Papers[paperNo].Paragraphs)
+            {
+                string pathMdFile = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder,
+                                                   $@"Doc{p.Paper:000}\Par_{p.Paper:000}_{p.Section:000}_{p.ParagraphNo:000}.md");
+                if (File.Exists(pathMdFile))
+                {
+                    rightPaper.AddParagraph(pathMdFile);
+                }
+                else
+                {
+                    ShowMessage("Parágrafo não encontrado: " + pathMdFile);
+                }
+            }
+        }
 
         private void btEpub_Click(object sender, EventArgs e)
         {
@@ -839,8 +859,21 @@ namespace UbStudyHelpGenerator
                 return;
             }
 
-            short startDoc = 0;
-            short endDoc = 197;
+            HashSet<short> paperSet = new HashSet<short>();
+
+            //short startDoc = 0;
+            //short endDoc = 197;
+            //for (short paperNo = startDoc; paperNo < endDoc; paperNo++)
+            //{
+            //    paperSet.Add(paperNo);
+            //}
+
+           
+            paperSet.Add(5);
+            paperSet.Add(143);
+            paperSet.Add(144);
+
+            bool useSet = true;
 
             ShowMessage($"Starting generation of {outputEpubFolder}");
 
@@ -850,30 +883,20 @@ namespace UbStudyHelpGenerator
             // Get all PT alternative papers
             if (StaticObjects.Book.EditTranslation.Papers.Count == 0)
             {
-                for (short paperNo = startDoc; paperNo < endDoc; paperNo++)
+                if (useSet)
                 {
-                    Logger_ShowMessage($"Getting paper {paperNo}");
-                    Paper leftPaper = StaticObjects.Book.EnglishTranslation.Papers[paperNo];
-                    PaperEdit rightPaper = new PaperEdit(paperNo);
-                    StaticObjects.Book.EditTranslation.Papers.Add(rightPaper);
-                    foreach (Paragraph p in StaticObjects.Book.EnglishTranslation.Papers[paperNo].Paragraphs)
+                    foreach (short paperNo in paperSet)
                     {
-                        string pathMdFile = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder,
-                                                           $@"Doc{p.Paper:000}\Par_{p.Paper:000}_{p.Section:000}_{p.ParagraphNo:000}.md");
-                        if (File.Exists(pathMdFile))
-                        {
-                            rightPaper.AddParagraph(pathMdFile);
-                        }
-                        else
-                        {
-                            ShowMessage("Parágrafo não encontrado: " + pathMdFile);
-                        }
+                        CreateEpup(paperNo);
                     }
+                }
+                else
+                {
                 }
 
                 EpubGenerator epubGenerator = new EpubGenerator();
                 epubGenerator.ShowMessage += Logger_ShowMessage;
-                epubGenerator.GenerateEpubWithTOC(StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, outputEpubFolder, startDoc, endDoc);
+                epubGenerator.GenerateEpubWithTOC(StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, outputEpubFolder, paperSet);
                 ShowMessage("Finished");
 
                 //Process.Start("chrome.exe", "localhost");
@@ -904,8 +927,8 @@ namespace UbStudyHelpGenerator
         private void btTest_Click(object sender, EventArgs e)
         {
 
-            if (!Initialize())
-                return;
+            if (!InitializeApp()) return;
+
             StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
@@ -924,35 +947,37 @@ namespace UbStudyHelpGenerator
             }
 
             ShowMessage(null);
-            GitHistory gitHistory = new GitHistory();
-            gitHistory.ShowMessage += Logger_ShowMessage;
-            gitHistory.Get(StaticObjects.Parameters.EditParagraphsRepositoryFolder, "Doc044/Par_044_006_005.md", StaticObjects.Parameters.EditBookRepositoryFolder);
 
-            //short paperNo = 101;
+            short paperNo = 101;
+            Encoding enc = Encoding.UTF8;
+            string outputPathHtmlFiles = @"Y:\home\r\github\rogerio\tub_ai\tub_text";
+            ShowMessage($"Starting exporting paragraphs to html format for paper: {paperNo}");
+            foreach (Paragraph p in StaticObjects.Book.EnglishTranslation.Papers[paperNo].Paragraphs)
+            {
+                string directory = Path.Combine(outputPathHtmlFiles, $@"Doc{p.Paper:000}");
+                Directory.CreateDirectory(directory);
+                string pathMdFile = Path.Combine(directory, $@"Par_{p.Paper:000}_{p.Section:000}_{p.ParagraphNo:000}.html");
+                if (File.Exists(pathMdFile))
+                {
+                    File.Delete(pathMdFile);
+                }
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("<html>");
+                sb.AppendLine("<head>");
+                sb.AppendLine($"<title>{p.Paper:000}_{p.Section:000}_{p.ParagraphNo:000}</title>");
+                //sb.AppendLine($"content=\"text/html; charset=\"{enc.WebName}\"");
+                sb.AppendLine("</head>");
+                sb.AppendLine("<body>");
+                sb.AppendLine("<p>");
+                sb.AppendLine($"{p.TextNoHtml.ToLower()}");
+                sb.AppendLine("</p>");
+                sb.AppendLine("</body>");
+                sb.AppendLine("</html>");
+                File.WriteAllText(pathMdFile, sb.ToString());
+            }
 
-            //ShowMessage($"Starting rogreis.github.io page {paperNo}");
+            ShowMessage("Finished exporting");
 
-            //// TOC Table not forced
-            //ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
-            //List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
-            //TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
-            //string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
-            //toc_table.Html(pathTocTable);
-
-            //HtmlFormat_Palternative formatter = new HtmlFormat_Palternative(StaticObjects.Parameters);
-            //TUB_PT_BR tubPT_BR = new TUB_PT_BR(StaticObjects.Parameters, formatter);
-
-            ////tubPT_BR.ShowMessage += Logger_ShowMessage;
-            //tubPT_BR.ShowPaperNumber += ShowPaperNumber;
-            //tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
-
-            //string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "index.html");
-            //tubPT_BR.MainPage(formatter, mainPageFilePath);
-
-            //tubPT_BR.RepositoryToBookHtmlPages(toc_table, StaticObjects.Book.EnglishTranslation, StaticObjects.Book.EditTranslation, paperNo);
-            //ShowMessage("Finished");
-
-            //Process.Start("chrome.exe", "localhost");
         }
 
 
@@ -1322,8 +1347,8 @@ namespace UbStudyHelpGenerator
 
         private void btAlternativaEdit_Click(object sender, EventArgs e)
         {
-            frmEdit frmEdit = new frmEdit();
-            frmEdit.ShowDialog();
+            //frmEdit frmEdit = new frmEdit();
+            //frmEdit.ShowDialog();
         }
 
         #region Translations functions

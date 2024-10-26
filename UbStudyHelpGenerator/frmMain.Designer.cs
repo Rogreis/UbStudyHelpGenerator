@@ -41,6 +41,7 @@ namespace UbStudyHelpGenerator
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageEditTranslation = new System.Windows.Forms.TabPage();
             this.splitContainerPtAlternative = new System.Windows.Forms.SplitContainer();
+            this.btValidate = new System.Windows.Forms.Button();
             this.btEpub = new System.Windows.Forms.Button();
             this.btTest = new System.Windows.Forms.Button();
             this.btCompare2 = new System.Windows.Forms.Button();
@@ -102,7 +103,6 @@ namespace UbStudyHelpGenerator
             this.btWordCompare = new System.Windows.Forms.Button();
             this.btWordToList = new System.Windows.Forms.Button();
             this.textBoxTranslations = new System.Windows.Forms.TextBox();
-            this.btValidate = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -154,13 +154,13 @@ namespace UbStudyHelpGenerator
             // 
             this.toolStripStatusLabelPaperNumber.AutoSize = false;
             this.toolStripStatusLabelPaperNumber.Name = "toolStripStatusLabelPaperNumber";
-            this.toolStripStatusLabelPaperNumber.Size = new System.Drawing.Size(100, 48);
+            this.toolStripStatusLabelPaperNumber.Size = new System.Drawing.Size(100, 46);
             // 
             // toolStripStatusLabelMessage
             // 
             this.toolStripStatusLabelMessage.BackColor = System.Drawing.SystemColors.ControlDark;
             this.toolStripStatusLabelMessage.Name = "toolStripStatusLabelMessage";
-            this.toolStripStatusLabelMessage.Size = new System.Drawing.Size(877, 48);
+            this.toolStripStatusLabelMessage.Size = new System.Drawing.Size(877, 46);
             this.toolStripStatusLabelMessage.Spring = true;
             this.toolStripStatusLabelMessage.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
@@ -309,6 +309,18 @@ namespace UbStudyHelpGenerator
             this.splitContainerPtAlternative.SplitterWidth = 3;
             this.splitContainerPtAlternative.TabIndex = 2;
             // 
+            // btValidate
+            // 
+            this.btValidate.BackColor = System.Drawing.Color.Chartreuse;
+            this.btValidate.Location = new System.Drawing.Point(189, 171);
+            this.btValidate.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btValidate.Name = "btValidate";
+            this.btValidate.Size = new System.Drawing.Size(163, 28);
+            this.btValidate.TabIndex = 23;
+            this.btValidate.Text = "Validate XHTML";
+            this.btValidate.UseVisualStyleBackColor = false;
+            this.btValidate.Click += new System.EventHandler(this.btValidate_Click);
+            // 
             // btEpub
             // 
             this.btEpub.BackColor = System.Drawing.Color.Chartreuse;
@@ -323,13 +335,13 @@ namespace UbStudyHelpGenerator
             // 
             // btTest
             // 
-            this.btTest.BackColor = System.Drawing.Color.PeachPuff;
-            this.btTest.Location = new System.Drawing.Point(751, 103);
+            this.btTest.BackColor = System.Drawing.Color.Coral;
+            this.btTest.Location = new System.Drawing.Point(365, 171);
             this.btTest.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btTest.Name = "btTest";
             this.btTest.Size = new System.Drawing.Size(156, 28);
             this.btTest.TabIndex = 21;
-            this.btTest.Text = "Test";
+            this.btTest.Text = "Export To TUB AI";
             this.btTest.UseVisualStyleBackColor = false;
             this.btTest.Click += new System.EventHandler(this.btTest_Click);
             // 
@@ -1082,18 +1094,6 @@ namespace UbStudyHelpGenerator
             this.textBoxTranslations.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textBoxTranslations.Size = new System.Drawing.Size(722, 516);
             this.textBoxTranslations.TabIndex = 2;
-            // 
-            // btValidate
-            // 
-            this.btValidate.BackColor = System.Drawing.Color.Chartreuse;
-            this.btValidate.Location = new System.Drawing.Point(189, 171);
-            this.btValidate.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.btValidate.Name = "btValidate";
-            this.btValidate.Size = new System.Drawing.Size(163, 28);
-            this.btValidate.TabIndex = 23;
-            this.btValidate.Text = "Validate XHTML";
-            this.btValidate.UseVisualStyleBackColor = false;
-            this.btValidate.Click += new System.EventHandler(this.btValidate_Click);
             // 
             // frmMain
             // 

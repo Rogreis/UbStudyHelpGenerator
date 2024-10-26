@@ -11,7 +11,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
 {
     internal class EpubBookGenerator
     {
-        private const string PackageFilePath = "EPUB/package.opf";
+        private const string PackageFilePath = @"EPUB\package.opf";
         protected const string DividerString = "* * * * *";
         protected const string HtmlSpace = "&nbsp;";
         public event dlShowMessage ShowMessage = null;
