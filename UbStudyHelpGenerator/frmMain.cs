@@ -1,5 +1,4 @@
-﻿using Lucene.Net.Messages;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -7,10 +6,9 @@ using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using System.Web.UI.WebControls.WebParts;
 using System.Windows.Forms;
-using System.Xml.Schema;
 using System.Xml;
+using System.Xml.Schema;
 using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.Database;
@@ -22,7 +20,6 @@ using UbStudyHelpGenerator.UbStandardObjects.Helpers;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 using static System.Environment;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using System.Web;
 
 namespace UbStudyHelpGenerator
 {
@@ -1507,5 +1504,32 @@ namespace UbStudyHelpGenerator
             ShowMessage("Finished.");
         }
 
+        private void ShowParamonyMessage(string message)
+        {
+            tsParamonyMessages.AppendText(message + Environment.NewLine);
+            Application.DoEvents();
+        }
+
+        private void btyParamonyImport_Click(object sender, EventArgs e)
+        {
+            //string htmlContent = @"<br>""Are you King of Jews"": [UB <a href=""https://www.urantiabookstudy.com/HTML/UrantiaBook/p185.htm#U185_3_2"">185:3.2</a>] 
+            //<a href=""https://www.urantiabookstudy.com/HTML/KJV/NewTestament.htm#Jn_18_33"">Jn 18:33,</a> 
+            //<a href=""https://www.urantiabookstudy.com/HTML/KJV/NewTestament.htm#Lk_23_3"">Lk 23:3,</a> 
+            //<a href=""https://www.urantiabookstudy.com/HTML/KJV/NewTestament.htm#Mk_15_2"">Mk 15:2,</a> 
+            //<a href=""https://www.urantiabookstudy.com/HTML/KJV/NewTestament.htm#Mt_27_11"">Mt 27:11</a><br>";
+
+            string htmlContent = File.ReadAllText(@"C:\Urantia\Paramony\PaginaComCitacoes.html");
+
+            var parser = new HtmlParser();
+            var result = parser.ParseHtmlExtract(htmlContent);
+
+            ShowParamonyMessage("Quote: " + result.Quote);
+            ShowParamonyMessage("UB Reference: " + result.UBReference);
+            ShowParamonyMessage("Bible References:");
+            foreach (var reference in result.BibleReferences)
+            {
+                ShowParamonyMessage($" - {reference.BibleReference}: {reference.Url}");
+            }
+        }
     }
 }
