@@ -15,9 +15,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         public int Paper { get; set; }
         public int Section { get; set; }
         public int Paragraph { get; set; }
-        public string TranslatorNote { get; set; }
-        public string Notes { get; set; }
-        public DateTime LastDate { get; set; }
         public short Status { get; set; } = 0;
         public short Format { get; set; } = 0;
     }
@@ -39,13 +36,16 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
         private static string RepositoryNotesPath(short paperNo)
         {
-            return Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder, $@"{ParagraphEdit.FolderPath(paperNo)}\Notes.json");
+            string pathSubFolder= $@"{ParagraphEdit.FolderPath(paperNo)}";
+            string notesFolder = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder, pathSubFolder);
+            return Path.Combine(notesFolder, "Notes.json");
         }
 
 
-        private static List<Note> GetNotes(short paperNo)
+        public static List<Note> GetNotes(short paperNo)
         {
-            string jsonString = File.ReadAllText(RepositoryNotesPath(paperNo));
+            string notesPath = RepositoryNotesPath(paperNo);
+            string jsonString = File.ReadAllText(notesPath);
             NotesRoot root = JsonSerializer.Deserialize<NotesRoot>(jsonString, Options);
             if (root == null)
             {
@@ -54,25 +54,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             return new List<Note>(root.Notes);
         }
 
-        public static Note GetNote(Paragraph p)
-        {
-            List<Note> list = GetNotes(p.Paper);
-            Note note = list.Find(n => n.Paper == p.Paper && n.Section == p.Section && n.Paragraph == p.ParagraphNo);
-            if (note == null)
-            {
-                note= new Note();
-                note.Paper = p.Paper;
-                note.Section = p.Section;
-                note.Paragraph = p.ParagraphNo;
-
-                note.TranslatorNote = "";
-                note.Notes = "";
-                note.LastDate= DateTime.Now;
-            }
-            return note;
-        }
-
-        public static void SaveNotes(ParagraphEdit p)
+        public static void StoreParagraphNote(ParagraphEdit p)
         {
             try
             {
@@ -83,21 +65,32 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                     throw new Exception($"Could not get note for Paragraph {p}");
                 }
 
-                note.TranslatorNote= p.TranslatorNote;
                 note.Status = (short)p._status;
-                note.Notes= p.Comment;
-                note.LastDate= DateTime.Now.ToUniversalTime();
                 note.Format = (short)p.FormatInt;
 
-                NotesRoot root = new NotesRoot();
-                root.Notes = list.ToArray();
-                string jsonString = JsonSerializer.Serialize<NotesRoot>(root, Options);
-                File.WriteAllText(RepositoryNotesPath(p.Paper), jsonString);
+                StorePaperNote(list, p.Paper);
             }
             catch (Exception)
             {
                 throw;
             }
         }
+
+        public static void StorePaperNote(List<Note> list, short paperNo)
+        {
+            try
+            {
+                NotesRoot root = new NotesRoot();
+                root.Notes = list.ToArray();
+                string jsonString = JsonSerializer.Serialize<NotesRoot>(root, Options);
+                File.WriteAllText(RepositoryNotesPath(paperNo), jsonString);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+
     }
 }

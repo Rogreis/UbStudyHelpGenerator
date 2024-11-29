@@ -1,4 +1,7 @@
 ﻿using HtmlAgilityPack;
+using LibGit2Sharp;
+using Microsoft.Office.Interop.Word;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -248,7 +251,16 @@ namespace UbStudyHelpGenerator.Classes
         #endregion
 
 
+        public class RootobjectToDeserializeSubjectIndex
+        {
+            public SubjectIndex[] Property1 { get; set; }
+        }
 
+        public class SubjectIndex
+        {
+            public string Title { get; set; }
+            public Detail[] Details { get; set; }
+        }
 
         public class Detail
         {
@@ -379,12 +391,37 @@ namespace UbStudyHelpGenerator.Classes
             string pathJsonIndex = Path.Combine(outputJsonIndexFiles, "tubIndex_000.json");
             string jsonString = JsonSerializer.Serialize<List<TubIndexEntry>>(tubIndexEntries);
             File.WriteAllText(pathJsonIndex, jsonString);
-
         }
 
-        private void JobCheckingSelenium_ShowMessage(string mensagem, bool Grave)
+        private List<SubjectIndex> SubjectIndexList = null;
+
+
+
+        public List<string> GetGeneratedSubjectIndexList(string pathAllSubjects, string searchString)
         {
-            throw new NotImplementedException();
+            if (SubjectIndexList == null)
+            {
+                var options = new JsonSerializerOptions
+                {
+                    AllowTrailingCommas = true
+                };
+                string jsonString = File.ReadAllText(pathAllSubjects);
+
+                SubjectIndexList = JsonSerializer.Deserialize<List<SubjectIndex>>(jsonString);
+            }
+
+            // Find all titles using LINQ and the FindAll method:
+            List<string> list = SubjectIndexList.FindAll(si => si.Title.IndexOf(searchString, StringComparison.OrdinalIgnoreCase) >= 0)
+                                           .Select(si => si.Title)
+                                           .ToList();
+            return list;
         }
+
+        public SubjectIndex GetSubjectIndex(string title)
+        {
+            return SubjectIndexList.Find(si => si.Title == title);
+        }
+
+
     }
 }

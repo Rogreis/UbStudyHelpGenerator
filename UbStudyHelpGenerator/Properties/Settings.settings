@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="SqlServerConnectionString" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Server=CTW01001;Database=UBT;User Id=sa;Password=d350swsi;</Value>
+      <Value Profile="(Default)">Server=L-PW01ZSDS\SQLEXPRESS;Database=UBT;User Id=sa;Password=d350swsi;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

@@ -1,13 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
-using System.Xml.Schema;
-using System.Xml;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 namespace UbStandardObjects.Objects
@@ -43,7 +36,6 @@ namespace UbStandardObjects.Objects
         public static string FullPath(string repositoryPath, short paperNo, short sectionNo, short paragraphNo)
         {
             return Path.Combine(repositoryPath, $@"Doc{paperNo:000}\Par_{paperNo:000}_{sectionNo:000}_{paragraphNo:000}.md");
-            //return Path.Combine(repositoryPath, $@"Par_{paperNo:000}_{sectionNo:000}_{paragraphNo:000}.md");
         }
 
         public static string FullPath(string repositoryPath, Paragraph p)
@@ -70,33 +62,6 @@ namespace UbStandardObjects.Objects
             IsEditTranslation = true;
         }
 
-        public ParagraphEdit(string repositoryPath, string ident)
-        {
-            char[] sep = { '_' };
-            string[] parts = ident.Remove(0,1).Split(sep, StringSplitOptions.RemoveEmptyEntries);
-            Paper = Convert.ToInt16(parts[0]);
-            Section = Convert.ToInt16(parts[1]);
-            ParagraphNo = Convert.ToInt16(parts[2]);
-            IsEditTranslation = true;
-            string filePath = FullPath(repositoryPath, this);
-            Text = MarkdownToHtml(File.ReadAllText(filePath));
-        }
-
-
-        public ParagraphEdit(string repositoryPath, short paperNo, short sectionNo, short paragraphNo)
-        {
-            Paper = paperNo;
-            Section = sectionNo;
-            ParagraphNo = paragraphNo;
-            string filePath = FullPath(repositoryPath, this);
-            if (!File.Exists(filePath))
-            {
-                throw new Exception($"Paragraph does not exist: {paperNo} {sectionNo} {paragraphNo}");
-            }
-            IsEditTranslation = true;
-            Text = MarkdownToHtml(File.ReadAllText(filePath));
-        }
-
 
         /// <summary>
         /// Convert paragraph markdown to HTML
@@ -104,7 +69,7 @@ namespace UbStandardObjects.Objects
         /// </summary>
         /// <param name="markDownText"></param>
         /// <returns></returns>
-        private string MarkdownToHtml(string markDownText)
+        public static string MarkdownToHtml(string markDownText)
         {
             int position = 0;
             bool openItalics = true;
@@ -145,26 +110,6 @@ namespace UbStandardObjects.Objects
             return $"Doc{paperNo:000}\\Par_{paperNo:000}_{section:000}_{paragraphNo:000}.md";
         }
 
-        public void SetNote(Note note)
-        {
-
-            if (note != null)
-            {
-                TranslatorNote = note.TranslatorNote;
-                Comment = note.Notes;
-                LastDate = note.LastDate;
-                _status = note.Status;
-            }
-            else
-            {
-                TranslatorNote = "";
-                Comment = "";
-                LastDate = DateTime.MinValue;
-                _status = 0;
-            }
-        }
-
-
         public bool SaveText(string repositoryPath)
         {
             try
@@ -182,7 +127,7 @@ namespace UbStandardObjects.Objects
         {
             try
             {
-                Notes.SaveNotes(this);
+                Notes.StoreParagraphNote(this);
                 return true;
             }
             catch (Exception)

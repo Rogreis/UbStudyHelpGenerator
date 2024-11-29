@@ -76,6 +76,13 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
         public List<Paper> Papers { get; set; } = new List<Paper>();
 
+        public bool IsIntroduction(short paperNo) { return paperNo == FistPapers[0]; }
+        public bool IsPartI(short paperNo) { return paperNo >= FistPapers[1] && paperNo < FistPapers[2]; }
+        public bool IsPartII(short paperNo) { return paperNo >= FistPapers[2] && paperNo < FistPapers[3]; }
+        public bool IsPartIII(short paperNo) { return paperNo >= FistPapers[3] && paperNo < FistPapers[4]; }
+        public bool IsPartIV(short paperNo) { return paperNo >= FistPapers[4]; }
+
+
         /// <summary>
         /// List of available anootations for this translation
         /// </summary>
@@ -101,6 +108,24 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 return toc;
             }
         }
+
+        private List<TOC_Entry> AllEntriesList;
+
+        /// <summary>
+        /// Returns an ordered list of all entries in a translation
+        /// </summary>
+        /// <returns></returns>
+        public List<TOC_Entry> AllEntries()
+        {
+            if (AllEntriesList == null)
+            {
+                AllEntriesList = (from paper in Papers
+                                  from par in paper.Paragraphs
+                                  select par.Entry).ToList();
+            }
+            return AllEntriesList;
+        }
+
 
 
         private TOC_Entry GetFirstPartParagraph(short paperNo, string text)
@@ -136,7 +161,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             {
                 TOC_Table toc = new TOC_Table();
 
-                toc.Title = "Lista ded Documentos parea " + Description;
+                toc.Title = "Lista de Documentos para " + Description;
 
                 TOC_Entry intro = GetFirstPartParagraph(0, "Introdução");
                 GetPartPapersSections(intro, 0, 0);
@@ -276,6 +301,87 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             Paragraph parFound = paper.Paragraphs.Find(p => p.Section == par.Section && p.ParagraphNo == par.ParagraphNo);
             return parFound.FormatInt;
         }
+
+        #region Navigating functions
+        // First papers list for each part
+        [JsonIgnore]
+        private short[] FistPapers = new short[]
+        {
+            0,
+            1,
+            32,
+            57,
+            120,
+            196
+        };
+
+        // First papers list for each part
+        [JsonIgnore]
+        private short[] LastPapers = new short[]
+        {
+            0,
+            31,
+            56,
+            119,
+            196
+        };
+
+        private short LocatePaperInsidePart(short paperNo, short start, short end)
+        {
+            if (paperNo == start) return -1;
+            if (paperNo == end) return 1;
+            return 0;
+        }
+
+
+        private short GetPart(short paperNo)
+        {
+            if (IsIntroduction(paperNo)) return 0;
+            if (IsPartI(paperNo)) return 1;
+            if (IsPartII(paperNo)) return 2;
+            if (IsPartIII(paperNo)) return 3;
+            return 4;
+        }
+
+
+        public short FirstPaper(short paperNo)
+        {
+            short part = GetPart(paperNo);
+            short location = LocatePaperInsidePart(paperNo, FistPapers[part], LastPapers[part]);
+            switch (location)
+            {
+                case 0:
+                case 1:
+                    return FistPapers[part];
+                default:
+                    paperNo--;
+                    if (part == 0) return FistPapers[4];
+                    return FistPapers[part - 1];
+            }
+        }
+
+
+        /// <summary>
+        /// Returns the next paper
+        /// </summary>
+        /// <param name="paperNo"></param>
+        /// <returns></returns>
+        public short LastPaper(short paperNo)
+        {
+            short part = GetPart(paperNo);
+            if (part == 0) return FistPapers[part + 1];
+            short location = LocatePaperInsidePart(paperNo, FistPapers[part], LastPapers[part]);
+            switch (location)
+            {
+                case 0:
+                case -1:
+                    return LastPapers[part];
+                default:
+                    if (part == 4) return FistPapers[0];
+                    return FistPapers[part + 1];
+            }
+        }
+        #endregion
 
 
         /// <summary>

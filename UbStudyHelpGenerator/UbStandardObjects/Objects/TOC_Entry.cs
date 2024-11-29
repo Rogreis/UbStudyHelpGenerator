@@ -4,7 +4,6 @@ using System.IO;
 using System.Text.Json.Serialization;
 using System.Xml;
 using System.Xml.Serialization;
-using static System.Collections.Specialized.BitVector32;
 
 namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 {
@@ -27,11 +26,37 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         public static TOC_Entry FromHref(string href)
         {
             TOC_Entry entry = new TOC_Entry();
-            char[] sep = { ';', ':', '.'};
-            string[] parts = href.Split(sep, StringSplitOptions.RemoveEmptyEntries);
-            entry.Paper = Convert.ToInt16(parts[0]);
-            entry.Section = Convert.ToInt16(parts[1]);
-            entry.ParagraphNo = Convert.ToInt16(parts[2]);
+            try
+            {
+                char[] sep = { ';', ':', '.', '-', '_', ' ' };
+                string[] parts = href.Split(sep, StringSplitOptions.RemoveEmptyEntries);
+                switch (parts.Length)
+                {
+                    case 0:
+                        break;
+                    case 1:
+                        entry.Paper = Convert.ToInt16(parts[0]);
+                        entry.Section = 0;
+                        entry.ParagraphNo = 1;
+                        break;
+                    case 2:
+                        entry.Paper = Convert.ToInt16(parts[0]);
+                        entry.Section = Convert.ToInt16(parts[1]);
+                        entry.ParagraphNo = 1;
+                        break;
+                    default:
+                        entry.Paper = Convert.ToInt16(parts[0]);
+                        entry.Section = Convert.ToInt16(parts[1]);
+                        entry.ParagraphNo = Convert.ToInt16(parts[2]);
+                        break;
+                }
+            }
+            catch
+            {
+                // In case of execption, the entry is returned with what it already has
+            }
+            // Check if it isa valid entry
+            if (StaticObjects.Book.EnglishTranslation.AllEntries().Find(e => e * entry) == null) return new TOC_Entry();
             return entry;
         }
 
@@ -69,12 +94,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         {
             get
             {
-                if (Section == 0)
-                    return $"{Paper} - {Text}";
-                else if (ParagraphNo == 0)
-                    return $"{Text}";
-                else
-                    return "??";
+                return $"{Paper}:{Section}-{ParagraphNo}";
             }
         }
 
@@ -240,6 +260,99 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             doc.LoadXml(xml);
             return doc.DocumentElement;
         }
+
+        #region Jump routines
+
+        public static TOC_Entry FirstPaper(TOC_Entry entry)
+        {
+            entry.Paper = StaticObjects.Book.EnglishTranslation.FirstPaper(entry.Paper);
+            entry.Section = 0;
+            entry.ParagraphNo = 1;
+            return entry;
+        }
+
+
+        /// <summary>
+        /// Jump to previous paper ot the last
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static TOC_Entry PreviousPaper(TOC_Entry entry)
+        {
+            entry.Paper -= 1;
+            entry.Section = 0;
+            entry.ParagraphNo = 1;
+            int index = StaticObjects.Book.EnglishTranslation.AllEntries().IndexOf(entry);
+            // If not found or already in the first, return the last
+            if (index <= 0)
+            {
+                entry.Paper = StaticObjects.Book.EnglishTranslation.AllEntries()[StaticObjects.Book.EnglishTranslation.AllEntries().Count - 1].Paper;
+            }
+            return entry;
+        }
+
+
+        /// <summary>
+        /// Calculate the first paragraph in the book
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static TOC_Entry PreviousHRef(TOC_Entry entry)
+        {
+            int index = StaticObjects.Book.EnglishTranslation.AllEntries().IndexOf(entry);
+            // If not found return the first
+            if (index == -1) return new TOC_Entry();
+            // If already in the first, return the last
+            if (index == 0) return StaticObjects.Book.EnglishTranslation.AllEntries()[StaticObjects.Book.EnglishTranslation.AllEntries().Count - 1];
+            return StaticObjects.Book.EnglishTranslation.AllEntries()[index - 1];
+        }
+
+
+        /// <summary>
+        /// Calculate the next paragraph in the book
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static TOC_Entry NextHRef(TOC_Entry entry)
+        {
+            int index = StaticObjects.Book.EnglishTranslation.AllEntries().IndexOf(entry);
+            // If not found or already in the last, return the first
+            if (index == -1 || index == StaticObjects.Book.EnglishTranslation.AllEntries().Count - 1) return new TOC_Entry();
+            // If in the first, return the last
+            if (index == 0) return StaticObjects.Book.EnglishTranslation.AllEntries()[StaticObjects.Book.EnglishTranslation.AllEntries().Count - 1];
+            return StaticObjects.Book.EnglishTranslation.AllEntries()[index + 1];
+        }
+
+        /// <summary>
+        /// Jump to next paper or the first
+        /// </summary>
+        /// <param name="entry"></param>
+        /// <returns></returns>
+        public static TOC_Entry NextPaper(TOC_Entry entry)
+        {
+            entry.Paper += 1;
+            entry.Section = 0;
+            entry.ParagraphNo = 1;
+            int index = StaticObjects.Book.EnglishTranslation.AllEntries().IndexOf(entry);
+            // If not found or already in the last, return the first
+            if (index == -1 || index == StaticObjects.Book.EnglishTranslation.AllEntries().Count - 1) return new TOC_Entry();
+            // If found, return it
+            return StaticObjects.Book.EnglishTranslation.AllEntries()[index];
+        }
+
+
+        public static TOC_Entry LastPaper(TOC_Entry entry)
+        {
+            entry.Paper = StaticObjects.Book.EnglishTranslation.LastPaper(entry.Paper);
+            entry.Section = 0;
+            entry.ParagraphNo = 1;
+            return entry;
+        }
+
+
+
+        #endregion
+
 
         #region Operators
         public override bool Equals(object obj)

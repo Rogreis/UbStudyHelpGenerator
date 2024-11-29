@@ -31,10 +31,12 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             this.PaperTranslation = trans.PaperTranslation;
         }
 
-        private Paper GetPaperEdit(short paperNo)
+        public PaperEdit GetPaperEdit(short paperNo)
         {
-            Paper paper = new Paper();
-            paper.Paragraphs = new List<Paragraph>();
+            PaperEdit paper = new PaperEdit(paperNo)
+            {
+                Paragraphs = new List<Paragraph>()
+            };
             Translation EnglishTranslation = StaticObjects.Book.GetTranslation(0);
             string folderPaper = Path.Combine(LocalRepositoryFolder, $"Doc{paperNo:000}");
             foreach (string filePath in Directory.GetFiles(folderPaper, "*.md"))
@@ -46,12 +48,13 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             return paper;
         }
 
-        public override Paper Paper(short paperNo)
+
+        public new PaperEdit Paper(short paperNo)
         {
-            Paper paper = GetPaperEdit(paperNo);
+            PaperEdit paper = GetPaperEdit(paperNo);
             if (this.Papers.Count == 197)
             {
-                paper = Papers[paperNo];
+                paper = (PaperEdit)Papers[paperNo];
             }
             else
             {
@@ -61,10 +64,12 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             return paper;
         }
 
-        public ParagraphEdit GetParagraph(short paperNo, short section, short paragraphNo)
+        public ParagraphEdit GetParagraph(TOC_Entry entry)
         {
-            ParagraphEdit par = new ParagraphEdit(LocalRepositoryFolder);
-            return par;
+            PaperEdit paperEdit = GetPaperEdit(entry.Paper);
+            string paragraphPath = ParagraphEdit.FullPath(LocalRepositoryFolder, entry.Paper, entry.Section, entry.ParagraphNo);
+            ParagraphEdit paragraphEdit = paperEdit.GetParagraph(paragraphPath);
+            return paragraphEdit;
         }
 
 

@@ -228,6 +228,27 @@ namespace UbStudyHelpGenerator.Database
 
         #region Temporary routines to be deleted in the future
 
+        public bool SetStatus(short paperNO, short status)
+        {
+            try
+            {
+                string sql= $"update  [dbo].[UB_Texts_Work] set Status = {status} where Paper= {paperNO} and LanguageID = 2 ";
+                int count = RunCommand(sql);
+                if (count < 1)
+                {
+                    string message = $"Update status command not executedting status: {sql}";
+                    StaticObjects.Logger.Error(message);
+                    throw new Exception(message);
+                }
+                return true;
+            }
+            catch (Exception ex)
+            {
+                StaticObjects.Logger.Error("Error setting status", ex);
+                throw;
+            }
+        }
+
         /// <summary>
         /// Get notes data from sql server
         /// </summary>
@@ -244,7 +265,7 @@ namespace UbStudyHelpGenerator.Database
                 sb.AppendLine("        	  ,dbo.Paragraph(W.Paper, W.PK_seq) as Paragraph, dbo.Format(W.Paper, W.PK_seq) Format  ");
                 sb.AppendLine("        	  ,'' as TranslatorNote,  ");
                 sb.AppendLine("		    [LastDate],[Status], ");
-                sb.AppendLine("    	  (select Notes from [UBT].[dbo].[CaioComments] C where C.Paper = W.Paper and C.PK_Seq = W.PK_Seq) as Notes  ");
+                sb.AppendLine("    	  '' as Notes  ");
                 sb.AppendLine($"         FROM [dbo].[UB_Texts_Work] W where LanguageID = 2 and Paper = {paperNo}) T  ");
                 sb.AppendLine("         order by Section, Paragraph  ");
                 sb.AppendLine(" FOR JSON AUTO, ROOT('Notes') ");

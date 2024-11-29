@@ -25,7 +25,7 @@ namespace UbStudyHelpGenerator.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Server=CTW01001;Database=UBT;User Id=sa;Password=d350swsi;")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Server=L-PW01ZSDS\\SQLEXPRESS;Database=UBT;User Id=sa;Password=d350swsi;")]
         public string SqlServerConnectionString {
             get {
                 return ((string)(this["SqlServerConnectionString"]));

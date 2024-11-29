@@ -9,25 +9,25 @@ namespace UbStudyHelpGenerator.PtBr
     {
 
 
-        public PtBr_Compare(Parameters param, HtmlFormat_Palternative formatter)
+        public PtBr_Compare(Parameters param, HtmlFormat_PTalternative formatter)
         {
             Param = param;
             Formatter = formatter;
         }
 
-        public override bool Print(TUB_TOC_Html toc_table, Translation englishTranslation, Translation portuguse2007Translation, Translation ptAlternativeTranslation, short paperNoToPrint= -1)
+        public override bool Print(Translation englishTranslation, Translation portuguse2007Translation, Translation ptAlternativeTranslation, short paperNoToPrint= -1)
         {
             try
             {
                 if (paperNoToPrint >= 0)
                 {
-                    PrintPaper(toc_table, englishTranslation, ptAlternativeTranslation, paperNoToPrint);
+                    PrintPaper(englishTranslation, ptAlternativeTranslation, paperNoToPrint);
                 }
                 else
                 {
                     for (short paperNo = 0; paperNo < 197; paperNo++)
                     {
-                        PrintPaper(toc_table, englishTranslation, ptAlternativeTranslation, paperNo);
+                        PrintPaper(englishTranslation, ptAlternativeTranslation, paperNo);
                     }
                 }
                 FireShowMessage("Finished");

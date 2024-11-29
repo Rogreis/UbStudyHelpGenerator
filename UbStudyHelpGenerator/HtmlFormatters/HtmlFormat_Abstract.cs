@@ -1,18 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Sockets;
+using System.IO;
 using System.Text;
 using UbStudyHelpGenerator.UbStandardObjects;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 using UBT_WebSite.Classes;
 
-using static System.Net.Mime.MediaTypeNames;
-
 namespace UbStudyHelpGenerator.HtmlFormatters
 {
 
     public delegate string HtmlTextFunctionDelegate();
+
+    public enum PageType
+    {
+        Toc,
+        Subject,
+        Study,
+        Query,
+        Track
+    }
+
 
     /// <summary>
     /// Format html to be shown
@@ -132,9 +138,9 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                     case ParagraphHtmlType.SectionTitle:
                         return $"<h4>{anchor}{fullTextLink}</h4>";
                     case ParagraphHtmlType.NormalParagraph:
-                        return $"{identification}  {htmlText}";
+                        return $"{anchor}{identification}  {htmlText}";
                     case ParagraphHtmlType.IdentedParagraph:
-                        return $"<bloquote>{identification}  {htmlText}</bloquote>";
+                        return $"<bloquote>{anchor}{identification}  {htmlText}</bloquote>";
                 }
                 return "";
             }
@@ -409,6 +415,159 @@ namespace UbStudyHelpGenerator.HtmlFormatters
 
 
         #region Html Start and End
+
+        private void PrintNavButton(StringBuilder sb, bool active, string text, bool enabled= true)
+        {
+            string disabled = enabled ? "" : "disabled";
+            sb.AppendLine($"			<button type=\"button\" class=\"btn btn-sm {(active ? "btn-warning acive" : "btn-secondary")} {disabled}\">{text}</button> ");
+        }
+
+        public void PrintIndexPage(string pathIndexToc, PageType pageType, string title, bool useDarkTheme= true)
+        {
+            StringBuilder sb = new StringBuilder();
+            string theme = useDarkTheme ? "data-bs-theme=\"dark\"" : "";
+            sb.AppendLine("<!DOCTYPE html> ");
+            sb.AppendLine($"<html lang=\"en\" {theme}>");
+            sb.AppendLine(" ");
+            sb.AppendLine("<head> ");
+            sb.AppendLine("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1252\"> ");
+            sb.AppendLine("	<title>Paper 1</title> ");
+            sb.AppendLine("	<meta charset=\"utf-8\"> ");
+            sb.AppendLine("	<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("	<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\"> ");
+            sb.AppendLine("	<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js\"></script> ");
+            sb.AppendLine(" ");
+            sb.AppendLine(" ");
+            sb.AppendLine("	<link href=\"https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap\" rel=\"stylesheet\"> ");
+            sb.AppendLine("	<link href=\"css/tub_pt_br.css\" rel=\"stylesheet\"> ");
+            sb.AppendLine("	<script src=\"https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js\"></script> ");
+            sb.AppendLine("	<script src=\"js/tub_pt_br.js\"></script> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("	<script type=\"module\"> ");
+            sb.AppendLine("		import { Octokit } from \"https://cdn.skypack.dev/@octokit/core\"; ");
+            sb.AppendLine("		var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle=\"tooltip\"]')) ");
+            sb.AppendLine("		var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) { ");
+            sb.AppendLine("			return new bootstrap.Tooltip(tooltipTriggerEl) ");
+            sb.AppendLine("		})		 ");
+            sb.AppendLine("	</script> ");
+            //sb.AppendLine("	<style> ");
+            //sb.AppendLine("		.badge.badgeStarted.p-1 { ");
+            //sb.AppendLine("			display: flex; ");
+            //sb.AppendLine("			align-items: center; ");
+            //sb.AppendLine("			min-height: 20px; ");
+            //sb.AppendLine("		} ");
+            //sb.AppendLine("	</style> ");
+            //sb.AppendLine(" ");
+            sb.AppendLine("</head> ");
+            sb.AppendLine("<html> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("<body onload=\"StartPage()\"> ");
+            sb.AppendLine("	<nav class=\"navbar navbar-expand-sm bg-primary navbar-dark\"> ");
+            sb.AppendLine("		<div class=\"container-fluid\"> ");
+            
+            //sb.AppendLine("			<span class=\"text-white\">O Livro de Urântia - Tradução PT BR - versão 22/11/2024 09:37</span> ");
+            sb.AppendLine($"			<span class=\"text-white\">{title}</span> ");
+
+            sb.AppendLine("		</div> ");
+            sb.AppendLine("		<div class=\"container-fluid\"> ");
+
+            bool active = pageType == PageType.Toc;
+            PrintNavButton(sb, active, "Documentos");
+
+            active = pageType == PageType.Subject;
+            PrintNavButton(sb, active, "Assuntos");
+
+            active = pageType == PageType.Study;
+            PrintNavButton(sb, active, "Estudos");
+
+            active= false;
+            PrintNavButton(sb, active, "Busca", false);
+            PrintNavButton(sb, active, "Trilha", false);
+
+            sb.AppendLine("			    <button type=\"button\" class=\"btn btn-sm btn-warning\" data-bs-toggle=\"modal\" ");
+            sb.AppendLine("				    data-bs-target=\"#myModal\">Cores</button> ");
+            sb.AppendLine("		</div> ");
+            sb.AppendLine("	</nav> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("	<div id=\"leftColumn\" class=\"black splitLeft left mt-0 overflow-auto\"> ");
+            sb.AppendLine("		<h3>Table of Contents</h3> ");
+            sb.AppendLine("	</div> ");
+            sb.AppendLine("	<div id=\"rightColumn\" class=\"black splitRight right mt-0 overflow-auto\"> ");
+            sb.AppendLine("	</div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("	<!-- The Modal --> ");
+            sb.AppendLine("	<div class=\"modal\" id=\"myModal\"> ");
+            sb.AppendLine("		<div class=\"modal-dialog\"> ");
+            sb.AppendLine("			<div class=\"modal-content\"> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("				<!-- Modal Header --> ");
+            sb.AppendLine("				<div class=\"modal-header\"> ");
+            sb.AppendLine("					<h4 class=\"modal-title\">Significado das cores de fundo</h4> ");
+            sb.AppendLine("					<button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\"></button> ");
+            sb.AppendLine("				</div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("				<!-- Modal body --> ");
+            sb.AppendLine("				<div class=\"modal-body\"> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("					<table class=\"table\"> ");
+            sb.AppendLine("						<thead> ");
+            sb.AppendLine("							<tr> ");
+            sb.AppendLine("								<th>Cor de fundo</th> ");
+            sb.AppendLine("								<th>Significado</th> ");
+            sb.AppendLine("							</tr> ");
+            sb.AppendLine("						</thead> ");
+            sb.AppendLine("						<tbody> ");
+            sb.AppendLine("							<tr> ");
+            sb.AppendLine("								<td> ");
+            sb.AppendLine("									<div class=\"badge badgeStarted\">Iniciado</div> ");
+            sb.AppendLine("								</td> ");
+            sb.AppendLine("								<td>Parágrafo ainda na versão 2007</td> ");
+            sb.AppendLine("							</tr> ");
+            sb.AppendLine("							<tr> ");
+            sb.AppendLine("								<td> ");
+            sb.AppendLine("									<div class=\"badge badgeWorking\">Em trabalho</div> ");
+            sb.AppendLine("								</td> ");
+            sb.AppendLine("								<td>Trabalho de tradução em andamento</td> ");
+            sb.AppendLine("							</tr> ");
+            sb.AppendLine("							<tr> ");
+            sb.AppendLine("								<td> ");
+            sb.AppendLine("									<div class=\"badge badgeDoubt\">Em dúvida</div> ");
+            sb.AppendLine("								</td> ");
+            sb.AppendLine("								<td>Há dúvidas sobre a tradução</td> ");
+            sb.AppendLine("							</tr> ");
+            sb.AppendLine("							<tr> ");
+            sb.AppendLine("								<td> ");
+            sb.AppendLine("									<div class=\"badge badgeOk\">Ok</div> ");
+            sb.AppendLine("								</td> ");
+            sb.AppendLine("								<td>Parágrafo finalizado, revisão final necessária</td> ");
+            sb.AppendLine("							</tr> ");
+            sb.AppendLine("							<tr> ");
+            sb.AppendLine("								<td> ");
+            sb.AppendLine("									<div class=\"badge badgeClosed\">Fechado</div> ");
+            sb.AppendLine("								</td> ");
+            sb.AppendLine("								<td>Parágrafo fechado, talvez não ainda perfeito</td> ");
+            sb.AppendLine("							</tr> ");
+            sb.AppendLine("						</tbody> ");
+            sb.AppendLine("					</table> ");
+            sb.AppendLine(" ");
+            sb.AppendLine(" ");
+            sb.AppendLine("				</div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("				<!-- Modal footer --> ");
+            sb.AppendLine("				<div class=\"modal-footer\"> ");
+            sb.AppendLine("					<button type=\"button\" class=\"btn btn-danger\" data-bs-dismiss=\"modal\">Close</button> ");
+            sb.AppendLine("				</div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("			</div> ");
+            sb.AppendLine("		</div> ");
+            sb.AppendLine("	</div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("</body>");
+            sb.AppendLine("</html>");
+            File.WriteAllText(pathIndexToc, sb.ToString(), Encoding.UTF8);
+        }
+
         protected virtual void pageStart(StringBuilder sb, int paperNo, bool compareStyles = false)
         {
             sb.AppendLine("<!DOCTYPE html>  ");
@@ -430,7 +589,6 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             sb.AppendLine("<div class=\"container-fluid mt-5 textNormal\">    ");
 
         }
-
         protected void pageEnd(StringBuilder sb)
         {
             sb.AppendLine("</BODY>");

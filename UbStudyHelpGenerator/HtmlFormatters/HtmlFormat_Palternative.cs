@@ -12,10 +12,10 @@ namespace UbStudyHelpGenerator.HtmlFormatters
     /// <summary>
     /// Generates a whole book using bootstrap
     /// </summary>
-    public class HtmlFormat_Palternative : HtmlFormat_Abstract
+    public class HtmlFormat_PTalternative : HtmlFormat_Abstract
     {
 
-        public HtmlFormat_Palternative(Parameters parameters) : base(parameters)
+        public HtmlFormat_PTalternative(Parameters parameters) : base(parameters)
         {
 
         }
@@ -52,15 +52,16 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         /// <param name="englishPaper"></param>
         /// <param name="ptAlternativePaper"></param>
         /// <param name="toc_table"></param>
-        public void GenerateGitHubPage(Paper englishPaper, List<Paragraph> paragraphs2ndColumn, string destinationFolder, 
-                                       short paperNo, List<Paragraph> paragraphs3rdColumn= null, bool merge2nd3rdColuimns= false)
+        public void GenerateGitHubPage(Paper englishPaper, List<Paragraph> paragraphs2ndColumn, string destinationFolder,
+                                       short paperNo, List<Paragraph> paragraphs3rdColumn = null, bool merge2nd3rdColuimns = false)
         {
             StringBuilder sb = new StringBuilder();
 
             // Verify exitence of GPT translation file 
             LineFormatParameters formatParameters = new LineFormatParameters();
             string gptFilePath = System.IO.Path.Combine(destinationFolder, $"PaperTranslations\\PtAlternative_{paperNo:000}.txt");
-            formatParameters.IsToCompare = File.Exists(gptFilePath);
+            //formatParameters.IsToCompare = File.Exists(gptFilePath);
+            formatParameters.IsToCompare = false;  // Comparação cancelada
             formatParameters.EditTranslationNumber = paragraphs3rdColumn == null ? (short)2 : (short)3;
             string[] gptTranslationLines = null;
             if (formatParameters.IsToCompare)
@@ -91,7 +92,15 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                     else
                     {
                         string englishText = englishPaper.Paragraphs[i].Text;
-                        string ptAlternativeText = paragraphs2ndColumn[i].Text;
+                        string ptAlternativeText = "";
+                        try
+                        {
+                            ptAlternativeText = paragraphs2ndColumn[rightCounter].Text;
+                        }
+                        catch (Exception)
+                        {
+                            ptAlternativeText = "Missing text";
+                        }
                         string gptText = null;
                         string mergedLine = null;
                         if (formatParameters.IsToCompare)
@@ -104,7 +113,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                             }
 
                         }
-                        formatParameters.SetData(englishPaper.Paragraphs[i], paragraphs2ndColumn[i], gptText, mergedLine);
+                        formatParameters.SetData(englishPaper.Paragraphs[i], paragraphs2ndColumn[rightCounter], gptText, mergedLine);
                         formatParameters.PrintLine(sb);
                         rightCounter++;
                     }

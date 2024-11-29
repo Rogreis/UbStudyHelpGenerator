@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Windows.Forms;
 using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
@@ -37,16 +40,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects
 	public class Parameters
 	{
 
-        //// From https://getbootstrap.com/docs/5.0/utilities/background/
-        //// https://www.w3schools.com/tags/ref_colornames.asp
-        //private const string ClassParagraphStarted = "p-3 mb-2 bg-secondary text-white";
-        //private const string ClassParagraphWorking = "p-3 mb-2 bg-warning text-dark";
-        //private const string ClassParagraphDoubt = "p-3 mb-2 bg-danger text-white";
-        //private const string ClassParagraphOk = "p-3 mb-2 bg-primary text-white";
-
-        //private const string ClassParagraphDarkTheme = "p-3 mb-2 bg-dark text-white";
-        //private const string ClassParagraphLightTheme = "p-3 mb-2 bg-transparent text-dark";
-
 
         /// <summary>
         /// Last position in the text, default for first paragraph
@@ -61,48 +54,17 @@ namespace UbStudyHelpGenerator.UbStandardObjects
 
         public string TextReferenceFilePath { get; set; } = "";
 
-        public string LastCommitUsedForPTAlternative { get; set; } = "b46a5f308920f4182a066c1e79ece2864d37c8b2";
+        // Usdados para a tela de edição
+        public short TranslationUpLeft { get; set; } = 0;
+        public short TranslationUpRight { get; set; } = 0;
+        public short TranslationDownLeft { get; set; } = 0;
+        public string EntriesUsed { get; set; } = "";
+        public short LastDocumentToRecover { get; set; } = -1; // Verificar se foi traduzido pelo Caio
+        public short LastDocumentToChangeStatus { get; set; } = -1;
 
 
-        public bool ShowCompare { get; set; } = false;
-        
-		public int SearchPageSize { get; set; } = 20;
 
-		public bool ShowParagraphIdentification { get; set; } = true;
-
-		public bool ShowBilingual { get; set; } = true;
-
-        public TextShowOption TextShowOption { get; set; } = TextShowOption.LeftRight;
-
-        /// <summary>
-        /// Max items stored for  search and index text
-        /// </summary>
-        public int MaxExpressionsStored { get; set; } = 50;
-
-		public List<string> SearchStrings { get; set; } = new List<string>();
-
-		public List<string> IndexLetters { get; set; } = new List<string>();
-
-		public bool SimpleSearchIncludePartI { get; set; } = true;
-
-		public bool SimpleSearchIncludePartII { get; set; } = true;
-
-		public bool SimpleSearchIncludePartIII { get; set; } = true;
-
-		public bool SimpleSearchIncludePartIV { get; set; } = true;
-
-		public bool SimpleSearchCurrentPaperOnly { get; set; } = false;
-
-		public double SpliterDistance { get; set; } = 550;  // BUG: Default value needs to be proportional to user screen resolution
-
-		public List<string> SearchIndexEntries { get; set; } = new List<string>();
-
-		public List<TOC_Entry> TrackEntries { get; set; } = new List<TOC_Entry>();
-
-		public string LastTrackFileSaved { get; set; } = "";
-
-
-		public string InputHtmlFilesPath { get; set; } = "";
+        public string InputHtmlFilesPath { get; set; } = "";
 
 		public string IndexDownloadedFiles { get; set; } = "";
 
@@ -110,42 +72,9 @@ namespace UbStudyHelpGenerator.UbStandardObjects
 
 		public string SqlServerConnectionString { get; set; }
 
-		public virtual ColorSerial HighlightColor { get; set; } = new ColorSerial(0, 0, 102, 255); // rgb(0, 102, 255)
-
-		// Quick search
-		public string SearchFor { get; set; } = "";
-
-		public string SimilarSearchFor { get; set; } = "";
-
-		public string CloseSearchDistance { get; set; } = "5";
-
-		public string CloseSearchFirstWord { get; set; } = "";
-
-		public string CloseSearchSecondWord { get; set; } = "";
-
-		public List<string> CloseSearchWords { get; set; } = new List<string>();
-
 		public short CurrentTranslation { get; set; } = 0;
 
-		public double AnnotationWindowWidth { get; set; } = 800;
-
-		public double AnnotationWindowHeight { get; set; } = 450;
-
 	
-		/// <summary>
-		/// Current data folder
-		/// </summary>
-		public string ApplicationDataFolder { get; set; } = "";
-
-        /// <summary>
-        /// Folder to store local lucene index search data
-        /// </summary>
-        public string IndexSearchFolders { get; set; } = "";
-
-        /// <summary>
-        /// Folder to store local lucene TUB search data
-        /// </summary>
-        public string TubSearchFolders { get; set; } = "";
 
         /// <summary>
         /// Repository for translations
@@ -172,11 +101,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects
         /// </summary>
         public string EditBookRepositoryFolder { get; set; } = null;
 
-		/// <summary>
-		/// Github paragraphs repository
-		/// </summary>
-		public string UrlRepository { get; set; } = null;
-
         public float FontSize { get; set; } = 10;
 
         public string FontFamily { get; set; } = "Georgia,Verdana,Arial,Helvetica";
@@ -185,8 +109,30 @@ namespace UbStudyHelpGenerator.UbStandardObjects
 
         public short LastGTPPaper { get; set; } = 101;
 
+        public short LastPaperEdited { get; set; } = 0;
 
- 
+        public string SerializeComboBoxItems(ComboBox comboBox)
+        {
+            if (comboBox.Items.Count == 0)
+            {
+                return string.Empty;
+            }
+            StringBuilder sb = new StringBuilder();
+            foreach (string item in comboBox.Items)
+            {
+                sb.AppendLine(item);
+            }
+            return sb.ToString();
+        }
+
+        public void DeSerializeComboBoxItems(string serializedString, ComboBox comboBox)
+        {
+            comboBox.Items.Clear();
+            string[] items = serializedString.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+            comboBox.Items.AddRange(items);
+        }
+
+
         /// <summary>
         /// Serialize the parameters instance
         /// </summary>

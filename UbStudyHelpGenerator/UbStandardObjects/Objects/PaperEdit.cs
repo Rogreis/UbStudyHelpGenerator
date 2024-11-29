@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
+using System;
+using System.Collections.Generic;
 using System.IO;
 using UbStandardObjects.Objects;
 
@@ -9,6 +11,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
         private string RepositoryFolder { get; set; } = "";
         private short paperEditNo = -1;
+        private List<Note> notes = null;  // Store additional information about the paper, like format and status
+
 
         public PaperEdit(short paperNo)
         {
@@ -27,11 +31,58 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         {
             ParagraphEdit p = new ParagraphEdit(pathParagraphFile);
             StaticObjects.Book.FormatTableObject.GetParagraphFormatData(p);
-            Note note = Notes.GetNote(p);
+            Note note = GetMyNote(p.Section, p.ParagraphNo);
             p._status = note.Status;
             Paragraphs.Add(p);
             return true;
         }
+
+        #region Region Notes
+        // Notes are used to store format and status of each paragraph
+        
+        /// <summary>
+        /// Make sure notes were got
+        /// </summary>
+        private void GetAllNotes()
+        {
+            if (notes == null)
+            {
+                notes = Notes.GetNotes(paperEditNo);
+            }
+        }
+
+        /// <summary>
+        /// Get a paragraph specidif nore
+        /// </summary>
+        /// <param name="section"></param>
+        /// <param name="paragraphNo"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        private Note GetMyNote(short section, short paragraphNo)
+        {
+            GetAllNotes();
+            Note note = notes.Find(n => n.Paper == paperEditNo && n.Section == section && n.Paragraph == paragraphNo);
+            if (note == null)
+            {
+                throw new Exception($"Nota não encontrada para {paperEditNo}:{section}-{paragraphNo}");
+            }
+            return note;
+        }
+
+        /// <summary>
+        /// Store the notes for the current paper
+        /// </summary>
+        /// <param name="paperNo"></param>
+        /// <param name="status"></param>
+        public void StoreFullPaperStatus(short paperNo, short status)
+        {
+            GetAllNotes();
+            foreach (Note note in notes) note.Status = status;
+            Notes.StorePaperNote(notes, paperNo);
+        }
+
+
+        #endregion
 
         /// <summary>
         /// Read all paragraph from disk
@@ -42,7 +93,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             {
                 ParagraphEdit p = new ParagraphEdit(pathParagraphFile);
                 StaticObjects.Book.FormatTableObject.GetParagraphFormatData(p);
-                Note note= Notes.GetNote(p);
+                Note note = GetMyNote(p.Section, p.ParagraphNo);
                 p._status = note.Status;
                 Paragraphs.Add(p);
             }
@@ -72,31 +123,21 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         }
 
         /// <summary>
-        /// Get all availble notes data
-        /// </summary>
-        /// <param name="paragraph"></param>
-        public void GetNotesData(ParagraphEdit paragraph)
-        {
-            Note note = Notes.GetNote(paragraph);
-            paragraph.SetNote(note);
-        }
-
-        /// <summary>
         /// Return an specific paragraph
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
-        public override Paragraph GetParagraph(TOC_Entry entry)
+        public ParagraphEdit GetParagraph(string filePath)
         {
             //if (Paragraphs.Count == 0)
             //{
             //    GetParagraphsFromRepository();
             //}
             // Always get the paragraph from repository
-            string filePath = ParagraphEdit.FullPath(RepositoryFolder, entry.Paper, entry.Section, entry.ParagraphNo);
             if (!File.Exists(filePath)) return null;
             ParagraphEdit par = new ParagraphEdit(filePath);
-            GetNotesData(par);
+            Note note = GetMyNote(par.Section, par.ParagraphNo);
+            par._status = note.Status;
             return par;
         }
 

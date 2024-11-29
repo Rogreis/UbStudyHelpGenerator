@@ -155,6 +155,12 @@
     <Compile Include="Classes\ParamonyImport.cs" />
     <Compile Include="Classes\PTAlternative.cs" />
     <Compile Include="Classes\SpanishEscobar.cs" />
+    <Compile Include="frmEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="frmEdit.Designer.cs">
+      <DependentUpon>frmEdit.cs</DependentUpon>
+    </Compile>
     <Compile Include="HtmlFormatters\HtmlFormat_PtBrCompare.cs" />
     <Compile Include="PtBr\PtBr_Abstract.cs" />
     <Compile Include="PtBr\PtBr_Website.cs" />
@@ -201,6 +207,9 @@
     <Compile Include="UbStandardObjects\Parameters.cs" />
     <Compile Include="UbStandardObjects\StaticObjects.cs" />
     <Compile Include="Zip.cs" />
+    <EmbeddedResource Include="frmEdit.resx">
+      <DependentUpon>frmEdit.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="frmMain.resx">
       <DependentUpon>frmMain.cs</DependentUpon>
     </EmbeddedResource>

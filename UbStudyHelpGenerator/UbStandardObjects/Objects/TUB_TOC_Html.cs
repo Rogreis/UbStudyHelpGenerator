@@ -12,14 +12,21 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
     /// </summary>
     public class TUB_TOC_Entry
     {
-        [JsonPropertyName("text")]
-        public string Text { get; set; } = "";
-
         public short PaperNo { get; set; } = -1;
 
         public short SectionNo { get; set; } = -1;
 
         public short ParagraphNo { get; set; } = -1;
+
+        private string _text { get; set; } = "";
+
+        [JsonPropertyName("text")]
+        public string Text
+        {
+            get { return Paragraph.ToHtml(_text); }
+            set { _text = value; }
+        }
+
 
         [JsonPropertyName("expanded")]
         public bool Expanded { get; set; }

@@ -49,8 +49,18 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         public short ParagraphNo { get; set; }
         public short Page { get; set; }
         public short Line { get; set; }
-        public virtual string Text { get; set; } = "";
         public int FormatInt { get; set; }
+
+        private string _text { get; set; } = "";
+
+        public string Text 
+        {
+            get { return ToHtml(_text); }
+            set { _text = value; } 
+        }
+
+        public string RawText { get; set; } = "";
+
 
         [JsonIgnore]
         private TOC_Entry entry = null;
@@ -219,6 +229,11 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             // Clone the root ...
             Paragraph other = (Paragraph)this.MemberwiseClone();
             return other;
+        }
+
+        public static string ToHtml(string text)
+        {
+            return text.Replace("&lt;", "<").Replace("&gt;", ">").Replace("&nbsp;", " ").Replace("&quot;", "\"").Replace("&amp;", "&").Trim();
         }
 
         public override string ToString()
