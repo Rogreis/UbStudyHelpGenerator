@@ -774,32 +774,26 @@ namespace UbStudyHelpGenerator
 
         private void btPTAlternativeGenerate_Click(object sender, EventArgs e)
         {
-            HtmlFormat_PTalternative formatter = new HtmlFormat_PTalternative(StaticObjects.Parameters);
-            string pathIndexToc = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"indexToc.html");
-            string title = $"O Livro de Urântia - Tradução PT BR - {DateTime.Now.ToString("dd/MM/yyyy")}";
-            formatter.PrintIndexPage(pathIndexToc, PageType.Subject, title);
-            
+            if (MessageBox.Show($"Are you sure to generate all pages for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
+                        "Confirmation",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.No)
+            {
+                return;
+            }
 
-            //if (MessageBox.Show($"Are you sure to generate all pages for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
-            //            "Confirmation",
-            //            MessageBoxButtons.YesNo,
-            //            MessageBoxIcon.Question) == DialogResult.No)
-            //{
-            //    return;
-            //}
+            ShowMessage("Starting rogreis.github.io pages");
 
-            //ShowMessage("Starting rogreis.github.io pages");
+            // TOC Table not forced
+            ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
+            List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
+            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
+            string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
+            toc_table.Html(pathTocTable);
 
-            //// TOC Table not forced
-            //ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
-            //List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
-            //TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
-            //string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
-            //toc_table.Html(pathTocTable);
-
-            //ExportAllPapers();
-            //ShowMessage("Finished");
-            //Process.Start("chrome.exe", "localhost");
+            ExportAllPapers();
+            ShowMessage("Finished");
+            Process.Start("chrome.exe", "localhost");
 
         }
 
@@ -1668,5 +1662,11 @@ namespace UbStudyHelpGenerator
         }
 
         #endregion
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            HtmlFormat_PTalternative formatter = new HtmlFormat_PTalternative(StaticObjects.Parameters);
+            formatter.PrintAllIndexPAges();
+        }
     }
 }

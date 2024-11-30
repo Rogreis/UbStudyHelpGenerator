@@ -127,6 +127,7 @@ namespace UbStudyHelpGenerator
             this.splitContainerParamony = new System.Windows.Forms.SplitContainer();
             this.btyParamonyImport = new System.Windows.Forms.Button();
             this.tsParamonyMessages = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -241,6 +242,7 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainerMain.Panel1
             // 
+            this.splitContainerMain.Panel1.Controls.Add(this.button1);
             this.splitContainerMain.Panel1.Controls.Add(this.label9);
             this.splitContainerMain.Panel1.Controls.Add(this.groupBox3);
             this.splitContainerMain.Panel1.Controls.Add(this.btInitialize);
@@ -911,7 +913,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromSqlServer.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageFromSqlServer.Name = "tabPageFromSqlServer";
             this.tabPageFromSqlServer.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPageFromSqlServer.Size = new System.Drawing.Size(981, 508);
+            this.tabPageFromSqlServer.Size = new System.Drawing.Size(981, 496);
             this.tabPageFromSqlServer.TabIndex = 1;
             this.tabPageFromSqlServer.Tag = "Sql";
             this.tabPageFromSqlServer.Text = "From Sql Server";
@@ -938,7 +940,7 @@ namespace UbStudyHelpGenerator
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBoxFromSqlServer);
-            this.splitContainer1.Size = new System.Drawing.Size(977, 502);
+            this.splitContainer1.Size = new System.Drawing.Size(977, 490);
             this.splitContainer1.SplitterDistance = 163;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 1;
@@ -1017,7 +1019,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromSqlServer.Multiline = true;
             this.textBoxFromSqlServer.Name = "textBoxFromSqlServer";
             this.textBoxFromSqlServer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromSqlServer.Size = new System.Drawing.Size(977, 336);
+            this.textBoxFromSqlServer.Size = new System.Drawing.Size(977, 324);
             this.textBoxFromSqlServer.TabIndex = 0;
             // 
             // tabPageFromHtml
@@ -1027,7 +1029,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromHtml.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageFromHtml.Name = "tabPageFromHtml";
             this.tabPageFromHtml.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPageFromHtml.Size = new System.Drawing.Size(981, 508);
+            this.tabPageFromHtml.Size = new System.Drawing.Size(981, 496);
             this.tabPageFromHtml.TabIndex = 0;
             this.tabPageFromHtml.Tag = "Html";
             this.tabPageFromHtml.Text = "Spanish HTML";
@@ -1054,7 +1056,7 @@ namespace UbStudyHelpGenerator
             // splitContainerFromHtml.Panel2
             // 
             this.splitContainerFromHtml.Panel2.Controls.Add(this.textBoxFromHtml);
-            this.splitContainerFromHtml.Size = new System.Drawing.Size(977, 502);
+            this.splitContainerFromHtml.Size = new System.Drawing.Size(977, 490);
             this.splitContainerFromHtml.SplitterDistance = 163;
             this.splitContainerFromHtml.SplitterWidth = 3;
             this.splitContainerFromHtml.TabIndex = 0;
@@ -1133,7 +1135,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromHtml.Multiline = true;
             this.textBoxFromHtml.Name = "textBoxFromHtml";
             this.textBoxFromHtml.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromHtml.Size = new System.Drawing.Size(977, 336);
+            this.textBoxFromHtml.Size = new System.Drawing.Size(977, 324);
             this.textBoxFromHtml.TabIndex = 0;
             // 
             // tabPageUbIndex
@@ -1142,7 +1144,7 @@ namespace UbStudyHelpGenerator
             this.tabPageUbIndex.Location = new System.Drawing.Point(4, 22);
             this.tabPageUbIndex.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageUbIndex.Name = "tabPageUbIndex";
-            this.tabPageUbIndex.Size = new System.Drawing.Size(981, 508);
+            this.tabPageUbIndex.Size = new System.Drawing.Size(981, 496);
             this.tabPageUbIndex.TabIndex = 2;
             this.tabPageUbIndex.Tag = "Index";
             this.tabPageUbIndex.Text = "Generate UB Index";
@@ -1167,7 +1169,7 @@ namespace UbStudyHelpGenerator
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.txUbIndexMessages);
-            this.splitContainer2.Size = new System.Drawing.Size(981, 508);
+            this.splitContainer2.Size = new System.Drawing.Size(981, 496);
             this.splitContainer2.SplitterDistance = 215;
             this.splitContainer2.SplitterWidth = 3;
             this.splitContainer2.TabIndex = 1;
@@ -1269,7 +1271,7 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.Multiline = true;
             this.txUbIndexMessages.Name = "txUbIndexMessages";
             this.txUbIndexMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txUbIndexMessages.Size = new System.Drawing.Size(981, 290);
+            this.txUbIndexMessages.Size = new System.Drawing.Size(981, 278);
             this.txUbIndexMessages.TabIndex = 0;
             // 
             // tabPageTranslations
@@ -1278,7 +1280,7 @@ namespace UbStudyHelpGenerator
             this.tabPageTranslations.Location = new System.Drawing.Point(4, 22);
             this.tabPageTranslations.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageTranslations.Name = "tabPageTranslations";
-            this.tabPageTranslations.Size = new System.Drawing.Size(981, 508);
+            this.tabPageTranslations.Size = new System.Drawing.Size(981, 496);
             this.tabPageTranslations.TabIndex = 4;
             this.tabPageTranslations.Tag = "Translations";
             this.tabPageTranslations.Text = "Translations";
@@ -1304,7 +1306,7 @@ namespace UbStudyHelpGenerator
             // splitContainerTranslations.Panel2
             // 
             this.splitContainerTranslations.Panel2.Controls.Add(this.textBoxTranslations);
-            this.splitContainerTranslations.Size = new System.Drawing.Size(981, 508);
+            this.splitContainerTranslations.Size = new System.Drawing.Size(981, 496);
             this.splitContainerTranslations.SplitterDistance = 256;
             this.splitContainerTranslations.SplitterWidth = 3;
             this.splitContainerTranslations.TabIndex = 0;
@@ -1434,7 +1436,7 @@ namespace UbStudyHelpGenerator
             this.textBoxTranslations.Multiline = true;
             this.textBoxTranslations.Name = "textBoxTranslations";
             this.textBoxTranslations.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxTranslations.Size = new System.Drawing.Size(722, 508);
+            this.textBoxTranslations.Size = new System.Drawing.Size(722, 496);
             this.textBoxTranslations.TabIndex = 2;
             // 
             // tabPageParamony
@@ -1442,7 +1444,7 @@ namespace UbStudyHelpGenerator
             this.tabPageParamony.Controls.Add(this.splitContainerParamony);
             this.tabPageParamony.Location = new System.Drawing.Point(4, 22);
             this.tabPageParamony.Name = "tabPageParamony";
-            this.tabPageParamony.Size = new System.Drawing.Size(981, 508);
+            this.tabPageParamony.Size = new System.Drawing.Size(981, 496);
             this.tabPageParamony.TabIndex = 5;
             this.tabPageParamony.Text = "Paramony";
             this.tabPageParamony.UseVisualStyleBackColor = true;
@@ -1461,7 +1463,7 @@ namespace UbStudyHelpGenerator
             // splitContainerParamony.Panel2
             // 
             this.splitContainerParamony.Panel2.Controls.Add(this.tsParamonyMessages);
-            this.splitContainerParamony.Size = new System.Drawing.Size(981, 508);
+            this.splitContainerParamony.Size = new System.Drawing.Size(981, 496);
             this.splitContainerParamony.SplitterDistance = 153;
             this.splitContainerParamony.TabIndex = 0;
             // 
@@ -1483,8 +1485,18 @@ namespace UbStudyHelpGenerator
             this.tsParamonyMessages.Location = new System.Drawing.Point(0, 0);
             this.tsParamonyMessages.Multiline = true;
             this.tsParamonyMessages.Name = "tsParamonyMessages";
-            this.tsParamonyMessages.Size = new System.Drawing.Size(824, 508);
+            this.tsParamonyMessages.Size = new System.Drawing.Size(824, 496);
             this.tsParamonyMessages.TabIndex = 0;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(815, 70);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 33;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // frmMain
             // 
@@ -1662,6 +1674,7 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.ListBox listBoxSubjects;
         private System.Windows.Forms.Button btLoadSubjects;
         private System.Windows.Forms.TextBox txSubjectSelect;
+        private System.Windows.Forms.Button button1;
     }
 }
 
