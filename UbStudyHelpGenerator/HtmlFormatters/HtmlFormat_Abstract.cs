@@ -103,11 +103,13 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             public short EditTranslationNumber = -1;
 
             // Links used only for the edit translation
-            protected string Href { get => $"https://github.com/Rogreis/PtAlternative/blob/correcoes/Doc{PaperNo:000}/Par_{PaperNo:000}_{SectionNo:000}_{ParagraphNo:000}.md"; }
-            protected string IdentLink { get => $"<a href=\"{Href}\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\"><small>{EnglishParagraph.Identification}</small></a>"; }
+            //protected string Href { get => $"https://github.com/Rogreis/PtAlternative/blob/correcoes/Doc{PaperNo:000}/Par_{PaperNo:000}_{SectionNo:000}_{ParagraphNo:000}.md"; }
+            protected string Hash { get => $"{PaperNo}:{SectionNo}-{ParagraphNo}"; }
+            protected string IdentLink { get => $"<a href=\"#\" onclick=\"event.preventDefault(); generateUrlAndOpen('{Hash}');\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\"><small>{EnglishParagraph.Identification}</small></a>"; }
             protected string FulltextLink(string htmlText)
             {
-                return $"<a href=\"{Href}\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\">{htmlText}</a>";
+                return $"<a href=\"#\" onclick=\"event.preventDefault(); generateUrlAndOpen('{Hash}');\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\">{htmlText}</a>";
+
             }
 
             /// <summary>

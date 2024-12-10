@@ -182,6 +182,7 @@
     <Compile Include="UbStandardObjects\Helpers\EpubGenerator.cs" />
     <Compile Include="UbStandardObjects\Helpers\GitHelper.cs" />
     <Compile Include="UbStandardObjects\Log.cs" />
+    <Compile Include="UbStandardObjects\Objects\Articles.cs" />
     <Compile Include="UbStandardObjects\Objects\Book.cs" />
     <Compile Include="UbStandardObjects\Objects\BookIndex.cs" />
     <Compile Include="UbStandardObjects\Objects\GitHistory.cs" />

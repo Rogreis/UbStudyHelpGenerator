@@ -198,7 +198,6 @@ namespace UbStudyHelpGenerator.HtmlFormatters
 
         private void GenerateSubjectIndexHeader(StringBuilder sb)
         {
-            sb.AppendLine("			<h3>Assuntos</h3>");
             sb.AppendLine("			<div id=\"searchData\"> ");
             sb.AppendLine("				<form> ");
             sb.AppendLine("					<label for=\"searchInputBox\">Busca nos assuntos:</label><br> ");
