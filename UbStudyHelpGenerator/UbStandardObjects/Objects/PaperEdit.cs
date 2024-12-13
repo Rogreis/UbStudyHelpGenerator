@@ -84,6 +84,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
         #endregion
 
+
         /// <summary>
         /// Read all paragraph from disk
         /// </summary>
@@ -127,7 +128,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         /// </summary>
         /// <param name="entry"></param>
         /// <returns></returns>
-        public ParagraphEdit GetParagraph(string filePath)
+        public ParagraphEdit GetParagraphFromRepository(string filePath)
         {
             //if (Paragraphs.Count == 0)
             //{
@@ -141,6 +142,36 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             return par;
         }
 
+        public ParagraphEdit GetParagraphFromRepository(TOC_Entry entry)
+        {
+            try
+            {
+                ParagraphEdit par = new ParagraphEdit(entry);
+                Note note = GetMyNote(par.Section, par.ParagraphNo);
+                par._status = note.Status;
+                return par;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("PaperEdit.GetParagraphFromRepository", ex);
+            }
+        }
+
+        public bool SaveParagraph(string repositoryPath, ParagraphEdit par)
+        {
+            try
+            {
+                par.SaveText(repositoryPath);
+                Note note = GetMyNote(par.Section, par.ParagraphNo);
+                note.Status= (short)par.Status;
+                Notes.StorePaperNote(notes, par.Paper);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("PaperEdit.SaveParagraph", ex);
+            }
+        }
 
     }
 }

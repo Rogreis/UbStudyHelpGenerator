@@ -33,7 +33,6 @@ namespace UbStudyHelpGenerator
 
         private GetDataFiles getDataFiles = new GetDataFiles();
 
-
         private string DataFolder()
         {
             string processName = System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
@@ -54,7 +53,9 @@ namespace UbStudyHelpGenerator
         {
             InitializeComponent();
             StaticObjects.ShowMessage += Logger_ShowMessage;
+            EventsControl.EntryEdited += AddEntryEdited;  
         }
+
 
         private void FillComboWithTranslation(ComboBox comboBox, short selectedTranslation)
         {
@@ -134,8 +135,8 @@ namespace UbStudyHelpGenerator
             txSqlServerConnectionString.Text = Settings.Default.SqlServerConnectionString;
             txTranslationRepositoryFolder.Text = StaticObjects.Parameters.EditParagraphsRepositoryFolder;
             txEditBookRepositoryFolder.Text = StaticObjects.Parameters.EditBookRepositoryFolder;
-            numericUpDownStatusPaperNo.Value = StaticObjects.Parameters.LastPaperEdited;
-            numericUpDownPaperNo.Value = StaticObjects.Parameters.LastGTPPaper;
+            numericUpDownStatusPaperNo.Value = StaticObjects.Parameters.LastPaperStatusChanged;
+            comboBoxDocsNoTranslation.Text= StaticObjects.Parameters.LastGTPPaper.ToString();
             numericUpDownStatusPaperNo.Value = Convert.ToDecimal(StaticObjects.Parameters.LastDocumentToChangeStatus);
             comboBoxDoc.Text = StaticObjects.Parameters.LastDocumentToRecover.ToString();
         }
@@ -1449,6 +1450,7 @@ namespace UbStudyHelpGenerator
         }
         private void btGetEnglishText_Click(object sender, EventArgs e)
         {
+            if (comboBoxDocsNoTranslation.Text.Trim() == "") return;
             if (!Initialize())
                 return;
             StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
@@ -1468,24 +1470,38 @@ namespace UbStudyHelpGenerator
                 return;
             }
 
-            StaticObjects.Parameters.LastGTPPaper = (short)numericUpDownPaperNo.Value;
+            StaticObjects.Parameters.LastGTPPaper = Convert.ToInt16(comboBoxDocsNoTranslation.Text);
+            string messageToAi = "Traduza para o português do Brasil, mantenha os números no início de cada linha na tradução, faça a saída em formato texto puro e não intruduza uma linha em branco entre cada duas linhas:";
 
             Paper paperEnglish = StaticObjects.Book.EnglishTranslation.Paper(StaticObjects.Parameters.LastGTPPaper);
             ShowMessage(null);
+            ShowMessage(messageToAi);
             int count = 0;
             foreach (Paragraph p in paperEnglish.Paragraphs)
             {
                 if (p.IsPaperTitle || p.IsSectionTitle || p.IsDivider) ShowMessage("");
                 ShowMessage($"{p.ID} {p.TextNoHtml}");
                 count++;
-                if ((count % 30) == 0)
+                if ((count % 20) == 0)
                 {
                     ShowMessage("");
                     ShowMessage("");
                     ShowMessage("");
+                    ShowMessage("");
+                    ShowMessage("");
+                    ShowMessage(messageToAi);
+                    ShowMessage("");
                 }
             }
         }
+
+        private void btAiSaveToRepository_Click(object sender, EventArgs e)
+        {
+            string pathAiGeneratedTranslation = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder + @"\AiGenerated\",
+                                                             $@"Doc{StaticObjects.Parameters.LastGTPPaper:000}.txt");
+            File.WriteAllText(pathAiGeneratedTranslation, textBoxTranslations.Text.Trim(), Encoding.UTF8);
+        }
+
 
         #endregion
 
@@ -1587,14 +1603,12 @@ namespace UbStudyHelpGenerator
             aEdit.ShowDialog();
         }
 
-        private void btEdita_Click(object sender, EventArgs e)
+
+        private void AddEntryEdited(TOC_Entry entry)
         {
-            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
-            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            TOC_Entry entry = TOC_Entry.FromHref(comboBoxEntries.Text);
             StaticObjects.Parameters.Entry = entry;
             comboBoxEntries.Text = entry.Ident;
+            if (comboBoxEntries.Items.Count > 0 && (string)comboBoxEntries.Items[0] == entry.Ident) return;
             if (comboBoxEntries.Items.Count > 20)
             {
                 comboBoxEntries.Items.RemoveAt(20);
@@ -1602,6 +1616,16 @@ namespace UbStudyHelpGenerator
             comboBoxEntries.Items.Insert(0, entry.Ident);
             comboBoxEntries.Text = entry.Ident;
             StaticObjects.Parameters.EntriesUsed = StaticObjects.Parameters.SerializeComboBoxItems(comboBoxEntries);
+        }
+
+
+        private void btEdita_Click(object sender, EventArgs e)
+        {
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            TOC_Entry entry = TOC_Entry.FromHref(comboBoxEntries.Text);
+            AddEntryEdited(entry);
             OpenEditForms(entry);
             //short paperEditNo = (short)numericUpDownStatusPaperNo.Value;
             //PaperEdit paperEdit= StaticObjects.Book.EditTranslation.GetPaperEdit(paperEditNo);
@@ -1612,28 +1636,14 @@ namespace UbStudyHelpGenerator
             short paperNo = -1;
             short.TryParse(comboBoxDoc.Text, out paperNo);
             if (paperNo == -1) return;
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
             StaticObjects.Parameters.LastDocumentToRecover = paperNo;
             TOC_Entry entry = new TOC_Entry(0, paperNo, 0, 1, 0, 0);
+            AddEntryEdited(entry);
             OpenEditForms(entry);
         }
-
-
-        private void btPrevious_Click(object sender, EventArgs e)
-        {
-            TOC_Entry entry = TOC_Entry.FromHref(comboBoxEntries.Text);
-            entry = TOC_Entry.PreviousHRef(entry);
-            comboBoxEntries.Text = entry.Ident;
-            OpenEditForms(entry);
-        }
-
-        private void btNext_Click(object sender, EventArgs e)
-        {
-            TOC_Entry entry = TOC_Entry.FromHref(comboBoxEntries.Text);
-            entry = TOC_Entry.NextHRef(entry);
-            comboBoxEntries.Text = entry.Ident;
-            OpenEditForms(entry);
-        }
-
 
 
         #endregion
@@ -1668,5 +1678,6 @@ namespace UbStudyHelpGenerator
             HtmlFormat_PTalternative formatter = new HtmlFormat_PTalternative(StaticObjects.Parameters);
             formatter.PrintAllIndexPAges();
         }
+
     }
 }

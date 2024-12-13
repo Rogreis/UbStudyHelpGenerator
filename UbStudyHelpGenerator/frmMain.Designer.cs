@@ -36,6 +36,7 @@ namespace UbStudyHelpGenerator
             this.label4 = new System.Windows.Forms.Label();
             this.txRepositoryOutputFolder = new System.Windows.Forms.TextBox();
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
+            this.button1 = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.btEditBookRepositoryFolder = new System.Windows.Forms.Button();
@@ -48,7 +49,6 @@ namespace UbStudyHelpGenerator
             this.comboBoxTranslations = new System.Windows.Forms.ComboBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageEdit = new System.Windows.Forms.TabPage();
-            this.groupBoxDocuments = new System.Windows.Forms.GroupBox();
             this.comboBoxDoc = new System.Windows.Forms.ComboBox();
             this.btDocEdit = new System.Windows.Forms.Button();
             this.label13 = new System.Windows.Forms.Label();
@@ -56,9 +56,6 @@ namespace UbStudyHelpGenerator
             this.btGenerateNotes = new System.Windows.Forms.Button();
             this.label7 = new System.Windows.Forms.Label();
             this.numericUpDownStatusPaperNo = new System.Windows.Forms.NumericUpDown();
-            this.btNext = new System.Windows.Forms.Button();
-            this.btPrevious = new System.Windows.Forms.Button();
-            this.comboBoxEntries = new System.Windows.Forms.ComboBox();
             this.label12 = new System.Windows.Forms.Label();
             this.comboBoxDownLeft = new System.Windows.Forms.ComboBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -116,7 +113,8 @@ namespace UbStudyHelpGenerator
             this.splitContainerTranslations = new System.Windows.Forms.SplitContainer();
             this.btBylaws = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.numericUpDownPaperNo = new System.Windows.Forms.NumericUpDown();
+            this.btAiSaveToRepository = new System.Windows.Forms.Button();
+            this.comboBoxDocsNoTranslation = new System.Windows.Forms.ComboBox();
             this.btGetEnglishText = new System.Windows.Forms.Button();
             this.btGeneratePtAlternativeCompare = new System.Windows.Forms.Button();
             this.btImportGpt4Translation = new System.Windows.Forms.Button();
@@ -127,7 +125,7 @@ namespace UbStudyHelpGenerator
             this.splitContainerParamony = new System.Windows.Forms.SplitContainer();
             this.btyParamonyImport = new System.Windows.Forms.Button();
             this.tsParamonyMessages = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.comboBoxEntries = new System.Windows.Forms.ComboBox();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -136,7 +134,6 @@ namespace UbStudyHelpGenerator
             this.groupBox3.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabPageEdit.SuspendLayout();
-            this.groupBoxDocuments.SuspendLayout();
             this.groupBoxStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStatusPaperNo)).BeginInit();
             this.tabPageEditTranslation.SuspendLayout();
@@ -166,7 +163,6 @@ namespace UbStudyHelpGenerator
             this.splitContainerTranslations.Panel2.SuspendLayout();
             this.splitContainerTranslations.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPaperNo)).BeginInit();
             this.tabPageParamony.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerParamony)).BeginInit();
             this.splitContainerParamony.Panel1.SuspendLayout();
@@ -255,6 +251,16 @@ namespace UbStudyHelpGenerator
             this.splitContainerMain.SplitterDistance = 160;
             this.splitContainerMain.SplitterWidth = 3;
             this.splitContainerMain.TabIndex = 2;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(815, 70);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.TabIndex = 33;
+            this.button1.Text = "button1";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label9
             // 
@@ -387,11 +393,11 @@ namespace UbStudyHelpGenerator
             // 
             // tabPageEdit
             // 
-            this.tabPageEdit.Controls.Add(this.groupBoxDocuments);
-            this.tabPageEdit.Controls.Add(this.groupBoxStatus);
-            this.tabPageEdit.Controls.Add(this.btNext);
-            this.tabPageEdit.Controls.Add(this.btPrevious);
             this.tabPageEdit.Controls.Add(this.comboBoxEntries);
+            this.tabPageEdit.Controls.Add(this.comboBoxDoc);
+            this.tabPageEdit.Controls.Add(this.btDocEdit);
+            this.tabPageEdit.Controls.Add(this.label13);
+            this.tabPageEdit.Controls.Add(this.groupBoxStatus);
             this.tabPageEdit.Controls.Add(this.label12);
             this.tabPageEdit.Controls.Add(this.comboBoxDownLeft);
             this.tabPageEdit.Controls.Add(this.label11);
@@ -407,18 +413,6 @@ namespace UbStudyHelpGenerator
             this.tabPageEdit.Tag = "Edit";
             this.tabPageEdit.Text = "Edit";
             this.tabPageEdit.UseVisualStyleBackColor = true;
-            // 
-            // groupBoxDocuments
-            // 
-            this.groupBoxDocuments.Controls.Add(this.comboBoxDoc);
-            this.groupBoxDocuments.Controls.Add(this.btDocEdit);
-            this.groupBoxDocuments.Controls.Add(this.label13);
-            this.groupBoxDocuments.Location = new System.Drawing.Point(577, 106);
-            this.groupBoxDocuments.Name = "groupBoxDocuments";
-            this.groupBoxDocuments.Size = new System.Drawing.Size(239, 67);
-            this.groupBoxDocuments.TabIndex = 47;
-            this.groupBoxDocuments.TabStop = false;
-            this.groupBoxDocuments.Text = "Documentos";
             // 
             // comboBoxDoc
             // 
@@ -502,7 +496,7 @@ namespace UbStudyHelpGenerator
             "194",
             "195",
             "196"});
-            this.comboBoxDoc.Location = new System.Drawing.Point(69, 27);
+            this.comboBoxDoc.Location = new System.Drawing.Point(80, 138);
             this.comboBoxDoc.Name = "comboBoxDoc";
             this.comboBoxDoc.Size = new System.Drawing.Size(57, 21);
             this.comboBoxDoc.TabIndex = 26;
@@ -510,19 +504,19 @@ namespace UbStudyHelpGenerator
             // btDocEdit
             // 
             this.btDocEdit.BackColor = System.Drawing.Color.PeachPuff;
-            this.btDocEdit.Location = new System.Drawing.Point(131, 19);
+            this.btDocEdit.Location = new System.Drawing.Point(209, 130);
             this.btDocEdit.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btDocEdit.Name = "btDocEdit";
-            this.btDocEdit.Size = new System.Drawing.Size(90, 35);
+            this.btDocEdit.Size = new System.Drawing.Size(219, 35);
             this.btDocEdit.TabIndex = 10;
-            this.btDocEdit.Text = "Edit";
+            this.btDocEdit.Text = "Inicia Edição de Documento";
             this.btDocEdit.UseVisualStyleBackColor = false;
             this.btDocEdit.Click += new System.EventHandler(this.btDocEdit_Click);
             // 
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(8, 33);
+            this.label13.Location = new System.Drawing.Point(9, 141);
             this.label13.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(55, 13);
@@ -581,43 +575,10 @@ namespace UbStudyHelpGenerator
             this.numericUpDownStatusPaperNo.TabIndex = 26;
             this.numericUpDownStatusPaperNo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // btNext
-            // 
-            this.btNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btNext.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btNext.Location = new System.Drawing.Point(167, 37);
-            this.btNext.Name = "btNext";
-            this.btNext.Size = new System.Drawing.Size(75, 23);
-            this.btNext.TabIndex = 45;
-            this.btNext.Text = "Next";
-            this.btNext.UseVisualStyleBackColor = true;
-            this.btNext.Click += new System.EventHandler(this.btNext_Click);
-            // 
-            // btPrevious
-            // 
-            this.btPrevious.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btPrevious.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btPrevious.Location = new System.Drawing.Point(80, 37);
-            this.btPrevious.Name = "btPrevious";
-            this.btPrevious.Size = new System.Drawing.Size(75, 23);
-            this.btPrevious.TabIndex = 44;
-            this.btPrevious.Text = "Previous";
-            this.btPrevious.UseVisualStyleBackColor = true;
-            this.btPrevious.Click += new System.EventHandler(this.btPrevious_Click);
-            // 
-            // comboBoxEntries
-            // 
-            this.comboBoxEntries.FormattingEnabled = true;
-            this.comboBoxEntries.Location = new System.Drawing.Point(80, 15);
-            this.comboBoxEntries.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
-            this.comboBoxEntries.Name = "comboBoxEntries";
-            this.comboBoxEntries.Size = new System.Drawing.Size(204, 21);
-            this.comboBoxEntries.TabIndex = 41;
-            // 
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(9, 160);
+            this.label12.Location = new System.Drawing.Point(9, 91);
             this.label12.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(59, 13);
@@ -627,7 +588,7 @@ namespace UbStudyHelpGenerator
             // comboBoxDownLeft
             // 
             this.comboBoxDownLeft.FormattingEnabled = true;
-            this.comboBoxDownLeft.Location = new System.Drawing.Point(80, 157);
+            this.comboBoxDownLeft.Location = new System.Drawing.Point(80, 88);
             this.comboBoxDownLeft.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.comboBoxDownLeft.Name = "comboBoxDownLeft";
             this.comboBoxDownLeft.Size = new System.Drawing.Size(472, 21);
@@ -636,7 +597,7 @@ namespace UbStudyHelpGenerator
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(9, 125);
+            this.label11.Location = new System.Drawing.Point(9, 56);
             this.label11.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(52, 13);
@@ -646,7 +607,7 @@ namespace UbStudyHelpGenerator
             // comboBoxUpRight
             // 
             this.comboBoxUpRight.FormattingEnabled = true;
-            this.comboBoxUpRight.Location = new System.Drawing.Point(80, 122);
+            this.comboBoxUpRight.Location = new System.Drawing.Point(80, 53);
             this.comboBoxUpRight.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.comboBoxUpRight.Name = "comboBoxUpRight";
             this.comboBoxUpRight.Size = new System.Drawing.Size(472, 21);
@@ -655,7 +616,7 @@ namespace UbStudyHelpGenerator
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(11, 87);
+            this.label10.Location = new System.Drawing.Point(11, 18);
             this.label10.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(45, 13);
@@ -665,7 +626,7 @@ namespace UbStudyHelpGenerator
             // comboBoxUpLeft
             // 
             this.comboBoxUpLeft.FormattingEnabled = true;
-            this.comboBoxUpLeft.Location = new System.Drawing.Point(80, 87);
+            this.comboBoxUpLeft.Location = new System.Drawing.Point(80, 18);
             this.comboBoxUpLeft.Margin = new System.Windows.Forms.Padding(2, 1, 2, 1);
             this.comboBoxUpLeft.Name = "comboBoxUpLeft";
             this.comboBoxUpLeft.Size = new System.Drawing.Size(472, 21);
@@ -674,7 +635,7 @@ namespace UbStudyHelpGenerator
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(11, 18);
+            this.label8.Location = new System.Drawing.Point(9, 182);
             this.label8.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(34, 13);
@@ -683,13 +644,13 @@ namespace UbStudyHelpGenerator
             // 
             // btEdita
             // 
-            this.btEdita.BackColor = System.Drawing.Color.Coral;
-            this.btEdita.Location = new System.Drawing.Point(462, 194);
+            this.btEdita.BackColor = System.Drawing.Color.PeachPuff;
+            this.btEdita.Location = new System.Drawing.Point(209, 172);
             this.btEdita.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btEdita.Name = "btEdita";
-            this.btEdita.Size = new System.Drawing.Size(90, 35);
+            this.btEdita.Size = new System.Drawing.Size(219, 35);
             this.btEdita.TabIndex = 28;
-            this.btEdita.Text = "Edit";
+            this.btEdita.Text = "Inicia Edição pelo Parágrafo";
             this.btEdita.UseVisualStyleBackColor = false;
             this.btEdita.Click += new System.EventHandler(this.btEdita_Click);
             // 
@@ -840,7 +801,7 @@ namespace UbStudyHelpGenerator
             this.btImportDocx.Location = new System.Drawing.Point(801, 43);
             this.btImportDocx.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btImportDocx.Name = "btImportDocx";
-            this.btImportDocx.Size = new System.Drawing.Size(131, 28);
+            this.btImportDocx.Size = new System.Drawing.Size(131, 42);
             this.btImportDocx.TabIndex = 11;
             this.btImportDocx.Text = "Voice Changes From Word";
             this.btImportDocx.UseVisualStyleBackColor = true;
@@ -1326,46 +1287,122 @@ namespace UbStudyHelpGenerator
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.numericUpDownPaperNo);
+            this.groupBox1.Controls.Add(this.btAiSaveToRepository);
+            this.groupBox1.Controls.Add(this.comboBoxDocsNoTranslation);
             this.groupBox1.Controls.Add(this.btGetEnglishText);
-            this.groupBox1.Location = new System.Drawing.Point(20, 196);
+            this.groupBox1.Location = new System.Drawing.Point(15, 205);
             this.groupBox1.Margin = new System.Windows.Forms.Padding(2);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Padding = new System.Windows.Forms.Padding(2);
-            this.groupBox1.Size = new System.Drawing.Size(133, 110);
+            this.groupBox1.Size = new System.Drawing.Size(162, 198);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Chat GTP";
+            this.groupBox1.Text = "Export English to Text";
             // 
-            // numericUpDownPaperNo
+            // btAiSaveToRepository
             // 
-            this.numericUpDownPaperNo.Location = new System.Drawing.Point(4, 17);
-            this.numericUpDownPaperNo.Margin = new System.Windows.Forms.Padding(2);
-            this.numericUpDownPaperNo.Maximum = new decimal(new int[] {
-            120,
-            0,
-            0,
-            0});
-            this.numericUpDownPaperNo.Minimum = new decimal(new int[] {
-            99,
-            0,
-            0,
-            0});
-            this.numericUpDownPaperNo.Name = "numericUpDownPaperNo";
-            this.numericUpDownPaperNo.Size = new System.Drawing.Size(80, 20);
-            this.numericUpDownPaperNo.TabIndex = 5;
-            this.numericUpDownPaperNo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.numericUpDownPaperNo.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
+            this.btAiSaveToRepository.BackColor = System.Drawing.Color.YellowGreen;
+            this.btAiSaveToRepository.ForeColor = System.Drawing.Color.Black;
+            this.btAiSaveToRepository.Location = new System.Drawing.Point(5, 129);
+            this.btAiSaveToRepository.Margin = new System.Windows.Forms.Padding(2);
+            this.btAiSaveToRepository.Name = "btAiSaveToRepository";
+            this.btAiSaveToRepository.Size = new System.Drawing.Size(125, 60);
+            this.btAiSaveToRepository.TabIndex = 7;
+            this.btAiSaveToRepository.Text = "Save to Repository";
+            this.btAiSaveToRepository.UseVisualStyleBackColor = false;
+            this.btAiSaveToRepository.Click += new System.EventHandler(this.btAiSaveToRepository_Click);
+            // 
+            // comboBoxDocsNoTranslation
+            // 
+            this.comboBoxDocsNoTranslation.FormattingEnabled = true;
+            this.comboBoxDocsNoTranslation.Items.AddRange(new object[] {
+            "33",
+            "34",
+            "35",
+            "36",
+            "37",
+            "38",
+            "39",
+            "40",
+            "41",
+            "42",
+            "44",
+            "45",
+            "46",
+            "47",
+            "48",
+            "49",
+            "50",
+            "51",
+            "52",
+            "53",
+            "54",
+            "55",
+            "56",
+            "83",
+            "95",
+            "120",
+            "130",
+            "147",
+            "148",
+            "149",
+            "150",
+            "151",
+            "152",
+            "153",
+            "154",
+            "155",
+            "156",
+            "157",
+            "158",
+            "159",
+            "160",
+            "161",
+            "162",
+            "163",
+            "164",
+            "165",
+            "166",
+            "167",
+            "168",
+            "169",
+            "170",
+            "171",
+            "172",
+            "173",
+            "174",
+            "175",
+            "176",
+            "177",
+            "178",
+            "179",
+            "180",
+            "181",
+            "182",
+            "183",
+            "184",
+            "185",
+            "186",
+            "187",
+            "188",
+            "189",
+            "190",
+            "191",
+            "192",
+            "193",
+            "194",
+            "195",
+            "196"});
+            this.comboBoxDocsNoTranslation.Location = new System.Drawing.Point(5, 27);
+            this.comboBoxDocsNoTranslation.Name = "comboBoxDocsNoTranslation";
+            this.comboBoxDocsNoTranslation.Size = new System.Drawing.Size(76, 21);
+            this.comboBoxDocsNoTranslation.TabIndex = 6;
             // 
             // btGetEnglishText
             // 
             this.btGetEnglishText.BackColor = System.Drawing.Color.GreenYellow;
             this.btGetEnglishText.ForeColor = System.Drawing.Color.Black;
-            this.btGetEnglishText.Location = new System.Drawing.Point(4, 41);
+            this.btGetEnglishText.Location = new System.Drawing.Point(5, 65);
             this.btGetEnglishText.Margin = new System.Windows.Forms.Padding(2);
             this.btGetEnglishText.Name = "btGetEnglishText";
             this.btGetEnglishText.Size = new System.Drawing.Size(125, 60);
@@ -1488,15 +1525,13 @@ namespace UbStudyHelpGenerator
             this.tsParamonyMessages.Size = new System.Drawing.Size(824, 496);
             this.tsParamonyMessages.TabIndex = 0;
             // 
-            // button1
+            // comboBoxEntries
             // 
-            this.button1.Location = new System.Drawing.Point(815, 70);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 33;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.comboBoxEntries.FormattingEnabled = true;
+            this.comboBoxEntries.Location = new System.Drawing.Point(80, 180);
+            this.comboBoxEntries.Name = "comboBoxEntries";
+            this.comboBoxEntries.Size = new System.Drawing.Size(121, 21);
+            this.comboBoxEntries.TabIndex = 48;
             // 
             // frmMain
             // 
@@ -1522,8 +1557,6 @@ namespace UbStudyHelpGenerator
             this.tabControlMain.ResumeLayout(false);
             this.tabPageEdit.ResumeLayout(false);
             this.tabPageEdit.PerformLayout();
-            this.groupBoxDocuments.ResumeLayout(false);
-            this.groupBoxDocuments.PerformLayout();
             this.groupBoxStatus.ResumeLayout(false);
             this.groupBoxStatus.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStatusPaperNo)).EndInit();
@@ -1562,7 +1595,6 @@ namespace UbStudyHelpGenerator
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerTranslations)).EndInit();
             this.splitContainerTranslations.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPaperNo)).EndInit();
             this.tabPageParamony.ResumeLayout(false);
             this.splitContainerParamony.Panel1.ResumeLayout(false);
             this.splitContainerParamony.Panel2.ResumeLayout(false);
@@ -1638,7 +1670,6 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.Button btTest;
         private System.Windows.Forms.Button btGetEnglishText;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.NumericUpDown numericUpDownPaperNo;
         private System.Windows.Forms.Button btGZipFile;
         private System.Windows.Forms.Button btBylaws;
         private System.Windows.Forms.Button btEpub;
@@ -1661,11 +1692,7 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.ComboBox comboBoxUpRight;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.ComboBox comboBoxUpLeft;
-        private System.Windows.Forms.ComboBox comboBoxEntries;
         private System.Windows.Forms.GroupBox groupBoxStatus;
-        private System.Windows.Forms.Button btNext;
-        private System.Windows.Forms.Button btPrevious;
-        private System.Windows.Forms.GroupBox groupBoxDocuments;
         private System.Windows.Forms.Button btDocEdit;
         private System.Windows.Forms.Label label13;
         private System.Windows.Forms.ComboBox comboBoxDoc;
@@ -1675,6 +1702,9 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.Button btLoadSubjects;
         private System.Windows.Forms.TextBox txSubjectSelect;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox comboBoxDocsNoTranslation;
+        private System.Windows.Forms.Button btAiSaveToRepository;
+        private System.Windows.Forms.ComboBox comboBoxEntries;
     }
 }
 

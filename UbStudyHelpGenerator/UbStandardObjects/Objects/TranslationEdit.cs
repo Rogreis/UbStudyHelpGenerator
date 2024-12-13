@@ -68,7 +68,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         {
             PaperEdit paperEdit = GetPaperEdit(entry.Paper);
             string paragraphPath = ParagraphEdit.FullPath(LocalRepositoryFolder, entry.Paper, entry.Section, entry.ParagraphNo);
-            ParagraphEdit paragraphEdit = paperEdit.GetParagraph(paragraphPath);
+            ParagraphEdit paragraphEdit = paperEdit.GetParagraphFromRepository(paragraphPath);
             return paragraphEdit;
         }
 

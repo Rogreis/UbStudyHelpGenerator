@@ -58,7 +58,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects
         public short TranslationUpLeft { get; set; } = 0;
         public short TranslationUpRight { get; set; } = 0;
         public short TranslationDownLeft { get; set; } = 0;
-        public string EntriesUsed { get; set; } = "";
         public short LastDocumentToRecover { get; set; } = -1; // Verificar se foi traduzido pelo Caio
         public short LastDocumentToChangeStatus { get; set; } = -1;
 
@@ -109,7 +108,9 @@ namespace UbStudyHelpGenerator.UbStandardObjects
 
         public short LastGTPPaper { get; set; } = 101;
 
-        public short LastPaperEdited { get; set; } = 0;
+        public short LastPaperStatusChanged { get; set; } = 0;
+        public string EntriesUsed { get; set; } = "";
+        public TOC_Entry LastEditedEntry { get; set; } = new TOC_Entry();
 
         public string SerializeComboBoxItems(ComboBox comboBox)
         {

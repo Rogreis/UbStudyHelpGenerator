@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using UbStudyHelpGenerator.UbStandardObjects;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 namespace UbStandardObjects.Objects
@@ -59,6 +60,18 @@ namespace UbStandardObjects.Objects
             Paper = Convert.ToInt16(parts[0]);
             Section = Convert.ToInt16(parts[1]);
             ParagraphNo = Convert.ToInt16(parts[2]);
+            IsEditTranslation = true;
+        }
+
+        public ParagraphEdit(TOC_Entry entry)
+        {
+            Paper = entry.Paper;
+            Section = entry.Section;
+            ParagraphNo = entry.ParagraphNo;
+            string pathMdFile = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder,
+                                $@"Doc{entry.Paper:000}\Par_{Paper:000}_{Section:000}_{ParagraphNo:000}.md");
+            MarkdownContent = File.ReadAllText(pathMdFile);
+            Text = MarkdownToHtml(MarkdownContent);
             IsEditTranslation = true;
         }
 
