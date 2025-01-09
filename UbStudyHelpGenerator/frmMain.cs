@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Markdig;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -53,7 +54,7 @@ namespace UbStudyHelpGenerator
         {
             InitializeComponent();
             StaticObjects.ShowMessage += Logger_ShowMessage;
-            EventsControl.EntryEdited += AddEntryEdited;  
+            EventsControl.EntryEdited += AddEntryEdited;
         }
 
 
@@ -125,6 +126,8 @@ namespace UbStudyHelpGenerator
             }
         }
 
+        GrepMarkdown grepMarkdown = new GrepMarkdown();
+
         private void frmMain_Load(object sender, EventArgs e)
         {
             Initialize();
@@ -136,9 +139,15 @@ namespace UbStudyHelpGenerator
             txTranslationRepositoryFolder.Text = StaticObjects.Parameters.EditParagraphsRepositoryFolder;
             txEditBookRepositoryFolder.Text = StaticObjects.Parameters.EditBookRepositoryFolder;
             numericUpDownStatusPaperNo.Value = StaticObjects.Parameters.LastPaperStatusChanged;
-            comboBoxDocsNoTranslation.Text= StaticObjects.Parameters.LastGTPPaper.ToString();
+            comboBoxDocsNoTranslation.Text = StaticObjects.Parameters.LastGTPPaper.ToString();
             numericUpDownStatusPaperNo.Value = Convert.ToDecimal(StaticObjects.Parameters.LastDocumentToChangeStatus);
             comboBoxDoc.Text = StaticObjects.Parameters.LastDocumentToRecover.ToString();
+
+            comboBoxGrepCommands.DisplayMember = "Name";
+            comboBoxGrepCommands.ValueMember = "Command";
+            comboBoxGrepCommands.DataSource = grepMarkdown.Commands;
+
+
         }
 
 
@@ -751,8 +760,6 @@ namespace UbStudyHelpGenerator
             PtBr_Website tubPT_BR = new PtBr_Website(StaticObjects.Parameters, formatter);
             tubPT_BR.ShowPaperNumber += ShowPaperNumber;
             tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
-
-            string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "indexOld.html");
             tubPT_BR.Print(StaticObjects.Book.EnglishTranslation,
                            StaticObjects.Book.WorkTranslation,
                            StaticObjects.Book.EditTranslation);
@@ -765,72 +772,61 @@ namespace UbStudyHelpGenerator
             tubPT_BR.ShowPaperNumber += ShowPaperNumber;
             tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
 
-            string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "indexOld.html");
             tubPT_BR.Print(StaticObjects.Book.EnglishTranslation,
-                           StaticObjects.Book.WorkTranslation,
-                           StaticObjects.Book.EditTranslation,
-                           paperEditNo);
+                          StaticObjects.Book.WorkTranslation,
+                          StaticObjects.Book.EditTranslation,
+                          paperEditNo);
         }
 
 
         private void btPTAlternativeGenerate_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show($"Are you sure to generate all pages for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
-                        "Confirmation",
-                        MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question) == DialogResult.No)
+            ShowMessage(null);
+            ShowMessage($"Repositório para o texto em páginas html: {StaticObjects.Parameters.EditBookRepositoryFolder}");
+            if (cbGerarArtigos.Checked)
             {
-                return;
+                ShowMessage("Gerando artigos para html");
+                HtmlFormat_PtAlternative_Indexes indexes = new HtmlFormat_PtAlternative_Indexes();
+                indexes.PrintIndexStudy();
+                ShowMessage("Artigos gerados");
             }
 
-            ShowMessage("Starting rogreis.github.io pages");
-
-            // TOC Table not forced
-            ShowMessage($"Creating TOC table to be stored in: {StaticObjects.Parameters.EditBookRepositoryFolder}");
-            List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(false);  // Not forcing generation
-            TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
-            string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
-            toc_table.Html(pathTocTable);
-
-            ExportAllPapers();
-            ShowMessage("Finished");
-            Process.Start("chrome.exe", "localhost");
-
-        }
-
-        private bool ValidateXHTML(string xhtmlFilePath)
-        {
-            try
+            if (cbGerarPaginas.Checked)
             {
-                // Create an XML Reader Settings with validation enabled
-                XmlReaderSettings settings = new XmlReaderSettings();
-                settings.DtdProcessing = DtdProcessing.Parse; // Enable DTD processing
-                settings.ValidationType = ValidationType.Schema;
+                ShowMessage("Gerando páginas de índices e conversão dos artigos para html");
+                HtmlFormat_PtAlternative_Indexes indexes = new HtmlFormat_PtAlternative_Indexes();
+                indexes.PrintAll();
+                ShowMessage("Páginas índice geradas");
+            }
 
-                // Load the XHTML schema (XHTML 1.0 or 1.1)
-                settings.Schemas.Add("http://www.w3.org/1999/xhtml", "C:\\Trabalho\\Github\\Rogerio\\g\\UbStudyHelpGenerator\\xhtml11.dtd");
 
-                // Create an XML reader and load the XHTML file
-                using (XmlReader reader = XmlReader.Create(xhtmlFilePath, settings))
+            if (cbGerarTocTable.Checked)
+            {
+                // TOC Table not forced
+                ShowMessage("Criando Tabela de Conteúdos");
+                List<TUB_TOC_Entry> tocEntries = StaticObjects.Book.EditTranslation.GetTranslation_TOC_Table(true);
+                TUB_TOC_Html toc_table = new TUB_TOC_Html(StaticObjects.Parameters, tocEntries);
+                string pathTocTable = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"content\TocTable.html");
+                toc_table.Html(pathTocTable);
+                ShowMessage("Tabela de conteúdo gerada");
+            }
+
+            if (chGerarTexto.Checked)
+            {
+                if (MessageBox.Show($"Are you sure to generate all pages for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
+                            "Confirmation",
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question) == DialogResult.No)
                 {
-                    while (reader.Read()) ;
+                    return;
                 }
+                ShowMessage("Gerando rogreis.github.io pages");
+                ExportAllPapers();
+                ShowMessage("Finished");
+                Process.Start("chrome.exe", "localhost");
+            }
 
-                // If no exceptions are thrown during validation, the file is valid
-                return true;
-            }
-            catch (XmlSchemaValidationException ex)
-            {
-                // Handle validation errors here
-                ShowMessage($"Validation error: {ex.Message}");
-                return false;
-            }
-            catch (Exception ex)
-            {
-                // Handle other exceptions
-                Console.WriteLine($"Error: {ex.Message}");
-                return false;
-            }
+
         }
 
         private void CreateEpup(short paperNo)
@@ -889,17 +885,17 @@ namespace UbStudyHelpGenerator
 
             HashSet<short> paperSet = new HashSet<short>();
 
-            //short startDoc = 0;
-            //short endDoc = 197;
-            //for (short paperNo = startDoc; paperNo < endDoc; paperNo++)
-            //{
-            //    paperSet.Add(paperNo);
-            //}
+            short startDoc = 99;
+            short endDoc = 113;
+            for (short paperNo = startDoc; paperNo < endDoc; paperNo++)
+            {
+                paperSet.Add(paperNo);
+            }
 
 
-            paperSet.Add(5);
-            paperSet.Add(143);
-            paperSet.Add(144);
+            //paperSet.Add(5);
+            //paperSet.Add(143);
+            //paperSet.Add(144);
 
             bool useSet = true;
 
@@ -930,25 +926,6 @@ namespace UbStudyHelpGenerator
                 //Process.Start("chrome.exe", "localhost");
 
             }
-        }
-
-        private void btValidate_Click(object sender, EventArgs e)
-        {
-
-            string pathParagraphFile = @"C:\Trabalho\Github\Rogerio\p\Doc031\Par_031_010_022.md";
-            ParagraphEdit p = new ParagraphEdit(pathParagraphFile);
-
-            //FolderBrowserDialog dialog = new FolderBrowserDialog();
-            //dialog.SelectedPath = @"C:\Urantia\Epub\EN-PT\EPUB\content";
-            //if (dialog.ShowDialog() == DialogResult.OK)
-            //{
-            //    foreach (string xhtmlFilePath in Directory.GetFiles(dialog.SelectedPath, "*.xhtml"))
-            //    {
-            //        ShowMessage("");
-            //        ShowMessage("xhtmlFilePath");
-            //        ShowMessage($"{(ValidateXHTML(xhtmlFilePath) ? "Ok" : "INVALID")}");
-            //    }
-            //}
         }
 
 
@@ -1188,17 +1165,38 @@ namespace UbStudyHelpGenerator
                 StaticObjects.Book.EditTranslation.Paper(paperNo);
             }
 
-            ShowMessage("Exporting PtAlternative...");
-            PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
-            alternative.ExportToUbStudyHelp();
-            // Verify respository existence
-            if (!DataInitializer.ReInicializeTranslations())
-            {
-                return;
-            }
 
-            DataInitializer.StoreTranslationsList();
-            ShowMessage("Finished.");
+            try
+            {
+                ShowMessage("Exporting PtAlternative...");
+                PTAlternative alternative = new PTAlternative(StaticObjects.Parameters);
+                alternative.ExportToAmadon();
+                // Verify respository existence
+                if (!DataInitializer.ReInicializeTranslations())
+                {
+                    return;
+                }
+
+                // Copia para o diretório de dados do Amadon
+                ShowMessage("Enviando TR002 para dados do Amadon...");
+                string origem = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, "TR002.gz");
+                string destino = @"C:\ProgramData\Amadon\TUB_Files\TR002.gz";  // Diret+orio local de dados do Amadon
+                File.Copy(origem, destino, true);
+
+                ShowMessage("Enviando AvailableTranslations para dados do Amadon...");
+                //Translation trans = StaticObjects.Book.Translations.Find(t => t.LanguageID == StaticObjects.Parameters.EditTranslationId);
+                //trans.Description = $"PT-BR {DateTime.Now:dd-MM-yy}";
+                StaticObjects.Book.EditTranslation.Description = $"PT-BR {DateTime.Now:dd-MM-yy}";
+                DataInitializer.StoreTranslationsList();
+                origem = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, "AvailableTranslations.json");
+                destino = @"C:\ProgramData\Amadon\AvailableTranslations.json";  // Diret+orio local de dados do Amadon
+                File.Copy(origem, destino, true);
+                ShowMessage("Finished.");
+            }
+            catch (Exception ex)
+            {
+                ShowMessage("Erro: Exporting PtAlternative..." + ex.Message);
+            }
         }
 
         /// <summary>
@@ -1240,12 +1238,12 @@ namespace UbStudyHelpGenerator
             // Avoid calls, keep code
             return;
 
-            PaperCheckingUsingChatGPT gpt = new PaperCheckingUsingChatGPT();
-            short paperNo = 100;
-            ShowMessage($"Generating Compare for paper {paperNo}");
+            //PaperCheckingUsingChatGPT gpt = new PaperCheckingUsingChatGPT();
+            //short paperNo = 100;
+            //ShowMessage($"Generating Compare for paper {paperNo}");
 
 
-            ShowMessage("Finished.");
+            //ShowMessage("Finished.");
         }
 
         private void btCompare2_Click(object sender, EventArgs e)
@@ -1341,11 +1339,6 @@ namespace UbStudyHelpGenerator
             }
         }
 
-        private void btAlternativaEdit_Click(object sender, EventArgs e)
-        {
-            //frmEdit frmEdit = new frmEdit();
-            //frmEdit.ShowDialog();
-        }
 
         #region Translations functions
         private void btWordToList_Click(object sender, EventArgs e)
@@ -1631,6 +1624,20 @@ namespace UbStudyHelpGenerator
             //PaperEdit paperEdit= StaticObjects.Book.EditTranslation.GetPaperEdit(paperEditNo);
         }
 
+        private void btGeraLink_Click(object sender, EventArgs e)
+        {
+            TOC_Entry entry= TOC_Entry.FromHref(txEntryForLink.Text);
+            // string markdownLink = $"[{entry.Href}](javascript:loadDoc('content/Doc{entry.Paper:000}.html','p{entry.Paper:000}_{entry.Section:000}_{entry.ParagraphNo:000}'))";
+            //string markdownLink = $"LINKTO{entry.Paper:000}{entry.Section:000}{entry.ParagraphNo:000}";
+            string markdownLink = $"**<a href=\"javascript:showParagraph({entry.Paper},{entry.Section},{entry.ParagraphNo})\" title=\"Abrir o parágrafo {entry.Ident}\">{entry.Ident}</a>**";
+            txBoxLinkForArticles.Text= markdownLink;
+            Clipboard.SetText(markdownLink);
+            txBoxLinkForArticles.SelectAll();
+        }
+
+
+        // <a class="liIndex" href="">1. O Nome do Pai</a> 
+
         private void btDocEdit_Click(object sender, EventArgs e)
         {
             short paperNo = -1;
@@ -1645,6 +1652,21 @@ namespace UbStudyHelpGenerator
             OpenEditForms(entry);
         }
 
+        private void btEditVerDocumento_Click(object sender, EventArgs e)
+        {
+            short paperNo = Convert.ToInt16(comboBoxDoc.Text);
+            if (paperNo == -1) return;
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+            StaticObjects.Parameters.LastDocumentToRecover = paperNo;
+            TOC_Entry entry = new TOC_Entry(0, paperNo, 0, 1, 0, 0);
+
+            ExportPaper(paperNo);
+            ShowMessage($"Paper {paperNo} exported");
+            string url = $"http://localhost/indexToc.html#p{paperNo:000}_000_000";
+            Process.Start("chrome.exe", url);
+        }
 
         #endregion
 
@@ -1667,16 +1689,41 @@ namespace UbStudyHelpGenerator
         private void btGenerateSubjectPage_Click(object sender, EventArgs e)
         {
             if (listBoxSubjects.SelectedItems.Count == 0) return;
-            string subjectIndexSelected= listBoxSubjects.SelectedItems[0].ToString();
-            SubjectIndex subjectIndex= urantiaIndex.GetSubjectIndex(subjectIndexSelected);
+            string subjectIndexSelected = listBoxSubjects.SelectedItems[0].ToString();
+            SubjectIndex subjectIndex = urantiaIndex.GetSubjectIndex(subjectIndexSelected);
         }
 
         #endregion
 
         private void button1_Click(object sender, EventArgs e)
         {
-            HtmlFormat_PTalternative formatter = new HtmlFormat_PTalternative(StaticObjects.Parameters);
-            formatter.PrintAllIndexPAges();
+            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
+            string origem = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, "TR002.gz");
+            string destino = @"C:\Trabalho\Github\Rogerio\tub\TR002.gz";  // Diret+orio local de dados do Amadon
+            File.Copy(origem, destino, true);
+        }
+
+        private void btEditSearch_Click(object sender, EventArgs e)
+        {
+            if (comboBoxGrepCommands.Text.Trim().Length == 0) return;
+            string command = ((GrepCommand)comboBoxGrepCommands.SelectedItem).Command;
+            if (string.IsNullOrEmpty(command)) return;
+
+            List<ParagraphsMdFound> resultList =
+                grepMarkdown.ExecuteGrepCommand(StaticObjects.Parameters.EditParagraphsRepositoryFolder, command);
+            listBoxEditSearchResults.DataSource = resultList;
+        }
+
+        private void listBoxEditSearchResults_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //ParagraphsMdFound paragraphsMdFound = ((ParagraphsMdFound)listBoxEditSearchResults.SelectedItem);
+            //TOC_Entry entry = new TOC_Entry(paragraphsMdFound.Paper, paragraphsMdFound.Section, paragraphsMdFound.ParagraphNo, 0, 0, 0);
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            TOC_Entry entry = TOC_Entry.FromHref(listBoxEditSearchResults.SelectedItem.ToString());
+            OpenEditForms(entry);
+
         }
 
     }

@@ -50,6 +50,7 @@
             this.btNext = new System.Windows.Forms.Button();
             this.btPrevious = new System.Windows.Forms.Button();
             this.btCancel = new System.Windows.Forms.Button();
+            this.btTranslate = new System.Windows.Forms.Button();
             this.statusStrip1.SuspendLayout();
             this.tableLayoutPanelEdit.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -160,6 +161,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btTranslate);
             this.panel1.Controls.Add(this.radioButtonPtOriginalPtAlternative);
             this.panel1.Controls.Add(this.comboBoxStatus);
             this.panel1.Controls.Add(this.btSalvar);
@@ -220,7 +222,7 @@
             // checkBoxInverterComparacao
             // 
             this.checkBoxInverterComparacao.AutoSize = true;
-            this.checkBoxInverterComparacao.Location = new System.Drawing.Point(673, 6);
+            this.checkBoxInverterComparacao.Location = new System.Drawing.Point(629, 6);
             this.checkBoxInverterComparacao.Name = "checkBoxInverterComparacao";
             this.checkBoxInverterComparacao.Size = new System.Drawing.Size(125, 17);
             this.checkBoxInverterComparacao.TabIndex = 48;
@@ -282,9 +284,9 @@
             // 
             this.btNext.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btNext.BackColor = System.Drawing.Color.Bisque;
-            this.btNext.Location = new System.Drawing.Point(901, 2);
+            this.btNext.Location = new System.Drawing.Point(927, 2);
             this.btNext.Name = "btNext";
-            this.btNext.Size = new System.Drawing.Size(75, 23);
+            this.btNext.Size = new System.Drawing.Size(58, 23);
             this.btNext.TabIndex = 42;
             this.btNext.Text = "Next";
             this.btNext.UseVisualStyleBackColor = false;
@@ -294,9 +296,9 @@
             // 
             this.btPrevious.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.btPrevious.BackColor = System.Drawing.Color.Bisque;
-            this.btPrevious.Location = new System.Drawing.Point(820, 2);
+            this.btPrevious.Location = new System.Drawing.Point(861, 2);
             this.btPrevious.Name = "btPrevious";
-            this.btPrevious.Size = new System.Drawing.Size(75, 23);
+            this.btPrevious.Size = new System.Drawing.Size(62, 23);
             this.btPrevious.TabIndex = 41;
             this.btPrevious.Text = "Previous";
             this.btPrevious.UseVisualStyleBackColor = false;
@@ -312,6 +314,18 @@
             this.btCancel.Text = "Cancel";
             this.btCancel.UseVisualStyleBackColor = true;
             this.btCancel.Click += new System.EventHandler(this.btCancel_Click);
+            // 
+            // btTranslate
+            // 
+            this.btTranslate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btTranslate.BackColor = System.Drawing.Color.Bisque;
+            this.btTranslate.Location = new System.Drawing.Point(793, 3);
+            this.btTranslate.Name = "btTranslate";
+            this.btTranslate.Size = new System.Drawing.Size(62, 23);
+            this.btTranslate.TabIndex = 52;
+            this.btTranslate.Text = "Traduzir";
+            this.btTranslate.UseVisualStyleBackColor = false;
+            this.btTranslate.Click += new System.EventHandler(this.btTranslate_Click);
             // 
             // frmEdit
             // 
@@ -358,5 +372,6 @@
         private System.Windows.Forms.Button btSalvar;
         private System.Windows.Forms.ComboBox comboBoxStatus;
         private System.Windows.Forms.RadioButton radioButtonPtOriginalPtAlternative;
+        private System.Windows.Forms.Button btTranslate;
     }
 }

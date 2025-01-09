@@ -84,7 +84,5 @@ namespace UbStudyHelpGenerator.PtBr
             }
         }
 
-        //public void Test() => Formatter.Test();
-
     }
 }

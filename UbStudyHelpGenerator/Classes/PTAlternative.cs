@@ -1,19 +1,16 @@
 ﻿using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
-using UbStandardObjects;
-using UbStudyHelpGenerator.UbStandardObjects;
 using UbStudyHelpGenerator.Database;
-using UBT_Tools_WorkLib;
-
-using MyWord = Microsoft.Office.Interop.Word;
+using UbStudyHelpGenerator.UbStandardObjects;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
+using UBT_Tools_WorkLib;
+using MyWord = Microsoft.Office.Interop.Word;
 
 //using Xceed.Words.NET;
 //using Xceed.Document.NET;
@@ -11167,8 +11164,10 @@ namespace UbStudyHelpGenerator.Classes
         }
 
 
-
-        public void ExportToUbStudyHelp()
+        /// <summary>
+        /// Exporta o texto para Amadon
+        /// </summary>
+        public void ExportToAmadon()
         {
             try
             {

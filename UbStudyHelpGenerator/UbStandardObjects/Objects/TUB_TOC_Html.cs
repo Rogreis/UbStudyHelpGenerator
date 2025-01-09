@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -70,6 +71,40 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             return $@"javascript:loadDoc('content/Doc{entry.PaperNo:000}.html','p{entry.PaperNo:000}_{entry.SectionNo:000}_000')";
         }
 
+        private string LiId(TUB_TOC_Entry entry)
+        {
+            return $@"toc_{entry.PaperNo:000}_{entry.SectionNo:000}";
+        }
+
+        private string CreateLiElement(TUB_TOC_Entry entry, string ident)
+        {
+            if (entry.PaperNo < 0)
+            {
+                string id = "";
+                switch(entry.Text)
+                {
+                    case "Parte I":
+                        id = "part1";
+                        break;
+                    case "Parte II":
+                        id = "part2";
+                        break;
+                    case "Parte III":
+                        id = "part3";
+                        break;
+                    case "Parte IV":
+                        id = "part4";
+                        break;
+                }
+                return $"{ident}<li id=\"{id}\"><span class=\"caret expandable\">{entry.Text}</span>";
+            }
+            if (entry.SectionNo == 0)
+            {
+                return $"{ident}<li id=\"{LiId(entry)}\"><span class=\"caret\"><a class=\"liIndex\" href=\"{Href(entry)}\">{entry.Text}</a></span>";
+            }
+            return $"{ident}<li id=\"{LiId(entry)}\"><a class=\"liIndex\" href=\"{Href(entry)}\">{entry.Text}</a>"; //  
+        }
+
         private void HtmlNodes(StringBuilder sb, List<TUB_TOC_Entry> tocEntries, string ident)
         {
             sb.AppendLine($"{ident}<ul class=\"{classesForUlElement}\"> ");
@@ -79,13 +114,13 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 bool hasNodes = entry.Nodes != null && entry.Nodes.Count > 0;
                 if (hasNodes)
                 {
-                    // <li><a class="parClosed" href="javascript:loadDoc('content/Doc000.html','p000_001_000')">I. Deidade e Divindade</a> 
-                    sb.AppendLine($"{ident}    <li><span class=\"{classes} \"><a class=\"liIndex\" href=\"{Href(entry.PaperNo)}\">{entry.Text}</a></span> ");
+                    sb.AppendLine(CreateLiElement(entry, ident));
                     HtmlNodes(sb, entry.Nodes, ident + "   ");
                 }
                 else
                 {
-                    sb.AppendLine($"{ident}   <li><a class=\"liIndex\" href=\"{Href(entry)}\">{entry.Text}</a> ");
+                    //sb.AppendLine($"{ident}   <li><a class=\"liIndex\" href=\"{Href(entry)}\">{entry.Text}</a> ");
+                    sb.AppendLine(CreateLiElement(entry, ident));
                 }
                 sb.AppendLine($"{ident}   </li> ");
             }
@@ -99,7 +134,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         /// <param name="sb"></param>
         public void JavaScript(StringBuilder sb)
         {
-
             sb.AppendLine("<script> ");
             sb.AppendLine("  var toggler = document.getElementsByClassName(\"caret\"); ");
             sb.AppendLine("  var expandables = document.getElementsByClassName(\"expandable\"); ");
@@ -116,35 +150,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             sb.AppendLine("    }); ");
             sb.AppendLine("  } ");
             sb.AppendLine("</script> ");
-
-            //sb.AppendLine("<script> ");
-            //sb.AppendLine("  var toggler = document.getElementsByClassName(\"caret\"); ");
-            //sb.AppendLine("  var i; ");
-            //sb.AppendLine(" ");
-            //sb.AppendLine("  for (i = 0; i < toggler.length; i++) { ");
-            //sb.AppendLine("      toggler[i].parentElement.querySelector(\".nested\").classList.toggle(\"active\"); ");
-            //sb.AppendLine("      toggler[i].classList.toggle(\"caret-down\"); ");
-            //sb.AppendLine("} ");
-            //sb.AppendLine("  for (i = 0; i < toggler.length; i++) { ");
-            //sb.AppendLine("    toggler[i].addEventListener(\"click\", function() { ");
-            //sb.AppendLine("      this.parentElement.querySelector(\".nested\").classList.toggle(\"active\"); ");
-            //sb.AppendLine("      this.classList.toggle(\"caret-down\"); ");
-            //sb.AppendLine("    }); ");
-            //sb.AppendLine("  } ");
-            //sb.AppendLine("</script> ");
-
-
-            //sb.AppendLine("<script> ");
-            //sb.AppendLine("var toggler = document.getElementsByClassName(\"caret\"); ");
-            //sb.AppendLine("var i; ");
-            //sb.AppendLine(" ");
-            //sb.AppendLine("for (i = 0; i < toggler.length; i++) { ");
-            //sb.AppendLine("  toggler[i].addEventListener(\"click\", function() { ");
-            //sb.AppendLine("    this.parentElement.querySelector(\".nested\").classList.toggle(\"active\"); ");
-            //sb.AppendLine("    this.classList.toggle(\"caret-down\"); ");
-            //sb.AppendLine("  }); ");
-            //sb.AppendLine("} ");
-            //sb.AppendLine("</script> ");
         }
 
         public void Html(string pathTocTable)
@@ -154,8 +159,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             string ident = "";
             foreach (TUB_TOC_Entry entry in TocEntries)
             {
-                // <span class="caret">Beverages</span>
-                sb.AppendLine($"{ident}   <li><span class=\"{ExpandableLi} \">{entry.Text}</span> ");
+                sb.AppendLine(CreateLiElement(entry, ident));
+
                 if (entry.Nodes != null && entry.Nodes.Count > 0)
                 {
                     HtmlNodes(sb, entry.Nodes, ident + "   ");

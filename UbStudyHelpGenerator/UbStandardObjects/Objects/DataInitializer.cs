@@ -273,7 +273,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                     StaticObjects.FireSendMessage($"InitTranslation failed for {StaticObjects.Book.EditTranslation}");
                     return false;
                 }
-                StaticObjects.Book.EditTranslation = (TranslationEdit)trans;
 
                 return true;
             }

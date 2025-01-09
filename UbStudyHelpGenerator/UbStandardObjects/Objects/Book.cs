@@ -17,8 +17,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
         public Translation WorkTranslation = null;
 
-        public TranslationEdit EditTranslation = null;
-
         public List<Translation> Translations = null;
 
         public FormatTable FormatTableObject { get; set; } = null;
@@ -30,6 +28,15 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 List<Translation> list = new List<Translation>();
                 list.AddRange(Translations);
                 return list;
+            }
+        }
+
+        public TranslationEdit EditTranslation
+        {
+            get
+            {
+                Translation trans = StaticObjects.Book.Translations.Find(t => t.LanguageID == StaticObjects.Parameters.EditTranslationId);
+                return new TranslationEdit(trans, StaticObjects.Parameters.EditParagraphsRepositoryFolder);
             }
         }
 
@@ -65,5 +72,5 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
 
 
-}
+    }
 }

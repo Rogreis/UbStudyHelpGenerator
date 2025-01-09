@@ -36,7 +36,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
         private static string RepositoryNotesPath(short paperNo)
         {
-            string pathSubFolder= $@"{ParagraphEdit.FolderPath(paperNo)}";
+            string pathSubFolder = $@"{ParagraphEdit.FolderPath(paperNo)}";
             string notesFolder = Path.Combine(StaticObjects.Parameters.EditParagraphsRepositoryFolder, pathSubFolder);
             return Path.Combine(notesFolder, "Notes.json");
         }
@@ -89,6 +89,20 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             {
                 throw;
             }
+        }
+
+        public static void CountStatus(ref int[] countStatus)
+        {
+            countStatus= new int[] { 0, 0, 0, 0, 0 };
+            for (short paperNo = 0; paperNo < 197; paperNo++)
+            {
+                List<Note> nites = GetNotes(paperNo);
+                foreach (Note n in nites)
+                {
+                    countStatus[n.Status]++;
+                }
+            }
+
         }
 
 

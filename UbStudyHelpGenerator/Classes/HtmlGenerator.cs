@@ -169,9 +169,7 @@ namespace UBT_Tools_WorkLib
             sb.AppendLine("{  ");
             sb.AppendLine(" font-family: " + FontName + ";");
             sb.AppendLine(" font-size: " + FontSize.ToString() + ";  ");
-            sb.AppendLine(" background-color: #0000FF;  ");
             sb.AppendLine(" font-weight: bold;  ");
-            sb.AppendLine(" color: #FFFF00;  ");
             sb.AppendLine("}  ");
             sb.AppendLine(" ");
             ItalicBoldStyles(sb);

@@ -10,6 +10,9 @@ namespace UbStudyHelpGenerator.HtmlFormatters
 
     public delegate string HtmlTextFunctionDelegate();
 
+    public delegate void PrintBodyDelegate(StringBuilder sb, PageData pageData);
+
+    public delegate void PrintModalBodyDelegate(StringBuilder sb, PageData pageData);
 
     public enum PageType
     {
@@ -33,6 +36,10 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         public bool Enabled { get; set; } = true;
 
         public bool Active { get; set; } = false;
+
+        public PrintBodyDelegate BodyFunction { get; set; }
+
+        public PrintModalBodyDelegate ModalBodyFunction { get; set; }
 
     }
 
@@ -90,25 +97,26 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             protected ParagraphHtmlType Format = ParagraphHtmlType.NormalParagraph;
 
             protected string TextLeft = HtmlSpace;
-            protected string TextMidle = HtmlSpace;
             protected string TextRight = HtmlSpace;
-            protected string TextCompare = HtmlSpace;
 
-            protected string Anchor { get => $"<a name=\"p{PaperNo:000}_{SectionNo:000}_{ParagraphNo:000}\"/>  "; }
+            protected string HashValue { get => $"p{PaperNo:000}_{SectionNo:000}_{ParagraphNo:000}"; }
+            protected string FullIdentification { get => $"{PaperNo}:{SectionNo}-{ParagraphNo} ({Page}.{Line})"; }
+            protected string Identification { get => $"{PaperNo}:{SectionNo}-{ParagraphNo}"; }
 
-            protected string Identification { get => $"{PaperNo}:{SectionNo}-{ParagraphNo} ({Page}.{Line})"; }
+            protected string Anchor { get => $"<a name=\"{HashValue}\"/>  "; }
+
 
             public const string HtmlSpace = "&nbsp;";
+
             public bool IsToCompare = false;
             public short EditTranslationNumber = -1;
 
             // Links used only for the edit translation
             //protected string Href { get => $"https://github.com/Rogreis/PtAlternative/blob/correcoes/Doc{PaperNo:000}/Par_{PaperNo:000}_{SectionNo:000}_{ParagraphNo:000}.md"; }
-            protected string Hash { get => $"{PaperNo}:{SectionNo}-{ParagraphNo}"; }
-            protected string IdentLink { get => $"<a href=\"#\" onclick=\"event.preventDefault(); generateUrlAndOpen('{Hash}');\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\"><small>{EnglishParagraph.Identification}</small></a>"; }
+            protected string IdentLink { get => $"<a href=\"#\" onclick=\"event.preventDefault(); generateUrlAndOpen('{Identification}');\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\"><small>{EnglishParagraph.Identification}</small></a>"; }
             protected string FulltextLink(string htmlText)
             {
-                return $"<a href=\"#\" onclick=\"event.preventDefault(); generateUrlAndOpen('{Hash}');\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\">{htmlText}</a>";
+                return $"<a href=\"#\" onclick=\"event.preventDefault(); generateUrlAndOpen('{Identification}');\" class=\"{ParagraphClass(PtAlternativeParagraph)}\" target=\"_blank\">{htmlText}</a>";
 
             }
 
@@ -135,10 +143,10 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                             return HtmlFormat_Abstract.CssClassParagraphClosed;
                     }
                 }
-                return HtmlFormat_Abstract.CssNormalText;
+                return HtmlFormat_Abstract.CssClassParagraphClosed;
             }
 
-            protected string GetHtmlText(string htmlText, string identification, string anchor, string fullTextLink)
+            protected string GetHtmlText(string htmlText, string identification, string fullTextLink)
             {
                 if (IsDivider)
                 {
@@ -151,33 +159,22 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                 switch (Format)
                 {
                     case ParagraphHtmlType.BookTitle:
-                        return $"<h2>{anchor}{htmlText}</h2>";
+                        return $"<h2>{htmlText}</h2>";
                     case ParagraphHtmlType.PaperTitle:
-                        return $"<h3>{anchor}{fullTextLink}</h3>";
+                        return $"<h3>{fullTextLink}</h3>";
                     case ParagraphHtmlType.SectionTitle:
-                        return $"<h4>{anchor}{fullTextLink}</h4>";
+                        return $"<h4>{fullTextLink}</h4>";
                     case ParagraphHtmlType.NormalParagraph:
-                        return $"{anchor}{identification}  {htmlText}";
+                        return $"{identification}  {htmlText}";
                     case ParagraphHtmlType.IdentedParagraph:
-                        return $"<bloquote>{anchor}{identification}  {htmlText}</bloquote>";
+                        return $"<bloquote>{identification}  {htmlText}</bloquote>";
                 }
                 return "";
             }
 
             protected string PrintParagraphLeft()
             {
-                return GetHtmlText(TextLeft, Identification, Anchor, TextLeft);
-            }
-
-            protected string PrintParagraphMiddle()
-            {
-                if (IsDivider || IsHeader)
-                {
-                    return TextLeft;
-                }
-                // When not divider or header, middle is always the edit column
-                string fullTextLink = EnglishParagraph.IsPaperTitle || EnglishParagraph.IsSectionTitle ? FulltextLink(TextMidle) : TextMidle;
-                return GetHtmlText(TextMidle, IdentLink, "", fullTextLink);
+                return GetHtmlText(TextLeft, FullIdentification, TextLeft);
             }
 
             protected string PrintParagraphRight()
@@ -187,32 +184,27 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                     return TextLeft;
                 }
 
-                // When help translation is available right is not the edit one
-                if (IsToCompare)
-                {
-                    // When there is Help translation, right is the help translation, then no identification
-                    return GetHtmlText(TextRight, "", "", TextRight);
-                }
                 string fullTextLink = EnglishParagraph.IsPaperTitle || EnglishParagraph.IsSectionTitle ? FulltextLink(TextRight) : TextRight;
-                return GetHtmlText(TextRight, IdentLink, "", fullTextLink);
+                return GetHtmlText(TextRight, IdentLink, fullTextLink);
             }
 
-            protected string PrintParagraphCompare()
+            protected void PrintColumnRight(StringBuilder sb, string cssClass = null)
             {
-                if (IsDivider || IsHeader)
-                {
-                    return TextLeft;
-                }
-                return GetHtmlText(TextCompare, "", "", TextCompare);
-            }
-
-            protected void PrintColumn(StringBuilder sb, HtmlTextFunctionDelegate htmlTextFunction, string cssClass = null)
-            {
-                if (string.IsNullOrEmpty(cssClass)) cssClass = HtmlFormat_Abstract.CssNormalText;
+                if (string.IsNullOrEmpty(cssClass)) cssClass = HtmlFormat_Abstract.CssClassParagraphClosed;
                 sb.AppendLine($"<td>");
                 sb.AppendLine($"   <div class=\"{CssClassesDivSize} {cssClass}\">");
-                sb.AppendLine($"       {htmlTextFunction()}");
-                sb.AppendLine($"   <div>");
+                sb.AppendLine($"      {PrintParagraphRight()}");
+                sb.AppendLine($"   </div>");
+                sb.AppendLine($"</td>");
+            }
+
+
+            protected void PrintColumnLeft(StringBuilder sb)
+            {
+                sb.AppendLine($"<td>");
+                sb.AppendLine($"   <div id=\"{HashValue}\" class=\"{CssClassesDivSize}\">");
+                sb.AppendLine($"      {Anchor} {PrintParagraphLeft()}");
+                sb.AppendLine($"   </div>");
                 sb.AppendLine($"</td>");
             }
 
@@ -226,7 +218,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             {
                 IsDivider = true;
                 IsHeader = false;
-                TextLeft = TextMidle = TextRight = TextCompare = DividerString;
+                TextLeft = TextRight = DividerString;
             }
 
             public void PrintError(StringBuilder sb, string errorMessage)
@@ -236,16 +228,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
 
                 Format = EnglishParagraph.Format;
                 TextLeft = HtmlSpace;
-                if (IsToCompare)
-                {
-                    TextMidle = HtmlSpace;
-                    TextRight = errorMessage;
-                    TextCompare = HtmlSpace;
-                }
-                else
-                {
-                    TextRight = HtmlSpace;
-                }
+                TextRight = errorMessage;
                 PrintLine(sb);
             }
 
@@ -255,16 +238,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                 sb.AppendLine("<thead>");
                 sb.AppendLine("<tr>");
                 PrintColumnHeader(sb, TextLeft);
-                if (IsToCompare)
-                {
-                    PrintColumnHeader(sb, TextMidle);
-                    PrintColumnHeader(sb, TextRight);
-                    PrintColumnHeader(sb, TextCompare);
-                }
-                else
-                {
-                    PrintColumnHeader(sb, TextRight);
-                }
+                PrintColumnHeader(sb, TextRight);
                 sb.AppendLine("</tr>");
 
                 sb.AppendLine("</thead>");
@@ -273,17 +247,8 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             public void PrintLine(StringBuilder sb)
             {
                 sb.AppendLine("<tr>");
-                PrintColumn(sb, PrintParagraphLeft);
-                if (IsToCompare)
-                {
-                    PrintColumn(sb, PrintParagraphMiddle, ParagraphClass(PtAlternativeParagraph));
-                    PrintColumn(sb, PrintParagraphRight);
-                    PrintColumn(sb, PrintParagraphCompare);
-                }
-                else
-                {
-                    PrintColumn(sb, PrintParagraphRight, ParagraphClass(PtAlternativeParagraph));
-                }
+                PrintColumnLeft(sb);
+                PrintColumnRight(sb, ParagraphClass(PtAlternativeParagraph));
                 sb.AppendLine("</tr>");
             }
 
@@ -292,9 +257,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                 IsDivider = false;
                 IsHeader = true;
                 TextLeft = title1;
-                TextMidle = title2;
                 TextRight = title3;
-                TextCompare = title4;
             }
 
             public virtual void SetData(Paragraph englishParagraph, Paragraph ptAlternative, string htmlHelpTranslation, string htmlCompare)
@@ -313,16 +276,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
 
                 Format = EnglishParagraph.Format;
                 TextLeft = EnglishParagraph.Text;
-                if (IsToCompare)
-                {
-                    TextMidle = PtAlternativeParagraph.Text;
-                    TextRight = htmlHelpTranslation;
-                    TextCompare = htmlCompare;
-                }
-                else
-                {
-                    TextRight = PtAlternativeParagraph.Text;
-                }
+                TextRight = PtAlternativeParagraph.Text;
             }
 
         }
@@ -331,21 +285,21 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         #region Styles
 
         // Bootstrap definitions
-        private const string darkTheme = "bg-dark text-white parClosed";
-        private const string lightTheme = "bg-light text-black parClosed";
+        //private const string darkTheme = "bg-dark text-white parClosed";
+        //private const string lightTheme = "bg-light text-black parClosed";
 
         protected const string CssClassParagraphStarted = "parStarted";
         protected const string CssClassParagraphWorking = "parWorking";
         protected const string CssClassParagraphDoubt = "parDoubt";
         protected const string CssClassParagraphOk = "parOk";
         protected const string CssClassParagraphClosed = "parClosed";
-        public static string CssNormalText
-        {
-            get
-            {
-                return StaticObjects.Parameters.IsDarkTheme ? darkTheme : lightTheme;
-            }
-        }
+        //public static string CssNormalText
+        //{
+        //    get
+        //    {
+        //        return StaticObjects.Parameters.IsDarkTheme ? darkTheme : lightTheme;
+        //    }
+        //}
 
 
         private void CssVariables(StringBuilder sb)
@@ -431,94 +385,6 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         }
 
         #endregion
-
-
-        #region Pring Html Index pages
-
-        private void PrintNavButton(StringBuilder sb, PageData pageData)
-        {
-            string disabled = pageData.Enabled ? "" : "disabled";
-            string activeClassStart= pageData.Active ? "<h3>" : "";
-            string activeClassEnd = pageData.Active ? "</h3>" : "";
-            sb.AppendLine("          <li class=\"nav-item bg-primary\"> ");
-            sb.AppendLine($"            <a class=\"nav-link {(pageData.Active ? "active" : "")} {disabled}\" aria-current=\"page\"" +
-                          $" href=\"javascript:open_page('{pageData.Name}')\">{activeClassStart+ pageData.Title + activeClassEnd}</a>");
-            sb.AppendLine("          </li> ");
-        }
-
-        protected void PrintNavBar(StringBuilder sb, List<PageData> listPages, PageData pageData, string webSiteTitle)
-        {
-            sb.AppendLine("  <nav class=\"navbar navbar-expand-lg bg-primary navbar-dark\"> ");
-            sb.AppendLine("    <div class=\"container-fluid\"> ");
-            sb.AppendLine("      <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\"  ");
-            sb.AppendLine("        data-bs-target=\"#navbarNav\" aria-controls=\"navbarNav\" aria-expanded=\"false\" aria-label=\"Toggle navigation\"> ");
-            sb.AppendLine("        <span class=\"navbar-toggler-icon\"></span>    ");
-            sb.AppendLine("      </button> ");
-            sb.AppendLine("      <div class=\"collapse navbar-collapse\" id=\"navbarNav\"> ");
-
-            sb.AppendLine("        <ul class=\"navbar-nav me-auto bg-primary\"> ");
-
-            foreach(PageData pagedata in listPages)
-            {
-                PrintNavButton(sb, pagedata);
-            }
-
-            sb.AppendLine("		</ul>    ");
-
-            sb.AppendLine("        <div class=\"navbar-nav ms-auto \"> ");
-            sb.AppendLine($"          <h5 class=\"navbar-brand\">{webSiteTitle}</h5> ");
-            sb.AppendLine("        </div> ");
-            sb.AppendLine("        <div class=\"navbar-nav ms-auto\"> ");
-            sb.AppendLine("			    <button class=\"btn btn-primary\" data-bs-toggle=\"modal\" ");
-            sb.AppendLine("				    data-bs-target=\"#myModal\" title=\"Clique para entender o significado das cores de functo de cada parágrafo.\">Cores</button> ");
-            sb.AppendLine("        </div> ");
-            sb.AppendLine("      </div> ");
-            sb.AppendLine("    </div> ");
-            sb.AppendLine("  </nav> ");
-        }
-
-
-
-
-        /// <summary>
-        /// Print the index pages
-        /// </summary>
-        /// <param name="pathIndexToc"></param>
-        /// <param name="pageType"></param>
-        /// <param name="title"></param>
-        /// <param name="useDarkTheme"></param>
-        protected abstract void PrintIndexPage(List<PageData> listPages, PageData pageData, string webSiteTitle, bool useDarkTheme = true);
-
-
-        //protected virtual void pageStart(StringBuilder sb, int paperNo, bool compareStyles = false)
-        //{
-        //    sb.AppendLine("<!DOCTYPE html>  ");
-        //    sb.AppendLine("<html>  ");
-        //    sb.AppendLine("  ");
-        //    sb.AppendLine("<head>   ");
-        //    sb.AppendLine("    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1252\">  ");
-        //    sb.AppendLine($"    <title>Paper {paperNo}</title>  ");
-        //    sb.AppendLine("    <meta charset=\"utf-8\">   ");
-        //    sb.AppendLine("    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">   ");
-        //    sb.AppendLine("    <link href=\"css/bootstrap.min.css\" rel=\"stylesheet\">    ");
-
-        //    Styles(sb);
-
-        //    sb.AppendLine(" ");
-        //    sb.AppendLine("</head>   ");
-        //    sb.AppendLine("  ");
-        //    sb.AppendLine("<body class=\"textNormal\" \">   ");
-        //    sb.AppendLine("<div class=\"container-fluid mt-5 textNormal\">    ");
-
-        //}
-        //protected void pageEnd(StringBuilder sb)
-        //{
-        //    sb.AppendLine("</BODY>");
-        //    sb.AppendLine("</HTML>");
-        //}
-
-        #endregion
-
 
         protected string HtmlCompare(string textOld, string textNew)
         {

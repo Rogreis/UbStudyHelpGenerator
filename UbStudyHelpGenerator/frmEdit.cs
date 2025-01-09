@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.Helpers;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 using UBT_WebSite.Classes;
 using Paragraph = UbStudyHelpGenerator.UbStandardObjects.Objects.Paragraph;
@@ -35,6 +36,9 @@ namespace UbStudyHelpGenerator
         public TranslationEdit TranslationEdit { get; set; }
         private PaperEdit PaperEdit { get; set; } = null;
         private ParagraphEdit paragraphEdit { get; set; } = null;
+        private string TextoIngles { get; set; } = "";
+        private string TextoPortugues { get; set; } = "";
+        
 
         public bool ShowCompare { get; set; } = false;
         public TOC_Entry CurrentEntry { get; set; } = null;
@@ -267,6 +271,10 @@ namespace UbStudyHelpGenerator
                 browserTextoPortugues = webBrowser;
                 htmlPtOriginal = html;
             }
+            if (trans.LanguageID == 0)
+            {
+                TextoIngles = par.Text;
+            }
             ExibeTextoBrowser(webBrowser, html);
         }
 
@@ -468,6 +476,16 @@ namespace UbStudyHelpGenerator
         private void btOk_Click(object sender, EventArgs e)
         {
             VerificaSalvar();
+        }
+
+        private async void btTranslate_Click(object sender, EventArgs e)
+        {
+            Gemini gemini = new Gemini();
+            this.Cursor = Cursors.WaitCursor;
+            Application.DoEvents();
+            string textoAi = await gemini.TranslateEnglishToPortuguese(TextoIngles);
+            richTextBoxEdit.Text += "\n\n" + textoAi;
+            this.Cursor = Cursors.Default;
         }
     }
 }
