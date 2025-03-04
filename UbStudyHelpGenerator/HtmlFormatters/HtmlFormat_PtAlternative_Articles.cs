@@ -1,6 +1,5 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using Markdig;
-using Markdig.Syntax;
+﻿//using Markdig;
+//using Markdig.Syntax;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -57,52 +56,12 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             string filePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"articles/articles.txt");
             string articleMarkdown = File.ReadAllText(filePath);
             List<Artigo> artigos = ExtrairArtigos(articleMarkdown);
-            sb.AppendLine($"<div id=\"divsumario\">");
             foreach (Artigo artigo in artigos)
             {
                 sb.AppendLine($"<a href=\"javascript:loadArticle('{artigo.Link}')\"><h4>{artigo.Titulo}</h4></a>  ");
                 sb.AppendLine($"<div>{artigo.Sumario}");
                 sb.AppendLine("</div><br /><br />");
             }
-            sb.AppendLine("</div> ");
         }
-
-        public void ArticlesStartPage()
-        {
-            string articlesPath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "articles");
-
-            // Obtém todos os arquivos .md no diretório especificado.
-            string[] markdownFiles = Directory.GetFiles(articlesPath, "*.md", SearchOption.AllDirectories);
-
-            if (markdownFiles.Length == 0)
-            {
-                return;
-            }
-
-            foreach (string markdownFilePath in markdownFiles)
-            {
-                try
-                {
-                    string markdown = File.ReadAllText(markdownFilePath);
-                    string html = Markdown.ToHtml(markdown);
-
-                    var pipeline = new MarkdownPipelineBuilder();
-                    MarkdownPipeline markdownPipeline = pipeline.UseAdvancedExtensions().UsePipeTables().Build();
-                    StringWriter tw = new StringWriter();
-                    MarkdownObject doc = Markdown.ToHtml(markdown, tw, markdownPipeline);
-
-                    // Constrói o caminho do arquivo HTML de saída.
-                    string htmlFilePath = Path.ChangeExtension(markdownFilePath, ".html");
-
-                    File.WriteAllText(htmlFilePath, html);
-                    StaticObjects.FireSendMessage($"'{markdownFilePath}' convertido para '{htmlFilePath}'.");
-                }
-                catch (Exception ex)
-                {
-                    StaticObjects.FireSendMessage($"Erro ao processar '{markdownFilePath}': {ex.Message}");
-                }
-            }
-        }
-
     }
 }

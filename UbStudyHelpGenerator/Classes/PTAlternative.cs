@@ -1,4 +1,5 @@
-﻿using Microsoft.Office.Interop.Word;
+﻿using LuceneLibrary;
+using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,9 +12,7 @@ using UbStudyHelpGenerator.UbStandardObjects;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 using UBT_Tools_WorkLib;
 using MyWord = Microsoft.Office.Interop.Word;
-
-//using Xceed.Words.NET;
-//using Xceed.Document.NET;
+using Paragraph = UbStudyHelpGenerator.UbStandardObjects.Objects.Paragraph;
 
 namespace UbStudyHelpGenerator.Classes
 {
@@ -11144,7 +11143,7 @@ namespace UbStudyHelpGenerator.Classes
         {
             string folderDocx = @"C:\Urantia\PTAlternative\NovoTextoAndre\UB_000-056 edited";
             string ErrorMessage = "";
-            foreach (string pathFile in Directory.GetFiles(folderDocx, "Paper*.docx"))
+            foreach (string pathFile in System.IO.Directory.GetFiles(folderDocx, "Paper*.docx"))
             {
                 short paperNo = Convert.ToInt16(Path.GetFileNameWithoutExtension(pathFile).Substring(5, 3));
                 FireShowPaperNumber(paperNo);
@@ -11164,11 +11163,58 @@ namespace UbStudyHelpGenerator.Classes
         }
 
 
+        public LuceneSearchData GetSearchData(LuceneSearchData previousData)
+        {
+            if (previousData.CurrentPaper == 197) return null;  // Acabou
+
+            LuceneSearchData data = new LuceneSearchData();
+            if (previousData.CurrentPaper < 0)
+            {
+                data.CurrentPaper++;
+                if (previousData.CurrentPaper == 197) return null;  // Acabou
+                data.CurrentParagraph = 0;
+            }
+            else if (previousData.CurrentParagraph < 0)
+            {
+                data.CurrentPaper++;
+                if (previousData.CurrentPaper == 197) return null;  // Acabou
+                data.CurrentParagraph = 0;
+            }
+
+            Paper paper = StaticObjects.Book.EditTranslation.Paper(previousData.CurrentPaper);
+            if (previousData.CurrentParagraph == paper.Paragraphs.Count)
+            {
+                data.CurrentPaper++;
+                if (previousData.CurrentPaper == 197) return null;  // Acabou
+                paper = StaticObjects.Book.EditTranslation.Paper(previousData.CurrentPaper);
+                data.CurrentParagraph = 0;
+            }
+
+            Paragraph paragraph = paper.Paragraphs[previousData.CurrentParagraph];
+            data.Paper = paragraph.Paper;
+            data.Section = paragraph.Section;
+            data.Paragraph = paragraph.ParagraphNo;
+            data.Text = paragraph.Text;
+            return data;
+        }
+
+        private void CreateUBIndex()
+        {
+            const string IndexPathRoot = @"C:\ProgramData\Amadon\TubSearch";
+            string IndexPath = Path.Combine(IndexPathRoot, $"T{StaticObjects.Parameters.EditTranslationId:000}");
+            LuceneUbIndex index = new LuceneUbIndex(StaticObjects.Book.EditTranslation.Description, StaticObjects.Book.EditTranslation.Description);
+            index.CreateUBIndex(GetSearchData);
+         }
+
+
+
         /// <summary>
         /// Exporta o texto para Amadon
         /// </summary>
         public void ExportToAmadon()
         {
+            //CreateUBIndex();
+            //return;
             try
             {
                 var options = new JsonSerializerOptions
@@ -11200,6 +11246,7 @@ namespace UbStudyHelpGenerator.Classes
                         }
                     }
                 }
+                //CreateUBIndex();
             }
             catch (Exception ex)
             {

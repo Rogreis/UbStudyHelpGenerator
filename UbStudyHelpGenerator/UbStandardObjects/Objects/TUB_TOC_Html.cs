@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Drawing.Charts;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -71,17 +70,12 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             return $@"javascript:loadDoc('content/Doc{entry.PaperNo:000}.html','p{entry.PaperNo:000}_{entry.SectionNo:000}_000')";
         }
 
-        private string LiId(TUB_TOC_Entry entry)
-        {
-            return $@"toc_{entry.PaperNo:000}_{entry.SectionNo:000}";
-        }
-
-        private string CreateLiElement(TUB_TOC_Entry entry, string ident)
+        private string LiId(TUB_TOC_Entry entry, string idSuffix= "")
         {
             if (entry.PaperNo < 0)
             {
                 string id = "";
-                switch(entry.Text)
+                switch (entry.Text)
                 {
                     case "Parte I":
                         id = "part1";
@@ -96,7 +90,16 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                         id = "part4";
                         break;
                 }
-                return $"{ident}<li id=\"{id}\"><span class=\"caret expandable\">{entry.Text}</span>";
+                return $"{id}{idSuffix}";
+            }
+            return $@"toc_{entry.PaperNo:000}_{entry.SectionNo:000}{idSuffix}";
+        }
+
+        private string CreateLiElement(TUB_TOC_Entry entry, string ident)
+        {
+            if (entry.PaperNo < 0)
+            {
+                return $"{ident}<li id=\"{LiId(entry)}\"><span class=\"caret expandable\">{entry.Text}</span>";
             }
             if (entry.SectionNo == 0)
             {
@@ -110,8 +113,9 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             sb.AppendLine($"{ident}<ul class=\"{classesForUlElement}\"> ");
             foreach (TUB_TOC_Entry entry in tocEntries)
             {
-                string classes = entry.SectionNo == 0 ? NonExpandableLi : ExpandableLi; 
+                string classes = entry.SectionNo == 0 ? NonExpandableLi : ExpandableLi;
                 bool hasNodes = entry.Nodes != null && entry.Nodes.Count > 0;
+                sb.AppendLine($"{ident}<div id=\"{LiId(entry, "_div")}\">");
                 if (hasNodes)
                 {
                     sb.AppendLine(CreateLiElement(entry, ident));
@@ -122,56 +126,118 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                     //sb.AppendLine($"{ident}   <li><a class=\"liIndex\" href=\"{Href(entry)}\">{entry.Text}</a> ");
                     sb.AppendLine(CreateLiElement(entry, ident));
                 }
-                sb.AppendLine($"{ident}   </li> ");
+                sb.AppendLine($"{ident}</li>");
+                sb.AppendLine($"{ident}</div>");
             }
             sb.AppendLine($"{ident}</ul> ");
         }
 
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sb"></param>
-        public void JavaScript(StringBuilder sb)
+        private void TreeviewStyle(StringBuilder sb)
         {
-            sb.AppendLine("<script> ");
-            sb.AppendLine("  var toggler = document.getElementsByClassName(\"caret\"); ");
-            sb.AppendLine("  var expandables = document.getElementsByClassName(\"expandable\"); ");
-            sb.AppendLine("  var i; ");
+            sb.AppendLine("    <style> ");
+            sb.AppendLine("        .treeview ul { ");
+            sb.AppendLine("            list-style: none; ");
+            sb.AppendLine("            padding-left: 20px; /* Indentation for nested levels */ ");
+            sb.AppendLine("        } ");
             sb.AppendLine(" ");
-            sb.AppendLine("  for (i = 0; i < expandables.length; i++) { ");
-            sb.AppendLine("      expandables[i].parentElement.querySelector(\".nested\").classList.toggle(\"active\"); ");
-            sb.AppendLine("      expandables[i].classList.toggle(\"caret-down\"); ");
+            sb.AppendLine("        .treeview li { ");
+            sb.AppendLine("            cursor: pointer; /* Make list items clickable */ ");
+            sb.AppendLine("        } ");
+            sb.AppendLine("        .treeview .caret::before{ ");
+            sb.AppendLine("            content: \"\f279\"; /* Unicode for caret-right */ ");
+            sb.AppendLine("            display: inline-block; ");
+            sb.AppendLine("            margin-right: 5px; ");
+            sb.AppendLine("            font-family: bootstrap-icons !important; ");
+            sb.AppendLine("        } ");
+            sb.AppendLine("        .treeview .caret.active::before{ ");
+            sb.AppendLine("            content: \"\f27a\"; /* Unicode for caret-down */ ");
+            sb.AppendLine("        } ");
+            sb.AppendLine(" ");
+            sb.AppendLine("        .nested { ");
+            sb.AppendLine("            display: none; ");
+            sb.AppendLine("        } ");
+            sb.AppendLine(" ");
+            sb.AppendLine("        .active { ");
+            sb.AppendLine("            display: block; ");
+            sb.AppendLine("        } ");
+
+            sb.AppendLine(" ");
+            sb.AppendLine(".treeview liIndex { ");
+            sb.AppendLine("    font-family: var(--font); ");
+            sb.AppendLine("    font-size: var(--fontSize); ");
             sb.AppendLine("} ");
-            sb.AppendLine("  for (i = 0; i < toggler.length; i++) { ");
-            sb.AppendLine("    toggler[i].addEventListener(\"click\", function() { ");
-            sb.AppendLine("      this.parentElement.querySelector(\".nested\").classList.toggle(\"active\"); ");
-            sb.AppendLine("      this.classList.toggle(\"caret-down\"); ");
-            sb.AppendLine("    }); ");
-            sb.AppendLine("  } ");
-            sb.AppendLine("</script> ");
+            sb.AppendLine(" ");
+            sb.AppendLine(".treeview a.liIndex:link { ");
+            sb.AppendLine("    text-decoration: none; ");
+            sb.AppendLine("    color: var(--textColorDark); ");
+            sb.AppendLine("} ");
+            sb.AppendLine(" ");
+            sb.AppendLine(".treeview a.liIndex:visited { ");
+            sb.AppendLine("    text-decoration: none; ");
+            sb.AppendLine("    color: var(--textColorDark); ");
+            sb.AppendLine("} ");
+            sb.AppendLine(" ");
+            sb.AppendLine(".treeview a.liIndex:hover { ");
+            sb.AppendLine("    text-decoration: underline; ");
+            sb.AppendLine("    color: var(--textColorDark); ");
+            sb.AppendLine("} ");
+            sb.AppendLine(" ");
+            sb.AppendLine(".treeview a.liIndex:active { ");
+            sb.AppendLine("    text-decoration: none; ");
+            sb.AppendLine("    color: var(--textColorDark); ");
+            sb.AppendLine("} ");
+            sb.AppendLine(" ");
+
+
+            sb.AppendLine("    </style> ");
+            sb.AppendLine(" ");
+        }
+
+        private string TreeviewLink(TUB_TOC_Entry entry)
+        {
+            if (entry.PaperNo < 0)
+                return entry.Text;
+            return $"<a class=\"liIndex\" href=\"{Href(entry)}\">{entry.Text}</a>";
+        }
+
+        private void TreeviewNodes(StringBuilder sb, TUB_TOC_Entry entry, string ident)
+        {
+            if (entry.Nodes != null && entry.Nodes.Count > 0)
+            {
+                // Has nodes
+                sb.AppendLine($"{ident}<li id=\"{LiId(entry, "_div")}\"><span class=\"caret\">{TreeviewLink(entry)}</span>");
+                sb.AppendLine($"{ident}   <ul class=\"nested\">");
+                foreach (TUB_TOC_Entry childEntry in entry.Nodes)
+                {
+                    TreeviewNodes(sb, childEntry, ident + "   ");
+                }
+                sb.AppendLine($"{ident}   </ul>");
+                sb.AppendLine($"{ident}</li>");
+            }
+            else
+            {
+                sb.AppendLine($"{ident}   <li id=\"{LiId(entry, "_div")}\">{TreeviewLink(entry)}</span>");
+            }
+
         }
 
         public void Html(string pathTocTable)
         {
             StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<ul id=\"myUL\"> ");
-            string ident = "";
-            foreach (TUB_TOC_Entry entry in TocEntries)
-            {
-                sb.AppendLine(CreateLiElement(entry, ident));
+            TreeviewStyle(sb);
 
-                if (entry.Nodes != null && entry.Nodes.Count > 0)
-                {
-                    HtmlNodes(sb, entry.Nodes, ident + "   ");
-                }
-                sb.AppendLine($"{ident}   </li> ");
-            }
-           
-            sb.AppendLine("</ul> ");
+            sb.AppendLine("<div class=\"treeview\">");
+            string ident = "   ";
+            sb.AppendLine($"{ident}<ul>");
+            foreach (TUB_TOC_Entry entry in TocEntries)
+                TreeviewNodes(sb, entry, ident + "   ");
+
+            sb.AppendLine($"{ident}</ul>");
+            sb.AppendLine("</div>");
             sb.AppendLine(" ");
             string html = sb.ToString();
-            File.WriteAllText(pathTocTable, html);
+            File.WriteAllText(pathTocTable, html, Encoding.UTF8);
         }
     }
 

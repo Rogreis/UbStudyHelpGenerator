@@ -1,15 +1,13 @@
-﻿using Markdig;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using System.Xml;
-using System.Xml.Schema;
 using UbStandardObjects.Objects;
 using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.Database;
@@ -21,6 +19,7 @@ using UbStudyHelpGenerator.UbStandardObjects.Helpers;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 using static System.Environment;
 using static UbStudyHelpGenerator.Classes.UrantiaIndex;
+using HorizontalAlignment = UbStudyHelpGenerator.UbStandardObjects.Helpers.HorizontalAlignment;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using Paragraph = UbStudyHelpGenerator.UbStandardObjects.Objects.Paragraph;
 
@@ -55,8 +54,14 @@ namespace UbStudyHelpGenerator
             InitializeComponent();
             StaticObjects.ShowMessage += Logger_ShowMessage;
             EventsControl.EntryEdited += AddEntryEdited;
+            EventsControl.ShowMessage += ShowMessage;
+
         }
 
+        private void EventsControl_ShowMessage(string message)
+        {
+            throw new NotImplementedException();
+        }
 
         private void FillComboWithTranslation(ComboBox comboBox, short selectedTranslation)
         {
@@ -175,6 +180,10 @@ namespace UbStudyHelpGenerator
                 case "Translations":
                     tx = textBoxTranslations;
                     break;
+                case "geral":
+                    tx = txGeralMessages;
+                    break;
+                    
                 default:
                     MessageBox.Show(message);
                     return;
@@ -783,20 +792,15 @@ namespace UbStudyHelpGenerator
         {
             ShowMessage(null);
             ShowMessage($"Repositório para o texto em páginas html: {StaticObjects.Parameters.EditBookRepositoryFolder}");
-            if (cbGerarArtigos.Checked)
-            {
-                ShowMessage("Gerando artigos para html");
-                HtmlFormat_PtAlternative_Indexes indexes = new HtmlFormat_PtAlternative_Indexes();
-                indexes.PrintIndexStudy();
-                ShowMessage("Artigos gerados");
-            }
-
             if (cbGerarPaginas.Checked)
             {
-                ShowMessage("Gerando páginas de índices e conversão dos artigos para html");
+                ShowMessage("Gerando páginas de índices e artigos html");
                 HtmlFormat_PtAlternative_Indexes indexes = new HtmlFormat_PtAlternative_Indexes();
                 indexes.PrintAll();
-                ShowMessage("Páginas índice geradas");
+                //indexes.PrintIndexStudy();
+                ShowMessage("Páginas índice e artigos gerados");
+                Articles articles = new Articles();
+                articles.Process(StaticObjects.Parameters.EditBookRepositoryFolder);
             }
 
 
@@ -823,9 +827,8 @@ namespace UbStudyHelpGenerator
                 ShowMessage("Gerando rogreis.github.io pages");
                 ExportAllPapers();
                 ShowMessage("Finished");
-                Process.Start("chrome.exe", "localhost");
             }
-
+            Process.Start("chrome.exe", "localhost");
 
         }
 
@@ -1513,7 +1516,12 @@ namespace UbStudyHelpGenerator
 
         private void ShowParamonyMessage(string message)
         {
-            tsParamonyMessages.AppendText(message + Environment.NewLine);
+            if (message == null)
+            {
+                txGeralMessages.Text = "";
+                return;
+            }
+            txGeralMessages.AppendText(message + Environment.NewLine);
             System.Windows.Forms.Application.DoEvents();
         }
 
@@ -1624,13 +1632,127 @@ namespace UbStudyHelpGenerator
             //PaperEdit paperEdit= StaticObjects.Book.EditTranslation.GetPaperEdit(paperEditNo);
         }
 
+        class DataMoral
+        {
+            public string Texto { get; set; }
+            public string Referencia { get; set; }
+            public DataMoral(string texto, string referencia)
+            {
+                Texto = texto;
+                Referencia = referencia;
+            }
+
+            public override string ToString()
+            {
+                TOC_Entry entry = TOC_Entry.FromHref(Referencia);
+                string markdownLink = $"**<a href=\"javascript:showParagraph({entry.Paper},{entry.Section},{entry.ParagraphNo})\" title=\"Abrir o parágrafo {entry.Ident}\">{entry.Ident}</a>**";
+                return $"{Texto} - {markdownLink}";
+            }
+        }
+
+        private List<DataMoral> Data()
+        {
+            List<DataMoral> list = new List<DataMoral>();
+
+            list.Add(new DataMoral("duty man's consciousness of a value level", "0:2.1"));
+            list.Add(new DataMoral("personality of and Universal Father", "0:3.19"));
+            list.Add(new DataMoral("being(s) fragment of God indwells", "1:4.3"));
+            list.Add(new DataMoral("affinity an essential to friendship", "1:6.5"));
+            list.Add(new DataMoral("God the source of", "2:6.5"));
+            list.Add(new DataMoral("status a factor in Adjuster communion", "5:2.6"));
+            list.Add(new DataMoral("God as a vindicator of", "5:4.11"));
+            list.Add(new DataMoral("Zoroastrianism a religion of", "5:4.7"));
+            list.Add(new DataMoral("situations choices necessitated by", "5:5.1"));
+            list.Add(new DataMoral("relation of to religion", "5:5.4"));
+            list.Add(new DataMoral("thinking social service based on", "5:5.4"));
+            list.Add(new DataMoral("and philosophical satisfaction secured from religious experience", "5:5.9"));
+            list.Add(new DataMoral("duty man's consciousness of a value level", "16:6.10"));
+            list.Add(new DataMoral("virtue and personality", "16:7.0"));
+            list.Add(new DataMoral("nature character of the", "16:7.1"));
+            list.Add(new DataMoral("acts definition", "16:7.10"));
+            list.Add(new DataMoral("function of insight of", "16:7.4"));
+            list.Add(new DataMoral("evidence of possession of", "16:7.6"));
+            list.Add(new DataMoral("keenness of a factor in choosing between good and evil", "16:7.7"));
+            list.Add(new DataMoral("values a definition", "16:9.11"));
+            list.Add(new DataMoral("power of a characteristic of will", "36:3.8"));
+            list.Add(new DataMoral("stamina intellectual root of", "36:5.8"));
+            list.Add(new DataMoral("choice the highest definition", "39:4.14"));
+            list.Add(new DataMoral("will definition", "52:1.6"));
+            list.Add(new DataMoral("insight a part of the ancestry of true religion", "52:6.7"));
+            list.Add(new DataMoral("satisfaction a fruit of divinity", "56:10.20"));
+            list.Add(new DataMoral("Hap's", "66:7.8"));
+            list.Add(new DataMoral("affairs supremacy of man's free will in", "66:8.6"));
+            list.Add(new DataMoral("steadfastness basis of Van's", "67:3.6"));
+            list.Add(new DataMoral("guilt personal nature of sin as to", "67:7.7"));
+            list.Add(new DataMoral("law of Eden vs. seven commandments of Dalamatia", "74:7.20"));
+            list.Add(new DataMoral("standard-bearer woman the", "84:6.4"));
+            list.Add(new DataMoral("growth and a cult's survival", "87:7.10"));
+            list.Add(new DataMoral("dignity man's final acquirement of", "89:8.6"));
+            list.Add(new DataMoral("progress and prayer", "91:1.2"));
+            list.Add(new DataMoral("progress and prayer", "91:6.3"));
+            list.Add(new DataMoral("culture early development of in Egypt", "95:3.1"));
+            list.Add(new DataMoral("evolution nondependence of on revelation", "95:3.2"));
+            list.Add(new DataMoral("the Jewish religion's conservation of", "97:10.5"));
+            list.Add(new DataMoral("depravity of the Greeks under the mystery cults", "98:2.11"));
+            list.Add(new DataMoral("stability religion's necessary influence for in the changing world", "99:1.2"));
+            list.Add(new DataMoral("insight a part of the ancestry of true religion", "101:1.6"));
+            list.Add(new DataMoral("the persistence of the", "101:3.1"));
+            list.Add(new DataMoral("spiritual faith", "101:3.4"));
+            list.Add(new DataMoral("trends influence of on man's philosophy of religion", "101:7.1"));
+            list.Add(new DataMoral("consciousness a definition", "101:9.5"));
+            list.Add(new DataMoral("man's importance of", "103:2.3"));
+            list.Add(new DataMoral("impulses emergence of the arrival of the Thought Adjuster and the", "103:2.5"));
+            list.Add(new DataMoral("importance of the creature's ability to make", "103:2.7"));
+            list.Add(new DataMoral("vs. magic in the evolution of religion", "103:3.4"));
+            list.Add(new DataMoral("and social meanings paramount religious experience is the feeling regarding", "103:3.4"));
+            list.Add(new DataMoral("ideals man's highest comparison of with the will of God", "103:4.3"));
+            list.Add(new DataMoral("importance of the creature's ability to make", "108:2.2"));
+            list.Add(new DataMoral("decision Adjuster's inability to invade a mortal mind prior to its making a", "108:2.4"));
+            list.Add(new DataMoral("choosing(s) human's effect of on Adjuster function", "110:6.5"));
+            list.Add(new DataMoral("attitude of Paul's Christianity toward", "121:5.17"));
+            list.Add(new DataMoral("Jesus' first significance of", "123:2.1"));
+            list.Add(new DataMoral("nonnecessity of the actuality of evil to", "132:2.10"));
+            list.Add(new DataMoral("importance of the creature's ability to make", "133:6.5"));
+            list.Add(new DataMoral("the soul's dependence on", "133:6.5"));
+            list.Add(new DataMoral("possibility of modification of the", "140:4.8"));
+            list.Add(new DataMoral("reformer Jesus not a", "140:8.21"));
+            list.Add(new DataMoral("the measure of", "143:2.3"));
+            list.Add(new DataMoral("level of the golden rule", "147:4.8"));
+            list.Add(new DataMoral("immaturity evidences of", "160:1.6"));
+            list.Add(new DataMoral("conduct basis of", "170:2.18"));
+            list.Add(new DataMoral("the kingdom of heaven as a new standard of", "170:2.4"));
+            list.Add(new DataMoral("unfolding means of", "170:3.10"));
+            list.Add(new DataMoral("conduct basis of", "170:3.7"));
+            list.Add(new DataMoral("human Christianity's higher influence on", "195:0.14"));
+            list.Add(new DataMoral("attitude of Paul's Christianity toward", "195:0.3"));
+            list.Add(new DataMoral("of Rome Christianity the", "195:2.5"));
+            list.Add(new DataMoral("decline of Rome Christianity's arrival too late to prevent the", "195:3.8"));
+            list.Add(new DataMoral("convictions reality and certainty of", "195:6.12"));
+            list.Add(new DataMoral("discipline vs. self-gratification and education", "195:10.17"));
+            list.Add(new DataMoral("impossibility of measuring", "196:3.18"));
+            list.Add(new DataMoral("importance of the creature's ability to make", "196:3.20"));
+            list.Add(new DataMoral("nature character of the", "196:3.25"));
+            list.Add(new DataMoral("influence of religion on", "196:3.27"));
+            list.Add(new DataMoral("relation of religion and human experience to", "196:3.28"));
+
+            int i = 0;
+            txPTalternative.Text = "";
+            foreach (DataMoral data in list)
+            {
+                i++;
+                txPTalternative.Text += $"{i}. {data.ToString()}" + Environment.NewLine;
+            }
+            return list;
+        }
+
         private void btGeraLink_Click(object sender, EventArgs e)
         {
-            TOC_Entry entry= TOC_Entry.FromHref(txEntryForLink.Text);
+
+            TOC_Entry entry = TOC_Entry.FromHref(txEntryForLink.Text);
             // string markdownLink = $"[{entry.Href}](javascript:loadDoc('content/Doc{entry.Paper:000}.html','p{entry.Paper:000}_{entry.Section:000}_{entry.ParagraphNo:000}'))";
             //string markdownLink = $"LINKTO{entry.Paper:000}{entry.Section:000}{entry.ParagraphNo:000}";
             string markdownLink = $"**<a href=\"javascript:showParagraph({entry.Paper},{entry.Section},{entry.ParagraphNo})\" title=\"Abrir o parágrafo {entry.Ident}\">{entry.Ident}</a>**";
-            txBoxLinkForArticles.Text= markdownLink;
+            txBoxLinkForArticles.Text = markdownLink;
             Clipboard.SetText(markdownLink);
             txBoxLinkForArticles.SelectAll();
         }
@@ -1695,12 +1817,53 @@ namespace UbStudyHelpGenerator
 
         #endregion
 
+        private void PrintSummaryParagraphs(string basePath, StringBuilder sb, short paperNo)
+        {
+            var mdParagraphs = Directory.GetFiles(basePath, $"Doc{paperNo:000}\\Par_{paperNo:000}_*.md");
+            string mdPath = Path.Combine(basePath, $"Doc{paperNo:000}\\Par_{paperNo:000}_000_000.md");
+            string titleFile= File.ReadAllText(mdPath);
+            sb.AppendLine("");
+            sb.AppendLine($"## {titleFile}");
+            short lastSectionNo = -1;
+            foreach (string mdFilePath in mdParagraphs)
+            {
+                string numbersString = mdFilePath.Substring(4, mdFilePath.Length - 7); // Remove "Par_" and ".md"
+                string[] numbers = numbersString.Split('_');
+                short sectionNo = short.Parse(numbers[2]);
+                if (lastSectionNo != sectionNo)
+                {
+                    lastSectionNo = sectionNo;
+                    sb.AppendLine("");
+                    titleFile = File.ReadAllText(Path.Combine(basePath, $"Doc{paperNo:000}\\Par_{paperNo:000}_{sectionNo:000}_000.md"));
+                    sb.AppendLine($"### {titleFile}");
+                    sb.AppendLine("");
+                }
+                short paragraphNo = short.Parse(numbers[3]);
+                TOC_Entry entry = new TOC_Entry(0, paperNo, sectionNo, paragraphNo, 0, 0);
+                sb.Append($" [{entry.Ident}](Doc{paperNo:000}\\Par_{paperNo:000}_{sectionNo:000}_000.md)");
+            }
+        }
+
+
         private void button1_Click(object sender, EventArgs e)
         {
-            StaticObjects.Parameters.TUB_Files_RepositoryFolder = txRepositoryOutputFolder.Text;
-            string origem = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, "TR002.gz");
-            string destino = @"C:\Trabalho\Github\Rogerio\tub\TR002.gz";  // Diret+orio local de dados do Amadon
-            File.Copy(origem, destino, true);
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+
+            ShowMessage(null);
+            string baseDir= StaticObjects.Parameters.EditParagraphsRepositoryFolder;
+            string summaryFile= Path.Combine(baseDir, "SUMMARY.md");
+
+
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("# Índice remissivo\n\n");
+            for (short paperNo = 0; paperNo < 197; paperNo++)
+            {
+                PrintSummaryParagraphs(StaticObjects.Parameters.EditParagraphsRepositoryFolder, sb, paperNo);
+            }
+            File.WriteAllText(summaryFile, sb.ToString());
+            ShowMessage("Sumário gerado");
         }
 
         private void btEditSearch_Click(object sender, EventArgs e)
@@ -1716,15 +1879,23 @@ namespace UbStudyHelpGenerator
 
         private void listBoxEditSearchResults_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //ParagraphsMdFound paragraphsMdFound = ((ParagraphsMdFound)listBoxEditSearchResults.SelectedItem);
-            //TOC_Entry entry = new TOC_Entry(paragraphsMdFound.Paper, paragraphsMdFound.Section, paragraphsMdFound.ParagraphNo, 0, 0, 0);
-            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
-            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             TOC_Entry entry = TOC_Entry.FromHref(listBoxEditSearchResults.SelectedItem.ToString());
             OpenEditForms(entry);
 
         }
 
+        private void btMoral_Click(object sender, EventArgs e)
+        {
+            ArticlesFromExcel articles = new ArticlesFromExcel();
+            articles.ShowMessageEvent += ShowParamonyMessage;
+            articles.UniqueTable();
+        }
+
+        private void btArtigoPorGrupo_Click(object sender, EventArgs e)
+        {
+            ArticlesFromExcel articles = new ArticlesFromExcel();
+            articles.ShowMessageEvent += ShowParamonyMessage;
+            articles.ByGroups();
+        }
     }
 }

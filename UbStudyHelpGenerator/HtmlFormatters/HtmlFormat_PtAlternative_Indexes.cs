@@ -18,15 +18,13 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         const string PageIndexSubjectName = "indexSubject";
         const string PageIndexTocStudyName = "indexStudy";
         const string PageIndexTocSearchName = "indexSearch";
-        const string PageIndexTocTrackName = "indexTrack";
 
         const string PageIndexTocTitle = "Documentos";
         const string PageIndexSubjectTitle = "Assuntos";
         const string PageIndexTocStudyTitle = "Artigos";
         const string PageIndexTocSearchTitle = "Busca";
-        const string PageIndexTocTrackTitle = "Trilha";
 
-        private string WebSiteTitle { get => $"O Livro de Urântia - Tradução Dinâmica PT BR - {DateTime.Now.ToString("dd/MM/yyyy")}";  }
+        private string WebSiteTitle { get => "Estudos sobre \"O Livro de Urântia\"";  }
 
 
         /// <summary>
@@ -42,27 +40,41 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             sb.AppendLine($"<html lang=\"en\" {theme}>");
             sb.AppendLine("  ");
             sb.AppendLine("<head>  ");
-            sb.AppendLine("	<meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1252\">  ");
-            sb.AppendLine($"	<title>{pageData.Title}</title> ");
-            sb.AppendLine("	<meta charset=\"utf-8\">  ");
-            sb.AppendLine("	<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">  ");
+            sb.AppendLine(" <meta http-equiv=\"Content-Type\" content=\"text/html; charset=windows-1252\">  ");
+            sb.AppendLine($" <title>{pageData.Title}</title> ");
+            sb.AppendLine(" <meta charset=\"utf-8\">  ");
+            sb.AppendLine(" <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">  ");
             sb.AppendLine("  ");
-            sb.AppendLine("	<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">  ");
-            sb.AppendLine("	<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js\"></script>  ");
+            sb.AppendLine(" <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">  ");
+            sb.AppendLine(" <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js\"></script>  ");
             sb.AppendLine("  ");
             sb.AppendLine("  ");
-            sb.AppendLine("	<link href=\"https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap\" rel=\"stylesheet\">  ");
-            sb.AppendLine("	<script src=\"https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js\"></script>  ");
+
+
+            // Lato font from google
+            sb.AppendLine("  ");
+            sb.AppendLine(" <link rel=\"preconnect\" href=\"https://fonts.googleapis.com\"> ");
+            sb.AppendLine(" <link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin> ");
+            sb.AppendLine(" <link href=\"https://fonts.googleapis.com/css2?family=Lato:wght@100;300;400;700&display=swap\" rel=\"stylesheet\"> ");
+            sb.AppendLine("  ");
+
+            //sb.AppendLine("	<link href=\"https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@400;700&display=swap\" rel=\"stylesheet\">  ");
+
+            sb.AppendLine(" <script src=\"https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js\"></script>  ");
             sb.AppendLine(" <script src=\"https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js\" crossorigin=\"anonymous\"></script>  ");
             sb.AppendLine("  ");
-            sb.AppendLine("<link href=\"css/tub_pt_br.css\" rel=\"stylesheet\">  ");
+
+            sb.AppendLine(" <link href=\"css/tub_pt_br.css\"  rel=\"stylesheet\">");
+            sb.AppendLine(" <link href=\"css/combotrack.css\" rel=\"stylesheet\">");
 
             string cssFile = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "css/" + pageData.Name + ".css");
             if (File.Exists(cssFile))
-                sb.AppendLine($"<link href=\"css/{pageData.Name}.css\" rel=\"stylesheet\">");
-            sb.AppendLine("<script src=\"js/tub_pt_br.js\"></script>  ");
-            sb.AppendLine($"<script src=\"js/{pageData.Name}.js\"></script> ");  // Specific javascript
+                sb.AppendLine($" <link href=\"css/{pageData.Name}.css\" rel=\"stylesheet\">");
+            sb.AppendLine($" <link href=\"css/articles.css\" rel=\"stylesheet\">");
+            sb.AppendLine(" <script src=\"js/tub_pt_br.js\"></script>  ");
+            sb.AppendLine($" <script src=\"js/{pageData.Name}.js\"></script> ");  // Specific javascript
             sb.AppendLine("</head> ");
+            sb.AppendLine("  ");
         }
 
         /// <summary>
@@ -73,46 +85,75 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         /// <param name="listPages"></param>
         private void PrintNavBar(StringBuilder sb, List<PageData> listPages, PageData pageData)
         {
-            sb.AppendLine("  <nav class=\"navbar navbar-expand-lg bg-primary navbar-dark\">  ");
-            sb.AppendLine("    <div class=\"container-fluid\">  ");
-            sb.AppendLine("      <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\"   ");
-            sb.AppendLine("        data-bs-target=\"#navbarNav\" aria-controls=\"navbarNav\" aria-expanded=\"false\" aria-label=\"Toggle navigation\">  ");
-            sb.AppendLine("        <span class=\"navbar-toggler-icon\"></span>     ");
-            sb.AppendLine("      </button>  ");
-            sb.AppendLine("      <div class=\"collapse navbar-collapse\" id=\"navbarNav\">  ");
-            
-            sb.AppendLine("        <ul class=\"navbar-nav me-auto bg-primary\">  ");
-            foreach(PageData data in listPages)
+            sb.AppendLine("    <nav class=\"navbar navbar-expand-lg navbar-light bg-primary\"> ");
+            sb.AppendLine("        <div class=\"container-fluid\"> ");
+            sb.AppendLine("            <button class=\"navbar-toggler\" type=\"button\" data-bs-toggle=\"collapse\" ");
+            sb.AppendLine("                data-bs-target=\"#navbarNav\" aria-controls=\"navbarNav\" aria-expanded=\"false\" ");
+            sb.AppendLine("                aria-label=\"Toggle navigation\"> ");
+            sb.AppendLine("                <span class=\"navbar-toggler-icon\"></span> ");
+            sb.AppendLine("            </button> ");
+            sb.AppendLine("            <div class=\"collapse navbar-collapse\" id=\"navbarNav\"> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("				<ul class=\"navbar-nav\"> ");
+            foreach (PageData data in listPages)
             {
                 // Only create nav entry for enabled pages
                 if (data.Enabled)
                 {
                     sb.AppendLine("          <li class=\"nav-item bg-primary\">  ");
                     if (data.Active)
-                        sb.AppendLine($"            <a class=\"nav-link active\" aria-current=\"page\" href=\"javascript:open_page('{data.Name}')\">" +
-                                        $"<spam class=\"navactive\">{data.Title}</spam></a> ");
+                        sb.AppendLine($"            <a class=\"nav-link active navactive\" aria-current=\"page\" href=\"javascript:open_page('{data.Name}')\">" +
+                                                            $"{data.Title}</a> ");
                     else
-                        sb.AppendLine($"            <a class=\"nav-link\" aria-current=\"page\" href=\"javascript:open_page('{data.Name}')\">" + 
-                                    $"<spam class=\"navinactive\">{data.Title}</spam></a> ");
+                        sb.AppendLine($"            <a class=\"nav-link navinactive\" aria-current=\"page\" href=\"javascript:open_page('{data.Name}')\">" +
+                                                            $"{data.Title}</a> ");
                     sb.AppendLine("          </li>  ");
                 }
             }
-            sb.AppendLine("		</ul>     ");
+            sb.AppendLine("   ");
+            sb.AppendLine(" ");
 
-            sb.AppendLine("        <div class=\"navbar-nav ms-auto \">  ");
-            sb.AppendLine($"          <spam class= \"navinactive\">{WebSiteTitle}</spam>  ");
-            sb.AppendLine("        </div>  ");
-            sb.AppendLine("        <div class=\"navbar-nav ms-auto\">  ");
+            // Título do web site
+            sb.AppendLine("                    <li class=\"nav-item\"> ");
+            sb.AppendLine($"                        <span class=\"navbar-brand mx-3 titulo\">{WebSiteTitle}</span> ");
+            sb.AppendLine("                    </li> ");
+            sb.AppendLine(" ");
+
+            sb.AppendLine("                     ");
+
+            // TOC entry box
+            sb.AppendLine("            <div class=\"trackCombo\"> ");
+            sb.AppendLine("              <div class=\"trackCombo-input-wrapper\"> ");
+            sb.AppendLine("                <input type=\"text\" class=\"trackCombo-input\" id=\"mytrackCombo\" autocomplete=\"off\"> ");
+            sb.AppendLine("                <button class=\"trackCombo-button\" id=\"mytrackComboButton\"></button> ");
+            sb.AppendLine("              </div> ");
+            sb.AppendLine("              <div class=\"trackCombo-options\" id=\"mytrackComboOptions\"></div> ");
+            sb.AppendLine("            </div> ");
+
+
+            sb.AppendLine(" ");
+            sb.AppendLine("                </ul> ");
+
+            // Data atualização
+            sb.AppendLine("                    <div class=\"small-text-container\"> ");
+            sb.AppendLine($"                        <p class=\"small-text\">Texto PT-BR atualizado em: {DateTime.Now.ToString("dd/MM/yyyy")}</p> ");
+            sb.AppendLine("                    </div> ");
+
+
+            sb.AppendLine(" ");
+            sb.AppendLine("                <div class=\"navbar-nav ms-auto\">   ");
 
             if (pageData.Name == PageIndexTocStudyName || pageData.Name == PageIndexTocName)
                 sb.AppendLine("			<button class=\"btn btn-primary\" onclick=\"window.print()\" title=\"Imprime o texto do artigo selecionado.\" >Imprimir</button> ");
 
             sb.AppendLine("			    <button class=\"btn btn-primary\" data-bs-toggle=\"modal\"  ");
             sb.AppendLine("				    data-bs-target=\"#myModal\" title=\"Clique para entender o significado das cores de fundo de cada parágrafo.\">Cores</button>  ");
-            sb.AppendLine("        </div>  ");
-            sb.AppendLine("      </div>  ");
-            sb.AppendLine("    </div>  ");
-            sb.AppendLine("  </nav>  ");
+
+            sb.AppendLine("                </div>   ");
+            sb.AppendLine(" ");
+            sb.AppendLine("            </div> ");
+            sb.AppendLine("        </div> ");
+            sb.AppendLine("    </nav> ");
             sb.AppendLine(" ");
         }
 
@@ -126,10 +167,16 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         /// <param name="useDarkTheme"></param>
         private void PrintBodyIndexToc(StringBuilder sb, PageData pageData)
         {
-            sb.AppendLine("	<div id=\"leftColumn\" class=\"black splitLeft left mt-2 p-2 overflow-auto\">  ");
-            sb.AppendLine("	</div>  ");
-            sb.AppendLine("	<div id=\"rightColumn\" class=\"black splitRight right mt-0 overflow-auto\">  ");
-            sb.AppendLine("	</div>  ");
+            sb.AppendLine("    <main> ");
+            sb.AppendLine("        <div id=\"leftColumn\"> ");
+            sb.AppendLine("        </div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("        <div id=\"divisor\" role=\"separator\" aria-orientation=\"horizontal\" tabindex=\"0\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"25\" aria-label=\"Divisor entre colunas\"></div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("        <div id=\"rightColumn\"> ");
+            sb.AppendLine("        </div> ");
+            sb.AppendLine("    </main> ");
+
         }
 
 
@@ -142,7 +189,8 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         /// <param name="useDarkTheme"></param>
         private void PrintBodyIndexSubject(StringBuilder sb, PageData pageData)
         {
-            sb.AppendLine("	<div id=\"leftColumn\" class=\"black splitLeft left mt-2 p-2 overflow-auto\">  ");
+            sb.AppendLine("    <main> ");
+            sb.AppendLine("        <div id=\"leftColumn\"> ");
             sb.AppendLine("			<div id=\"searchData\">  ");
             sb.AppendLine("				<form>  ");
             sb.AppendLine("					<label for=\"searchInputBox\">Busca nos assuntos:</label><br>  ");
@@ -150,21 +198,27 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             sb.AppendLine("						type=\"text\"   ");
             sb.AppendLine("						id=\"searchInputBox\"   ");
             sb.AppendLine("						name=\"inputBox\"   ");
-            sb.AppendLine("						style=\"width: 440px;\"  ");
+            sb.AppendLine("						style=\"width: 100%;\"  ");
             sb.AppendLine("						placeholder=\"Mínimo 3 letras e enter\" title=\"Digite um mínimo de 3 letras do assunto a procurar e tecle enter.\"  ");
             sb.AppendLine("						>  ");
             sb.AppendLine("						<br><label for=\"listBoxAssuntos\">Assuntos encontrados:</label><br>  ");
-            sb.AppendLine("						<select id=\"listBoxAssuntos\" size=\"6\" style=\"width: 440px;\" title=\"Faça um duplo-clique num item para expandir os assuntos.\">  ");
+            sb.AppendLine("						<select id=\"listBoxAssuntos\" size=\"6\" style=\"width: 100%;\" title=\"Faça um duplo-clique num item para expandir os assuntos.\">  ");
             sb.AppendLine("						</select>  ");
             sb.AppendLine("				</form>  ");
             sb.AppendLine("			</div>  ");
             sb.AppendLine("			<div id=\"detailsList\">  ");
             sb.AppendLine("			</div>  ");
-            sb.AppendLine("  ");
-            sb.AppendLine("	</div>  ");
-            sb.AppendLine("	<div id=\"rightColumn\" class=\"black splitRight right mt-0 overflow-auto\">  ");
-            sb.AppendLine("	</div>  ");
-            sb.AppendLine("  ");
+            sb.AppendLine("        </div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("        <div id=\"divisor\" role=\"separator\" aria-orientation=\"horizontal\" tabindex=\"0\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"25\" aria-label=\"Divisor entre colunas\"></div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("        <div id=\"rightColumn\"> ");
+            sb.AppendLine("        </div> ");
+            sb.AppendLine("    </main> ");
+
+
+
+
         }
 
 
@@ -178,22 +232,20 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         private void PrintBodyIndexStudy(StringBuilder sb, PageData pageData)
         {
             HtmlFormat_PtAlternative_Articles htmlFormat_PtAlternative_Articles= new HtmlFormat_PtAlternative_Articles();
-
-            // The articles index is a fixed text
-            sb.AppendLine("<div id=\"leftColumn\" class=\"black splitLeft left mt-2 p-2 overflow-auto\">  ");
+            sb.AppendLine("    <main> ");
+            sb.AppendLine("        <div id=\"leftColumn\"> ");
             sb.AppendLine("<div id=\"divsumario\"> ");
             htmlFormat_PtAlternative_Articles.ArticlesIndex(sb);
             sb.AppendLine("</div>");
-            sb.AppendLine("</div>");
-
-            // Convert all articles to HTML
-            sb.AppendLine("	<div id=\"rightColumn\" class=\"black splitRight right mt-0 overflow-auto\">  ");
+            sb.AppendLine("        </div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("        <div id=\"divisor\" role=\"separator\" aria-orientation=\"horizontal\" tabindex=\"0\" aria-valuemin=\"0\" aria-valuemax=\"100\" aria-valuenow=\"25\" aria-label=\"Divisor entre colunas\"></div> ");
+            sb.AppendLine(" ");
+            sb.AppendLine("        <div id=\"rightColumn\"> ");
             sb.AppendLine("	<div id=\"divartigo\"> ");
             sb.AppendLine("	</div> ");
-            sb.AppendLine("	</div>  ");
-
-            htmlFormat_PtAlternative_Articles.ArticlesStartPage();
-
+            sb.AppendLine("        </div> ");
+            sb.AppendLine("    </main> ");
         }
 
         /// <summary>
@@ -243,7 +295,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             sb.AppendLine("								<td>  ");
             sb.AppendLine("									<div class=\"badge badgeDoubt\">Em dúvida</div>  ");
             sb.AppendLine("								</td>  ");
-            sb.AppendLine($"								<td>{coutStauts[2]} Parágrafo(s) com dúvidas.</td>  ");
+            sb.AppendLine($"								<td>{coutStauts[2]} Parágrafo(s) em dúvida.</td>  ");
             sb.AppendLine("							</tr>  ");
             sb.AppendLine("							<tr>  ");
             sb.AppendLine("								<td>  ");
@@ -293,13 +345,13 @@ namespace UbStudyHelpGenerator.HtmlFormatters
 
             PrintHead(sb, pageData, useDarkTheme);
 
-            sb.AppendLine("<html>  ");
-            sb.AppendLine("<body onload=\"StartPage()\">  ");
+            sb.AppendLine("<body onload=\"StartPage()\"> <!-- common -->  ");
             PrintNavBar(sb, listPages, pageData);
 
             pageData.BodyFunction(sb, pageData);
             pageData.ModalBodyFunction(sb, pageData);
             PrintModalColors(sb);
+            sb.AppendLine("<script src=\"js/combotrack.js\"></script> "); // For combobox track
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");
 
@@ -315,8 +367,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                 new PageData() {Name=PageIndexTocName, Type=PageType.Toc, Title=PageIndexTocTitle, BodyFunction= PrintBodyIndexToc, ModalBodyFunction= PrintModalBodyDummy},
                 new PageData() {Name=PageIndexSubjectName, Type=PageType.Subject, Title=PageIndexSubjectTitle, BodyFunction= PrintBodyIndexSubject, ModalBodyFunction= PrintModalBodyDummy},
                 new PageData() {Name=PageIndexTocStudyName, Type=PageType.Study, Title=PageIndexTocStudyTitle, BodyFunction = PrintBodyIndexStudy, ModalBodyFunction = PrintModalStudy},
-                new PageData() {Name=PageIndexTocSearchName, Type=PageType.Query, Title=PageIndexTocSearchTitle, Enabled=false, BodyFunction= PrintBodyIndexToc, ModalBodyFunction= PrintModalBodyDummy},
-                new PageData() {Name=PageIndexTocTrackName, Type=PageType.Track, Title=PageIndexTocTrackTitle, Enabled = false, BodyFunction = PrintBodyIndexToc, ModalBodyFunction = PrintModalBodyDummy}
+                new PageData() {Name=PageIndexTocSearchName, Type=PageType.Query, Title=PageIndexTocSearchTitle, Enabled=false, BodyFunction= PrintBodyIndexToc, ModalBodyFunction= PrintModalBodyDummy}
             };
 
             foreach (PageData pageData in listPages)

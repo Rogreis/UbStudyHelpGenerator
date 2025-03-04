@@ -21,6 +21,12 @@ namespace UbStudyHelpGenerator.Classes
             ShowMessage?.Invoke(message);
         }
 
+        public static void FireShowMessage(string message, Exception ex)
+        {
+            ShowMessage?.Invoke($"{message} - {ex.Message}");
+        }
+
+
         public static void FireEntryEdited(TOC_Entry entry)
         {
             EntryEdited?.Invoke(entry);

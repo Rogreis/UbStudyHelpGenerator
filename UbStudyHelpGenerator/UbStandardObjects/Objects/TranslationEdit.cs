@@ -41,10 +41,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             string folderPaper = Path.Combine(LocalRepositoryFolder, $"Doc{paperNo:000}");
             foreach (string filePath in Directory.GetFiles(folderPaper, "*.md"))
             {
-                if (filePath.EndsWith("Par_117_006_000.md"))
-                {
-                    int kkk = 0;
-                }
+
                 ParagraphEdit paragraph = new ParagraphEdit(filePath);
                 paragraph.FormatInt = EnglishTranslation.GetFormat(paragraph);
                 paper.Paragraphs.Add(paragraph);
@@ -55,19 +52,11 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
         public new PaperEdit Paper(short paperNo)
         {
-            if (paperNo == 117)
-            {
-                int jjj = 0;
-            }
-            PaperEdit paper = GetPaperEdit(paperNo);
-            if (this.Papers.Count == 197)
-            {
-                paper = (PaperEdit)Papers[paperNo];
-            }
-            else
+            PaperEdit paper = paperNo < this.Papers.Count? (PaperEdit)this.Papers[paperNo] : null;
+            if (paper == null)
             {
                 paper = GetPaperEdit(paperNo);
-                Papers.Add(paper);
+                this.Papers.Add(paper);
             }
             return paper;
         }

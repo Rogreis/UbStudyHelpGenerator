@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Office2010.PowerPoint;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using UbStandardObjects.Objects;

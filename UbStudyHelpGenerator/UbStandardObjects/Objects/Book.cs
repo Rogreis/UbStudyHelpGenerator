@@ -31,12 +31,17 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             }
         }
 
+        private TranslationEdit translationEdit = null;
         public TranslationEdit EditTranslation
         {
             get
             {
-                Translation trans = StaticObjects.Book.Translations.Find(t => t.LanguageID == StaticObjects.Parameters.EditTranslationId);
-                return new TranslationEdit(trans, StaticObjects.Parameters.EditParagraphsRepositoryFolder);
+                if (translationEdit == null)
+                {
+                    Translation trans = StaticObjects.Book.Translations.Find(t => t.LanguageID == StaticObjects.Parameters.EditTranslationId);
+                    translationEdit= new TranslationEdit(trans, StaticObjects.Parameters.EditParagraphsRepositoryFolder);
+                }
+                return translationEdit;
             }
         }
 
