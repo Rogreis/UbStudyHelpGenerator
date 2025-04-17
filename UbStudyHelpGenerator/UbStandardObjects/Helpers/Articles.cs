@@ -29,7 +29,9 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             Table,
             Blank,
             Line,
-            Image
+            Image,
+            Comment,
+            Link
         }
 
         private string ReadNextLine()
@@ -50,14 +52,16 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
         {
             // Blank line indicates paragraph break
             if (string.IsNullOrWhiteSpace(line)) return LineType.Blank;
+            if (line.StartsWith(";")) return LineType.Comment;
             if (line.StartsWith("#")) return LineType.Heading;
             if (line.StartsWith(">")) return LineType.Blockquote;
             if (line.StartsWith("*")) return LineType.UnorderedList;
             if (line.StartsWith("|")) return LineType.Table;
             if (line.StartsWith("---")) return LineType.Line;
+            if (line.StartsWith("<li>") || line.StartsWith("<ul>") || line.StartsWith("</ul>")) return LineType.Link;
             if (line.Contains("<img")) return LineType.Image;
             if (Regex.IsMatch(line, @"^\d+\.(?!\s*\\)")) return LineType.OrderedList;
-            if (line.StartsWith(">")) return LineType.Blockquote;
+            if (line.StartsWith("<")) return LineType.Blockquote;
 
             return LineType.Normal;
         }
@@ -114,7 +118,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
 
             return line;
         }
-
 
         private string Headings(string line)
         {
@@ -241,16 +244,14 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             if (line != null) PushLine(line); // Put the line back for later processing
         }
 
-
-
-        private void ConvertFile(string markdownFilePath, string htmlFilePath)
+        private void ConvertFile(string[] markdownLines, string htmlFilePath)
         {
             string pattern = @"(<img src="")[^""]*\\([^""]*"")";
             string replacement = @"$1articles\\images\\$2";
 
             try
             {
-                _markdownLines = File.ReadAllLines(markdownFilePath); // Store for global access
+                _markdownLines = markdownLines;
                 _lineIndex = 0;
                 StringBuilder sb = new StringBuilder();
                 List<string> htmlLines = new List<string>();
@@ -288,6 +289,12 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
                             line = Regex.Replace(line, pattern, replacement);
                             sb.AppendLine(line);
                             break;
+                        case LineType.Link:
+                            sb.AppendLine(line);
+                            break;
+                        case LineType.Comment:
+                            // Comment are just ignored lines
+                            break;
                         default:
                             sb.AppendLine(Paragraph($"Linha não tratada: {line}"));
                             break;
@@ -295,11 +302,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
                     line = ReadNextLine();
                 }
                 File.WriteAllText(htmlFilePath, sb.ToString(), Encoding.UTF8);
-                EventsControl.FireShowMessage($"Markdown file '{markdownFilePath}' converted to HTML '{htmlFilePath}' successfully.");
-            }
-            catch (FileNotFoundException)
-            {
-                EventsControl.FireShowMessage($"File '{markdownFilePath}' not found.");
+                EventsControl.FireShowMessage($"Generated '{htmlFilePath}' successfully.");
             }
             catch (Exception ex)
             {
@@ -314,11 +317,22 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             //string htmlFilePath = @"C:\Trabalho\Github\Rogerio\b\articles\teste.html";
             //ConvertFile(markdownFilePath, htmlFilePath);
 
+            MarkdownHelper markdownHelper = new MarkdownHelper();
+
             string pathHtmlFiles = Path.Combine(basePath, @"articles");
             foreach (string markdownFilePath in Directory.GetFiles(pathHtmlFiles, "*.md"))
             {
                 string htmlFilePath = markdownFilePath.Replace(".md", ".html");
-                ConvertFile(markdownFilePath, htmlFilePath);
+                if (markdownFilePath.EndsWith("moral.md"))
+                {
+                    string[] markdownupdated = markdownHelper.CreateToc(markdownFilePath);
+                    ConvertFile(markdownupdated, htmlFilePath);
+                }
+                else
+                {
+                    string[] lines = File.ReadAllLines(markdownFilePath);
+                    ConvertFile(lines, htmlFilePath);
+                }
             }
         }
 

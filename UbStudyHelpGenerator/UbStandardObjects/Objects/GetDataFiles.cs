@@ -264,15 +264,15 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         {
             string path = TranslationsInputPath();
             string json = File.ReadAllText(path);
-            StaticObjects.FireSendMessage("Reading traslations from json file");
+            StaticObjects.FireShowMessage("Reading traslations from json file");
 
             List<Translation> list = Translations.DeserializeJson(json);
-            StaticObjects.FireSendMessage("Recalculating hash for each one");
+            StaticObjects.FireShowMessage("Recalculating hash for each one");
             foreach (Translation t in list)
             {
                 string translatioPath = TranslationFilePath(t.LanguageID);
                 t.Hash = CalculateMD5(translatioPath);
-                StaticObjects.FireSendMessage($"{t}  {t.Hash}");
+                StaticObjects.FireShowMessage($"{t}  {t.Hash}");
             }
             SetTranslations(list);
             return list;
@@ -308,7 +308,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 string json = JsonSerializer.Serialize<TranslationsRoot>(translationsRoot, options);
 
                 File.WriteAllText(path, json);
-                StaticObjects.FireSendMessage($"Translations stored into file: {path}");
+                StaticObjects.FireShowMessage($"Translations stored into file: {path}");
                 return true;
             }
             catch (Exception ex)

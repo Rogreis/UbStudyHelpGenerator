@@ -20,8 +20,8 @@ namespace UbStudyHelpGenerator.PtBr
 
         protected void PrintCompare(Translation englishTranslation, Translation translatioPt2007, Translation translatioPtAlternative, string destinationFolder, short paperNoToPrint)
         {
-            FireShowMessage($"Comparing paper {paperNoToPrint}");
-            FireShowPaperNumber(paperNoToPrint);
+            StaticObjects.FireShowMessage($"Comparing paper {paperNoToPrint}");
+            StaticObjects.FireShowPaperNumber(paperNoToPrint);
             Paper paperEnglish = englishTranslation.Paper(paperNoToPrint);
             Paper paperPt2007 = translatioPt2007.Paper(paperNoToPrint);
             PaperEdit paperEdit = new PaperEdit(paperNoToPrint, Param.EditParagraphsRepositoryFolder);
@@ -47,12 +47,12 @@ namespace UbStudyHelpGenerator.PtBr
                         PrintPaper(englishTranslation, ptAlternativeTranslation, paperNo);
                     }
                 }
-                FireShowMessage("Finished");
+                StaticObjects.FireShowMessage("Finished");
                 return true;
             }
             catch (Exception ex)
             {
-                FireShowMessage($"Exporting translation alternative {ex.Message}");
+                StaticObjects.FireShowMessage($"Exporting translation alternative {ex.Message}");
                 StaticObjects.Logger.Error("Exporting translation alternative", ex);
                 return false;
             }
@@ -73,12 +73,12 @@ namespace UbStudyHelpGenerator.PtBr
                         PrintCompare(englishTranslation, portuguse2007Translation, ptAlternativeTranslation, destinationFolder, paperNo);
                     }
                 }
-                FireShowMessage("Finished");
+                StaticObjects.FireShowMessage("Finished");
                 return true;
             }
             catch (Exception ex)
             {
-                FireShowMessage($"Exporting translation alternative {ex.Message}");
+                StaticObjects.FireShowMessage($"Exporting translation alternative {ex.Message}");
                 StaticObjects.Logger.Error("Exporting translation alternative", ex);
                 return false;
             }

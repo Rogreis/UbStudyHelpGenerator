@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.ImportExport.Models;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 namespace UbStudyHelpGenerator.HtmlFormatters
@@ -117,7 +118,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                 gptTranslationLines = File.ReadAllLines(gptFilePath);
             }
 
-            StaticObjects.FireSendMessage($"{englishPaper} {(formatParameters.IsToCompare ? "Has GPT translation" : "")}");
+            StaticObjects.FireShowMessage($"{englishPaper} {(formatParameters.IsToCompare ? "Has GPT translation" : "")}");
 
             sb.AppendLine("<table class=\"table table-borderless\"> ");
 
@@ -161,7 +162,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                             }
 
                         }
-                        formatParameters.SetData(englishPaper.Paragraphs[i], paragraphs2ndColumn[rightCounter], gptText, mergedLine);
+                        formatParameters.SetData(englishPaper.Paragraphs[i], paragraphs2ndColumn[rightCounter]);
                         formatParameters.PrintLine(sb);
                         rightCounter++;
                     }
@@ -185,6 +186,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         }
 
 
+
         public void GenerateCompare(Paper englishPaper, List<Paragraph> paragraphs2ndColumn, List<Paragraph> paragraphs3rdColumn, string destinationFolder, short paperNo)
         {
             StringBuilder sb = new StringBuilder();
@@ -192,7 +194,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             // Verify exitence of GPT translation file 
             LineFormatParameters formatParameters = new LineFormatParameters();
 
-            StaticObjects.FireSendMessage($"{englishPaper} {(formatParameters.IsToCompare ? "Has GPT translation" : "")}");
+            StaticObjects.FireShowMessage($"{englishPaper} {(formatParameters.IsToCompare ? "Has GPT translation" : "")}");
 
             sb.AppendLine("<table class=\"table table-borderless\"> ");
 
@@ -220,7 +222,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                         string pt2007Text = paragraphs2ndColumn[i].Text;
                         string ptAlternativeText = paragraphs3rdColumn[i].Text;
                         string mergedLine = HtmlCompare(paragraphs2ndColumn[i].TextNoHtml, paragraphs3rdColumn[i].TextNoHtml);
-                        formatParameters.SetData(englishPaper.Paragraphs[i], paragraphs2ndColumn[i], ptAlternativeText, mergedLine);
+                        formatParameters.SetData(englishPaper.Paragraphs[i], paragraphs2ndColumn[i]);
                         formatParameters.PrintLine(sb);
                         rightCounter++;
                     }

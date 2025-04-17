@@ -19,11 +19,11 @@ namespace UbStudyHelpGenerator.Classes
 
 
             // Open an existing document
-            StaticObjects.FireSendMessage(null);
+            StaticObjects.FireShowMessage(null);
             //string regExPattern = "(\"\\d{1,3}):(\\d{1,3}.)(\\d{1,3} )(\\(\\d{1,4}.)(\\d{1,3}\\))\"gm";
             // "(\d{1,3}):(\d{1,3}.)(\d{1,3} )(\(\d{1,4}.)(\d{1,3}\))"gm
             // /(\d{1,3}):(\d{1,3}.)(\d{1,3} )(\(\d{1,4}.)(\d{1,3}\))/gm
-            StaticObjects.FireSendMessage("Importing Escobar word file");
+            StaticObjects.FireShowMessage("Importing Escobar word file");
             int nrPar = 0, contType1 = 0, contType2 = 0;
             char[] sep1 = { ')' }, sep2 = { ' ' }, sepIdent = { '.', ':', ' ' };
             Translation translation = new Translation();
@@ -86,7 +86,7 @@ namespace UbStudyHelpGenerator.Classes
                 //int maxSize = Math.Min(text.Length, 50);
                 //StaticObjects.FireSendMessage($"{text.Substring(0, maxSize)}");
             }
-            StaticObjects.FireSendMessage($"nPar= {nrPar} Type 0= {nrPar - contType1 - contType2}  Type 1= {contType1}  Type 3= {contType2}  ");
+            StaticObjects.FireShowMessage($"nPar= {nrPar} Type 0= {nrPar - contType1 - contType2}  Type 1= {contType1}  Type 3= {contType2}  ");
             return translation;
         }
     }

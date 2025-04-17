@@ -106,11 +106,11 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         }
 
         [JsonIgnore]
-        public int ID
+        public string AsIndex
         {
             get
             {
-                return Paper * 1000000 + Section * 1000 + ParagraphNo;
+                return $"{Paper:000}{Section:000}{ParagraphNo:000}";
             }
         }
 

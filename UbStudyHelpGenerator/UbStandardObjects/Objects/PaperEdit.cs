@@ -16,6 +16,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         public PaperEdit(short paperNo)
         {
             paperEditNo = paperNo;
+            GetAllNotes();
         }
 
 

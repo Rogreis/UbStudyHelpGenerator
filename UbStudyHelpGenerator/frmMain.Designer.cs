@@ -77,11 +77,18 @@ namespace UbStudyHelpGenerator
             this.btEdita = new System.Windows.Forms.Button();
             this.tabPageEditTranslation = new System.Windows.Forms.TabPage();
             this.splitContainerPtAlternative = new System.Windows.Forms.SplitContainer();
+            this.groupBoxAmandonWeb = new System.Windows.Forms.GroupBox();
+            this.btPaperShow = new System.Windows.Forms.Button();
+            this.numericUpDownPaper = new System.Windows.Forms.NumericUpDown();
+            this.btAmadonWebGenerator = new System.Windows.Forms.Button();
+            this.checkBoxImportEnglish = new System.Windows.Forms.CheckBox();
+            this.checkBoxImportPtBr = new System.Windows.Forms.CheckBox();
+            this.btSemanticSearchString = new System.Windows.Forms.Button();
+            this.btGenerateSearchString = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.btPTAlternativeGenerate = new System.Windows.Forms.Button();
-            this.cbGerarPaginas = new System.Windows.Forms.CheckBox();
+            this.cbGerarIndicesArtigos = new System.Windows.Forms.CheckBox();
             this.cbGerarTocTable = new System.Windows.Forms.CheckBox();
-            this.chGerarTexto = new System.Windows.Forms.CheckBox();
             this.btPtBrIndex = new System.Windows.Forms.Button();
             this.btExportPtAlternativeDocx = new System.Windows.Forms.Button();
             this.btRecreateTrans = new System.Windows.Forms.Button();
@@ -136,10 +143,11 @@ namespace UbStudyHelpGenerator
             this.textBoxTranslations = new System.Windows.Forms.TextBox();
             this.tabPageGeneric = new System.Windows.Forms.TabPage();
             this.splitContainerParamony = new System.Windows.Forms.SplitContainer();
+            this.btArtigoPorGrupo = new System.Windows.Forms.Button();
             this.btMoral = new System.Windows.Forms.Button();
             this.btyParamonyImport = new System.Windows.Forms.Button();
             this.txGeralMessages = new System.Windows.Forms.TextBox();
-            this.btArtigoPorGrupo = new System.Windows.Forms.Button();
+            this.chGerarTexto = new System.Windows.Forms.CheckBox();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -157,6 +165,8 @@ namespace UbStudyHelpGenerator
             this.splitContainerPtAlternative.Panel1.SuspendLayout();
             this.splitContainerPtAlternative.Panel2.SuspendLayout();
             this.splitContainerPtAlternative.SuspendLayout();
+            this.groupBoxAmandonWeb.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPaper)).BeginInit();
             this.panel1.SuspendLayout();
             this.tabPageFromSqlServer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -808,6 +818,9 @@ namespace UbStudyHelpGenerator
             // 
             // splitContainerPtAlternative.Panel1
             // 
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.groupBoxAmandonWeb);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btSemanticSearchString);
+            this.splitContainerPtAlternative.Panel1.Controls.Add(this.btGenerateSearchString);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.panel1);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btPtBrIndex);
             this.splitContainerPtAlternative.Panel1.Controls.Add(this.btExportPtAlternativeDocx);
@@ -828,14 +841,109 @@ namespace UbStudyHelpGenerator
             this.splitContainerPtAlternative.SplitterWidth = 3;
             this.splitContainerPtAlternative.TabIndex = 2;
             // 
+            // groupBoxAmandonWeb
+            // 
+            this.groupBoxAmandonWeb.BackColor = System.Drawing.Color.PeachPuff;
+            this.groupBoxAmandonWeb.Controls.Add(this.chGerarTexto);
+            this.groupBoxAmandonWeb.Controls.Add(this.btPaperShow);
+            this.groupBoxAmandonWeb.Controls.Add(this.numericUpDownPaper);
+            this.groupBoxAmandonWeb.Controls.Add(this.btAmadonWebGenerator);
+            this.groupBoxAmandonWeb.Controls.Add(this.checkBoxImportEnglish);
+            this.groupBoxAmandonWeb.Controls.Add(this.checkBoxImportPtBr);
+            this.groupBoxAmandonWeb.Location = new System.Drawing.Point(169, 7);
+            this.groupBoxAmandonWeb.Name = "groupBoxAmandonWeb";
+            this.groupBoxAmandonWeb.Size = new System.Drawing.Size(119, 148);
+            this.groupBoxAmandonWeb.TabIndex = 33;
+            this.groupBoxAmandonWeb.TabStop = false;
+            this.groupBoxAmandonWeb.Text = "Amadon Web";
+            // 
+            // btPaperShow
+            // 
+            this.btPaperShow.BackColor = System.Drawing.Color.Chartreuse;
+            this.btPaperShow.Location = new System.Drawing.Point(57, 122);
+            this.btPaperShow.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btPaperShow.Name = "btPaperShow";
+            this.btPaperShow.Size = new System.Drawing.Size(52, 21);
+            this.btPaperShow.TabIndex = 30;
+            this.btPaperShow.Text = "Show";
+            this.btPaperShow.UseVisualStyleBackColor = false;
+            this.btPaperShow.Click += new System.EventHandler(this.btPaperShow_Click);
+            // 
+            // numericUpDownPaper
+            // 
+            this.numericUpDownPaper.Location = new System.Drawing.Point(7, 122);
+            this.numericUpDownPaper.Maximum = new decimal(new int[] {
+            196,
+            0,
+            0,
+            0});
+            this.numericUpDownPaper.Name = "numericUpDownPaper";
+            this.numericUpDownPaper.Size = new System.Drawing.Size(46, 20);
+            this.numericUpDownPaper.TabIndex = 29;
+            this.numericUpDownPaper.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            // 
+            // btAmadonWebGenerator
+            // 
+            this.btAmadonWebGenerator.BackColor = System.Drawing.Color.Chartreuse;
+            this.btAmadonWebGenerator.Location = new System.Drawing.Point(5, 82);
+            this.btAmadonWebGenerator.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btAmadonWebGenerator.Name = "btAmadonWebGenerator";
+            this.btAmadonWebGenerator.Size = new System.Drawing.Size(99, 25);
+            this.btAmadonWebGenerator.TabIndex = 0;
+            this.btAmadonWebGenerator.Text = "Generate";
+            this.btAmadonWebGenerator.UseVisualStyleBackColor = false;
+            this.btAmadonWebGenerator.Click += new System.EventHandler(this.btAmadonWebGenerator_Click);
+            // 
+            // checkBoxImportEnglish
+            // 
+            this.checkBoxImportEnglish.Location = new System.Drawing.Point(5, 21);
+            this.checkBoxImportEnglish.Name = "checkBoxImportEnglish";
+            this.checkBoxImportEnglish.Size = new System.Drawing.Size(104, 20);
+            this.checkBoxImportEnglish.TabIndex = 28;
+            this.checkBoxImportEnglish.Text = "Import English";
+            this.checkBoxImportEnglish.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxImportPtBr
+            // 
+            this.checkBoxImportPtBr.AutoSize = true;
+            this.checkBoxImportPtBr.Location = new System.Drawing.Point(5, 41);
+            this.checkBoxImportPtBr.Name = "checkBoxImportPtBr";
+            this.checkBoxImportPtBr.Size = new System.Drawing.Size(78, 17);
+            this.checkBoxImportPtBr.TabIndex = 25;
+            this.checkBoxImportPtBr.Text = "Import PtBr";
+            this.checkBoxImportPtBr.UseVisualStyleBackColor = true;
+            // 
+            // btSemanticSearchString
+            // 
+            this.btSemanticSearchString.BackColor = System.Drawing.Color.Chartreuse;
+            this.btSemanticSearchString.Location = new System.Drawing.Point(169, 161);
+            this.btSemanticSearchString.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btSemanticSearchString.Name = "btSemanticSearchString";
+            this.btSemanticSearchString.Size = new System.Drawing.Size(163, 28);
+            this.btSemanticSearchString.TabIndex = 31;
+            this.btSemanticSearchString.Text = "Semantic Search String";
+            this.btSemanticSearchString.UseVisualStyleBackColor = false;
+            this.btSemanticSearchString.Click += new System.EventHandler(this.btSemanticSearchString_Click);
+            // 
+            // btGenerateSearchString
+            // 
+            this.btGenerateSearchString.BackColor = System.Drawing.Color.Chartreuse;
+            this.btGenerateSearchString.Location = new System.Drawing.Point(345, 97);
+            this.btGenerateSearchString.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btGenerateSearchString.Name = "btGenerateSearchString";
+            this.btGenerateSearchString.Size = new System.Drawing.Size(163, 28);
+            this.btGenerateSearchString.TabIndex = 30;
+            this.btGenerateSearchString.Text = "SqLite Export";
+            this.btGenerateSearchString.UseVisualStyleBackColor = false;
+            this.btGenerateSearchString.Click += new System.EventHandler(this.btGenerateSearchString_Click);
+            // 
             // panel1
             // 
             this.panel1.BackColor = System.Drawing.Color.Linen;
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel1.Controls.Add(this.btPTAlternativeGenerate);
-            this.panel1.Controls.Add(this.cbGerarPaginas);
+            this.panel1.Controls.Add(this.cbGerarIndicesArtigos);
             this.panel1.Controls.Add(this.cbGerarTocTable);
-            this.panel1.Controls.Add(this.chGerarTexto);
             this.panel1.Location = new System.Drawing.Point(14, 12);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
             this.panel1.Name = "panel1";
@@ -854,14 +962,14 @@ namespace UbStudyHelpGenerator
             this.btPTAlternativeGenerate.UseVisualStyleBackColor = false;
             this.btPTAlternativeGenerate.Click += new System.EventHandler(this.btPTAlternativeGenerate_Click);
             // 
-            // cbGerarPaginas
+            // cbGerarIndicesArtigos
             // 
-            this.cbGerarPaginas.Location = new System.Drawing.Point(12, 10);
-            this.cbGerarPaginas.Name = "cbGerarPaginas";
-            this.cbGerarPaginas.Size = new System.Drawing.Size(117, 20);
-            this.cbGerarPaginas.TabIndex = 28;
-            this.cbGerarPaginas.Text = "Índices e Artigos";
-            this.cbGerarPaginas.UseVisualStyleBackColor = true;
+            this.cbGerarIndicesArtigos.Location = new System.Drawing.Point(12, 10);
+            this.cbGerarIndicesArtigos.Name = "cbGerarIndicesArtigos";
+            this.cbGerarIndicesArtigos.Size = new System.Drawing.Size(117, 20);
+            this.cbGerarIndicesArtigos.TabIndex = 28;
+            this.cbGerarIndicesArtigos.Text = "Índices e Artigos";
+            this.cbGerarIndicesArtigos.UseVisualStyleBackColor = true;
             // 
             // cbGerarTocTable
             // 
@@ -872,16 +980,6 @@ namespace UbStudyHelpGenerator
             this.cbGerarTocTable.TabIndex = 25;
             this.cbGerarTocTable.Text = "Gerar Toc Table";
             this.cbGerarTocTable.UseVisualStyleBackColor = true;
-            // 
-            // chGerarTexto
-            // 
-            this.chGerarTexto.AutoSize = true;
-            this.chGerarTexto.Location = new System.Drawing.Point(12, 49);
-            this.chGerarTexto.Name = "chGerarTexto";
-            this.chGerarTexto.Size = new System.Drawing.Size(82, 17);
-            this.chGerarTexto.TabIndex = 27;
-            this.chGerarTexto.Text = "Gerar Texto";
-            this.chGerarTexto.UseVisualStyleBackColor = true;
             // 
             // btPtBrIndex
             // 
@@ -911,7 +1009,7 @@ namespace UbStudyHelpGenerator
             // btRecreateTrans
             // 
             this.btRecreateTrans.BackColor = System.Drawing.Color.PeachPuff;
-            this.btRecreateTrans.Location = new System.Drawing.Point(391, 12);
+            this.btRecreateTrans.Location = new System.Drawing.Point(632, 80);
             this.btRecreateTrans.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btRecreateTrans.Name = "btRecreateTrans";
             this.btRecreateTrans.Size = new System.Drawing.Size(117, 28);
@@ -923,7 +1021,7 @@ namespace UbStudyHelpGenerator
             // btEpub
             // 
             this.btEpub.BackColor = System.Drawing.Color.Chartreuse;
-            this.btEpub.Location = new System.Drawing.Point(224, 43);
+            this.btEpub.Location = new System.Drawing.Point(345, 62);
             this.btEpub.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btEpub.Name = "btEpub";
             this.btEpub.Size = new System.Drawing.Size(163, 28);
@@ -958,19 +1056,19 @@ namespace UbStudyHelpGenerator
             // btExportToUbHelp
             // 
             this.btExportToUbHelp.BackColor = System.Drawing.Color.Chartreuse;
-            this.btExportToUbHelp.Location = new System.Drawing.Point(224, 12);
+            this.btExportToUbHelp.Location = new System.Drawing.Point(345, 11);
             this.btExportToUbHelp.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btExportToUbHelp.Name = "btExportToUbHelp";
-            this.btExportToUbHelp.Size = new System.Drawing.Size(163, 28);
+            this.btExportToUbHelp.Size = new System.Drawing.Size(163, 45);
             this.btExportToUbHelp.TabIndex = 16;
-            this.btExportToUbHelp.Text = "Generate PTAlternatice .gz";
+            this.btExportToUbHelp.Text = "Export PT-BR for Amandon\r\n";
             this.btExportToUbHelp.UseVisualStyleBackColor = false;
             this.btExportToUbHelp.Click += new System.EventHandler(this.btExportToUbHelp_Click);
             // 
             // btTest
             // 
             this.btTest.BackColor = System.Drawing.Color.Coral;
-            this.btTest.Location = new System.Drawing.Point(391, 46);
+            this.btTest.Location = new System.Drawing.Point(632, 114);
             this.btTest.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btTest.Name = "btTest";
             this.btTest.Size = new System.Drawing.Size(117, 28);
@@ -1022,7 +1120,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromSqlServer.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageFromSqlServer.Name = "tabPageFromSqlServer";
             this.tabPageFromSqlServer.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPageFromSqlServer.Size = new System.Drawing.Size(981, 470);
+            this.tabPageFromSqlServer.Size = new System.Drawing.Size(981, 482);
             this.tabPageFromSqlServer.TabIndex = 1;
             this.tabPageFromSqlServer.Tag = "Sql";
             this.tabPageFromSqlServer.Text = "From Sql Server";
@@ -1049,7 +1147,7 @@ namespace UbStudyHelpGenerator
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBoxFromSqlServer);
-            this.splitContainer1.Size = new System.Drawing.Size(977, 464);
+            this.splitContainer1.Size = new System.Drawing.Size(977, 476);
             this.splitContainer1.SplitterDistance = 163;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 1;
@@ -1128,7 +1226,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromSqlServer.Multiline = true;
             this.textBoxFromSqlServer.Name = "textBoxFromSqlServer";
             this.textBoxFromSqlServer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromSqlServer.Size = new System.Drawing.Size(977, 298);
+            this.textBoxFromSqlServer.Size = new System.Drawing.Size(977, 310);
             this.textBoxFromSqlServer.TabIndex = 0;
             // 
             // tabPageFromHtml
@@ -1138,7 +1236,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromHtml.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageFromHtml.Name = "tabPageFromHtml";
             this.tabPageFromHtml.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPageFromHtml.Size = new System.Drawing.Size(981, 470);
+            this.tabPageFromHtml.Size = new System.Drawing.Size(981, 482);
             this.tabPageFromHtml.TabIndex = 0;
             this.tabPageFromHtml.Tag = "Html";
             this.tabPageFromHtml.Text = "Spanish HTML";
@@ -1165,7 +1263,7 @@ namespace UbStudyHelpGenerator
             // splitContainerFromHtml.Panel2
             // 
             this.splitContainerFromHtml.Panel2.Controls.Add(this.textBoxFromHtml);
-            this.splitContainerFromHtml.Size = new System.Drawing.Size(977, 464);
+            this.splitContainerFromHtml.Size = new System.Drawing.Size(977, 476);
             this.splitContainerFromHtml.SplitterDistance = 163;
             this.splitContainerFromHtml.SplitterWidth = 3;
             this.splitContainerFromHtml.TabIndex = 0;
@@ -1244,7 +1342,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromHtml.Multiline = true;
             this.textBoxFromHtml.Name = "textBoxFromHtml";
             this.textBoxFromHtml.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromHtml.Size = new System.Drawing.Size(977, 298);
+            this.textBoxFromHtml.Size = new System.Drawing.Size(977, 310);
             this.textBoxFromHtml.TabIndex = 0;
             // 
             // tabPageUbIndex
@@ -1253,7 +1351,7 @@ namespace UbStudyHelpGenerator
             this.tabPageUbIndex.Location = new System.Drawing.Point(4, 22);
             this.tabPageUbIndex.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageUbIndex.Name = "tabPageUbIndex";
-            this.tabPageUbIndex.Size = new System.Drawing.Size(981, 470);
+            this.tabPageUbIndex.Size = new System.Drawing.Size(981, 482);
             this.tabPageUbIndex.TabIndex = 2;
             this.tabPageUbIndex.Tag = "Index";
             this.tabPageUbIndex.Text = "Generate UB Index";
@@ -1278,7 +1376,7 @@ namespace UbStudyHelpGenerator
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.txUbIndexMessages);
-            this.splitContainer2.Size = new System.Drawing.Size(981, 470);
+            this.splitContainer2.Size = new System.Drawing.Size(981, 482);
             this.splitContainer2.SplitterDistance = 215;
             this.splitContainer2.SplitterWidth = 3;
             this.splitContainer2.TabIndex = 1;
@@ -1380,7 +1478,7 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.Multiline = true;
             this.txUbIndexMessages.Name = "txUbIndexMessages";
             this.txUbIndexMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txUbIndexMessages.Size = new System.Drawing.Size(981, 252);
+            this.txUbIndexMessages.Size = new System.Drawing.Size(981, 264);
             this.txUbIndexMessages.TabIndex = 0;
             // 
             // tabPageTranslations
@@ -1389,7 +1487,7 @@ namespace UbStudyHelpGenerator
             this.tabPageTranslations.Location = new System.Drawing.Point(4, 22);
             this.tabPageTranslations.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageTranslations.Name = "tabPageTranslations";
-            this.tabPageTranslations.Size = new System.Drawing.Size(981, 470);
+            this.tabPageTranslations.Size = new System.Drawing.Size(981, 482);
             this.tabPageTranslations.TabIndex = 4;
             this.tabPageTranslations.Tag = "Translations";
             this.tabPageTranslations.Text = "Translations";
@@ -1415,7 +1513,7 @@ namespace UbStudyHelpGenerator
             // splitContainerTranslations.Panel2
             // 
             this.splitContainerTranslations.Panel2.Controls.Add(this.textBoxTranslations);
-            this.splitContainerTranslations.Size = new System.Drawing.Size(981, 470);
+            this.splitContainerTranslations.Size = new System.Drawing.Size(981, 482);
             this.splitContainerTranslations.SplitterDistance = 256;
             this.splitContainerTranslations.SplitterWidth = 3;
             this.splitContainerTranslations.TabIndex = 0;
@@ -1621,7 +1719,7 @@ namespace UbStudyHelpGenerator
             this.textBoxTranslations.Multiline = true;
             this.textBoxTranslations.Name = "textBoxTranslations";
             this.textBoxTranslations.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxTranslations.Size = new System.Drawing.Size(722, 470);
+            this.textBoxTranslations.Size = new System.Drawing.Size(722, 482);
             this.textBoxTranslations.TabIndex = 2;
             // 
             // tabPageGeneric
@@ -1629,7 +1727,7 @@ namespace UbStudyHelpGenerator
             this.tabPageGeneric.Controls.Add(this.splitContainerParamony);
             this.tabPageGeneric.Location = new System.Drawing.Point(4, 22);
             this.tabPageGeneric.Name = "tabPageGeneric";
-            this.tabPageGeneric.Size = new System.Drawing.Size(981, 470);
+            this.tabPageGeneric.Size = new System.Drawing.Size(981, 482);
             this.tabPageGeneric.TabIndex = 5;
             this.tabPageGeneric.Tag = "geral";
             this.tabPageGeneric.Text = "Generic";
@@ -1651,9 +1749,21 @@ namespace UbStudyHelpGenerator
             // splitContainerParamony.Panel2
             // 
             this.splitContainerParamony.Panel2.Controls.Add(this.txGeralMessages);
-            this.splitContainerParamony.Size = new System.Drawing.Size(981, 470);
+            this.splitContainerParamony.Size = new System.Drawing.Size(981, 482);
             this.splitContainerParamony.SplitterDistance = 183;
             this.splitContainerParamony.TabIndex = 0;
+            // 
+            // btArtigoPorGrupo
+            // 
+            this.btArtigoPorGrupo.BackColor = System.Drawing.Color.PeachPuff;
+            this.btArtigoPorGrupo.Location = new System.Drawing.Point(20, 81);
+            this.btArtigoPorGrupo.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btArtigoPorGrupo.Name = "btArtigoPorGrupo";
+            this.btArtigoPorGrupo.Size = new System.Drawing.Size(113, 28);
+            this.btArtigoPorGrupo.TabIndex = 21;
+            this.btArtigoPorGrupo.Text = "Artigo por Grupo";
+            this.btArtigoPorGrupo.UseVisualStyleBackColor = false;
+            this.btArtigoPorGrupo.Click += new System.EventHandler(this.btArtigoPorGrupo_Click);
             // 
             // btMoral
             // 
@@ -1685,20 +1795,18 @@ namespace UbStudyHelpGenerator
             this.txGeralMessages.Location = new System.Drawing.Point(0, 0);
             this.txGeralMessages.Multiline = true;
             this.txGeralMessages.Name = "txGeralMessages";
-            this.txGeralMessages.Size = new System.Drawing.Size(794, 470);
+            this.txGeralMessages.Size = new System.Drawing.Size(794, 482);
             this.txGeralMessages.TabIndex = 0;
             // 
-            // btArtigoPorGrupo
+            // chGerarTexto
             // 
-            this.btArtigoPorGrupo.BackColor = System.Drawing.Color.PeachPuff;
-            this.btArtigoPorGrupo.Location = new System.Drawing.Point(20, 81);
-            this.btArtigoPorGrupo.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.btArtigoPorGrupo.Name = "btArtigoPorGrupo";
-            this.btArtigoPorGrupo.Size = new System.Drawing.Size(113, 28);
-            this.btArtigoPorGrupo.TabIndex = 21;
-            this.btArtigoPorGrupo.Text = "Artigo por Grupo";
-            this.btArtigoPorGrupo.UseVisualStyleBackColor = false;
-            this.btArtigoPorGrupo.Click += new System.EventHandler(this.btArtigoPorGrupo_Click);
+            this.chGerarTexto.AutoSize = true;
+            this.chGerarTexto.Location = new System.Drawing.Point(5, 61);
+            this.chGerarTexto.Name = "chGerarTexto";
+            this.chGerarTexto.Size = new System.Drawing.Size(82, 17);
+            this.chGerarTexto.TabIndex = 31;
+            this.chGerarTexto.Text = "Gerar Texto";
+            this.chGerarTexto.UseVisualStyleBackColor = true;
             // 
             // frmMain
             // 
@@ -1737,6 +1845,9 @@ namespace UbStudyHelpGenerator
             this.splitContainerPtAlternative.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerPtAlternative)).EndInit();
             this.splitContainerPtAlternative.ResumeLayout(false);
+            this.groupBoxAmandonWeb.ResumeLayout(false);
+            this.groupBoxAmandonWeb.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownPaper)).EndInit();
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.tabPageFromSqlServer.ResumeLayout(false);
@@ -1887,11 +1998,19 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.TextBox txBoxLinkForArticles;
         private System.Windows.Forms.Button btGeraLink;
         private System.Windows.Forms.CheckBox cbGerarTocTable;
-        private System.Windows.Forms.CheckBox chGerarTexto;
-        private System.Windows.Forms.CheckBox cbGerarPaginas;
+        private System.Windows.Forms.CheckBox cbGerarIndicesArtigos;
         private System.Windows.Forms.Button btMoral;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button btArtigoPorGrupo;
+        private System.Windows.Forms.Button btGenerateSearchString;
+        private System.Windows.Forms.Button btSemanticSearchString;
+        private System.Windows.Forms.GroupBox groupBoxAmandonWeb;
+        private System.Windows.Forms.Button btAmadonWebGenerator;
+        private System.Windows.Forms.CheckBox checkBoxImportEnglish;
+        private System.Windows.Forms.CheckBox checkBoxImportPtBr;
+        private System.Windows.Forms.NumericUpDown numericUpDownPaper;
+        private System.Windows.Forms.Button btPaperShow;
+        private System.Windows.Forms.CheckBox chGerarTexto;
     }
 }
 

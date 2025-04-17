@@ -30,12 +30,12 @@ namespace UbStudyHelpGenerator.PtBr
                         PrintPaper(englishTranslation, ptAlternativeTranslation, paperNo);
                     }
                 }
-                FireShowMessage("Finished");
+                StaticObjects.FireShowMessage("Finished");
                 return true;
             }
             catch (Exception ex)
             {
-                FireShowMessage($"Exporting translation alternative {ex.Message}");
+                StaticObjects.FireShowMessage($"Exporting translation alternative {ex.Message}");
                 StaticObjects.Logger.Error("Exporting translation alternative", ex);
                 return false;
             }

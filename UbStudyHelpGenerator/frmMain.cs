@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
@@ -15,52 +14,34 @@ using UbStudyHelpGenerator.HtmlFormatters;
 using UbStudyHelpGenerator.Properties;
 using UbStudyHelpGenerator.PtBr;
 using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.Exporters;
 using UbStudyHelpGenerator.UbStandardObjects.Helpers;
+using UbStudyHelpGenerator.UbStandardObjects.ImportExport;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
-using static System.Environment;
+
 using static UbStudyHelpGenerator.Classes.UrantiaIndex;
-using HorizontalAlignment = UbStudyHelpGenerator.UbStandardObjects.Helpers.HorizontalAlignment;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using Paragraph = UbStudyHelpGenerator.UbStandardObjects.Objects.Paragraph;
 
 namespace UbStudyHelpGenerator
 {
     public partial class frmMain : Form
     {
         private bool StillStarting = true;
-
+        private bool _initialized = false;
         private UbtDatabaseSqlServer Server = new UbtDatabaseSqlServer();
-
-        private GetDataFiles getDataFiles = new GetDataFiles();
-
-        private string DataFolder()
-        {
-            string processName = System.IO.Path.GetFileNameWithoutExtension(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
-            var commonpath = GetFolderPath(SpecialFolder.CommonApplicationData);
-            return Path.Combine(commonpath, processName);
-        }
-
-
-        private string MakeProgramDataFolder(string fileName)
-        {
-            string folder = DataFolder();
-            Directory.CreateDirectory(folder);
-            return Path.Combine(folder, fileName);
-        }
-
+        private GrepMarkdown grepMarkdown = new GrepMarkdown();
 
         public frmMain()
         {
             InitializeComponent();
             StaticObjects.ShowMessage += Logger_ShowMessage;
+
+            StaticObjects.ShowPaperNumber += ShowPaperNumber;
+            StaticObjects.ShowStatusMessage += Alternative_ShowStatusMessage;
+
             EventsControl.EntryEdited += AddEntryEdited;
             EventsControl.ShowMessage += ShowMessage;
 
-        }
-
-        private void EventsControl_ShowMessage(string message)
-        {
-            throw new NotImplementedException();
         }
 
         private void FillComboWithTranslation(ComboBox comboBox, short selectedTranslation)
@@ -83,7 +64,6 @@ namespace UbStudyHelpGenerator
         }
 
 
-        private bool _initialized = false;
         private bool Initialize()
         {
             if (_initialized)
@@ -101,26 +81,6 @@ namespace UbStudyHelpGenerator
                 {
                     throw new Exception("Could not initialize parameters.");
                 }
-
-
-                //getDataFilesGenerator = new GetDataFilesGenerator(Server, Parameters);
-                ////getDataFilesGenerator.ShowMessage += Logger_ShowMessage;
-                //getDataFilesGenerator.ShowPaperNumber += ShowPaperNumber;
-
-                //if (!StaticObjects.Book.Inicialize(getDataFilesGenerator))
-                //{
-                //    ShowMessage("Book not initialized in frmMain_Load");
-                //}
-
-                //Parameters.TranslationLeft = getDataFilesGenerator.GetTranslation(Parameters.TranslationIdLeft);
-                //Parameters.TranslationMiddle = null; //  getDataFilesGenerator.GetTranslation(Parameters.TranslationIdMiddle);
-
-                //// Set the edit translation (hard coded here to be PT Alternative)
-                //short editLanguageId = 2;
-                //Translation trans = getDataFilesGenerator.GetTranslation(editLanguageId);
-                //TranslationEdit translatioEdit = new TranslationEdit(trans, Parameters.EditParagraphsRepositoryFolder);
-                //Parameters.TranslationRight = translatioEdit;
-
                 _initialized = true;
                 StillStarting = false;
                 return true;
@@ -130,8 +90,6 @@ namespace UbStudyHelpGenerator
                 throw;
             }
         }
-
-        GrepMarkdown grepMarkdown = new GrepMarkdown();
 
         private void frmMain_Load(object sender, EventArgs e)
         {
@@ -183,7 +141,7 @@ namespace UbStudyHelpGenerator
                 case "geral":
                     tx = txGeralMessages;
                     break;
-                    
+
                 default:
                     MessageBox.Show(message);
                     return;
@@ -199,13 +157,13 @@ namespace UbStudyHelpGenerator
             {
                 tx.AppendText(message + Environment.NewLine);
             }
-            System.Windows.Forms.Application.DoEvents();
+            Application.DoEvents();
         }
 
         private void ShowPaperNumber(short paperNo)
         {
             toolStripStatusLabelPaperNumber.Text = paperNo.ToString();
-            System.Windows.Forms.Application.DoEvents();
+            Application.DoEvents();
         }
 
 
@@ -767,8 +725,6 @@ namespace UbStudyHelpGenerator
         {
             HtmlFormat_PTalternative formatter = new HtmlFormat_PTalternative(StaticObjects.Parameters);
             PtBr_Website tubPT_BR = new PtBr_Website(StaticObjects.Parameters, formatter);
-            tubPT_BR.ShowPaperNumber += ShowPaperNumber;
-            tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
             tubPT_BR.Print(StaticObjects.Book.EnglishTranslation,
                            StaticObjects.Book.WorkTranslation,
                            StaticObjects.Book.EditTranslation);
@@ -778,8 +734,6 @@ namespace UbStudyHelpGenerator
         {
             HtmlFormat_PTalternative formatter = new HtmlFormat_PTalternative(StaticObjects.Parameters);
             PtBr_Website tubPT_BR = new PtBr_Website(StaticObjects.Parameters, formatter);
-            tubPT_BR.ShowPaperNumber += ShowPaperNumber;
-            tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
 
             tubPT_BR.Print(StaticObjects.Book.EnglishTranslation,
                           StaticObjects.Book.WorkTranslation,
@@ -792,7 +746,7 @@ namespace UbStudyHelpGenerator
         {
             ShowMessage(null);
             ShowMessage($"Repositório para o texto em páginas html: {StaticObjects.Parameters.EditBookRepositoryFolder}");
-            if (cbGerarPaginas.Checked)
+            if (cbGerarIndicesArtigos.Checked)
             {
                 ShowMessage("Gerando páginas de índices e artigos html");
                 HtmlFormat_PtAlternative_Indexes indexes = new HtmlFormat_PtAlternative_Indexes();
@@ -1012,10 +966,6 @@ namespace UbStudyHelpGenerator
             HtmlFormat_PTalternative formatter = new HtmlFormat_PTalternative(StaticObjects.Parameters);
             PtBr_Website tubPT_BR = new PtBr_Website(StaticObjects.Parameters, formatter);
 
-            //tubPT_BR.ShowMessage += Logger_ShowMessage;
-            tubPT_BR.ShowPaperNumber += ShowPaperNumber;
-            tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
-
             string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "indexOld.html");
             ShowMessage("Finished");
             Process.Start("chrome.exe", "localhost");
@@ -1192,8 +1142,21 @@ namespace UbStudyHelpGenerator
                 StaticObjects.Book.EditTranslation.Description = $"PT-BR {DateTime.Now:dd-MM-yy}";
                 DataInitializer.StoreTranslationsList();
                 origem = Path.Combine(StaticObjects.Parameters.TUB_Files_RepositoryFolder, "AvailableTranslations.json");
-                destino = @"C:\ProgramData\Amadon\AvailableTranslations.json";  // Diret+orio local de dados do Amadon
+                destino = @"C:\ProgramData\Amadon\AvailableTranslations.json";  // Diretório local de dados do Amadon
                 File.Copy(origem, destino, true);
+
+                // 
+
+                // Delete each file
+                string pathAmandonLuceneData = @"C:\ProgramData\Amadon\TubSearch\T002";
+                ShowMessage($"Deletando todos os arquivos para busca Lucene: {pathAmandonLuceneData}");
+
+                foreach (string file in Directory.GetFiles(pathAmandonLuceneData))
+                {
+                    File.Delete(file);
+                }
+
+
                 ShowMessage("Finished.");
             }
             catch (Exception ex)
@@ -1201,6 +1164,87 @@ namespace UbStudyHelpGenerator
                 ShowMessage("Erro: Exporting PtAlternative..." + ex.Message);
             }
         }
+
+        private string ubDatabasePath = @"Y:\home\r\tools\amadonweb\data\UbData.db";
+        private string ufEnglishMarkdownPAth = @"C:\Urantia\Textos\UF-ENG-001-1955-1.22.md";
+
+
+        private void btAmadonWebGenerator_Click(object sender, EventArgs e)
+        {
+            ShowMessage(null);
+            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
+            ShowMessage($"Repositório para o texto em páginas html: {StaticObjects.Parameters.EditBookRepositoryFolder}");
+            ShowMessage($"Repositório com o texto PT-BR: {StaticObjects.Parameters.EditParagraphsRepositoryFolder}");
+
+            if (checkBoxImportEnglish.Checked)
+            {
+                Import_English import_English = new Import_English();
+                import_English.Run(ufEnglishMarkdownPAth, ubDatabasePath);
+            }
+            if (checkBoxImportPtBr.Checked)
+            {
+                Import_PtBr import_PtBr = new Import_PtBr();
+                import_PtBr.Run(StaticObjects.Parameters.EditParagraphsRepositoryFolder, ubDatabasePath);
+            }
+
+            if (chGerarTexto.Checked)
+            {
+                Export_HtmlBilingual export= new Export_HtmlBilingual();
+                export.Run(StaticObjects.Parameters.EditBookRepositoryFolder, ubDatabasePath);
+            }
+
+
+        }
+
+        /// <summary>
+        /// Gera a string para efeturar buscas na página rogreis.github.io
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btGenerateSearchString_Click(object sender, EventArgs e)
+        {
+            //ShowMessage(null);
+            //ShowMessage($"Repositório para o texto em páginas html: {StaticObjects.Parameters.EditBookRepositoryFolder}");
+            //ShowMessage($"Repositório com o texto PT-BR: {StaticObjects.Parameters.EditParagraphsRepositoryFolder}");
+            //if (MessageBox.Show($"Are you sure to generate the search string for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
+            //            "Confirmation",
+            //            MessageBoxButtons.YesNo,
+            //            MessageBoxIcon.Question) == DialogResult.No)
+            //{
+            //    return;
+            //}
+            //Export_HtmlBilingual export = new Export_HtmlBilingual();
+            //export.Run();
+            //ShowMessage("Finished");
+        }
+
+        private void btSemanticSearchString_Click(object sender, EventArgs e)
+        {
+            ShowMessage(null);
+            ShowMessage($"Repositório para o texto em páginas html: {StaticObjects.Parameters.EditBookRepositoryFolder}");
+            ShowMessage($"Repositório com o texto PT-BR: {StaticObjects.Parameters.EditParagraphsRepositoryFolder}");
+            if (MessageBox.Show($"Are you sure to generate the search string for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
+                        "Confirmation",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.No)
+            {
+                return;
+            }
+
+            Export_SemanticQuery export = new Export_SemanticQuery();
+            export.Run("", ubDatabasePath); // TODO definir onde serão salvos os dados
+            ShowMessage("Finished");
+        }
+
+        private void btPaperShow_Click(object sender, EventArgs e)
+        {
+            ShowMessage(null);
+            short paperNo = Convert.ToInt16(numericUpDownPaper.Value);
+            Export_Excel export= new Export_Excel();
+            export.Run(paperNo.ToString(), ubDatabasePath);
+        }
+
 
         /// <summary>
         /// Initialize the basic data for this app: checking folders, translation list, and English data
@@ -1285,10 +1329,6 @@ namespace UbStudyHelpGenerator
 
             HtmlFormat_PTalternative formatter = new HtmlFormat_PTalternative(StaticObjects.Parameters);
             PtBr_Website tubPT_BR = new PtBr_Website(StaticObjects.Parameters, formatter);
-
-            //tubPT_BR.ShowMessage += Logger_ShowMessage;
-            tubPT_BR.ShowPaperNumber += ShowPaperNumber;
-            tubPT_BR.ShowStatusMessage += Alternative_ShowStatusMessage;
 
             string mainPageFilePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "indexOld.html");
             // Print(TUB_TOC_Html toc_table, Translation englishTranslation, Translation portuguse2007Translation, Translation ptAlternativeTranslation, short paperNoToPrint= -1)
@@ -1821,7 +1861,7 @@ namespace UbStudyHelpGenerator
         {
             var mdParagraphs = Directory.GetFiles(basePath, $"Doc{paperNo:000}\\Par_{paperNo:000}_*.md");
             string mdPath = Path.Combine(basePath, $"Doc{paperNo:000}\\Par_{paperNo:000}_000_000.md");
-            string titleFile= File.ReadAllText(mdPath);
+            string titleFile = File.ReadAllText(mdPath);
             sb.AppendLine("");
             sb.AppendLine($"## {titleFile}");
             short lastSectionNo = -1;
@@ -1844,27 +1884,127 @@ namespace UbStudyHelpGenerator
             }
         }
 
+        public static void TestRegex(string text, Regex regex, string description)
+        {
+            bool result = regex.IsMatch(text);
+            StaticObjects.FireShowMessage($"{description}: \"{text}\" => {result} ({regex})");
+        }
+
+        public void TestRegexMatches(string text, Regex regex, string description)
+        {
+            MatchCollection matches = regex.Matches(text);
+
+            if (matches.Count > 0)
+            {
+                StaticObjects.FireShowMessage($"  Found {matches.Count} matches:");
+                foreach (Match match in matches)
+                {
+                    StaticObjects.FireShowMessage($"  Match: \"{match.Value}\" (Index: {match.Index}, Length: {match.Length})");
+                    if (match.Groups.Count > 1) // Group 0 is the entire match
+                    {
+                        StaticObjects.FireShowMessage("    Groups:");
+                        for (int i = 0; i < match.Groups.Count; i++)
+                        {
+                            Group group = match.Groups[i];
+                            StaticObjects.FireShowMessage($"      Group {i}: \"{group.Value}\" (Index: {group.Index}, Length: {group.Length})");
+                        }
+                    }
+                    else
+                    {
+                        StaticObjects.FireShowMessage("    No capturing groups defined in the regex.");
+                    }
+                    StaticObjects.FireShowMessage("  ---");
+                }
+            }
+            else
+            {
+                StaticObjects.FireShowMessage("  No matches found.");
+            }
+            StaticObjects.FireShowMessage($"  Regex: {regex}");
+            StaticObjects.FireShowMessage("---");
+        }
+
+        private void ProcessMarkdownFiles(string directory)
+        {
+            tabControlMain.Enabled = true;
+            tabControlMain.SelectedTab = tabPageEditTranslation;
+
+            Import_English import_English = new Import_English();
+            import_English.Run(ufEnglishMarkdownPAth, ubDatabasePath);
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
+            ShowMessage(null);
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
+            ProcessMarkdownFiles(@"C:\Trabalho\Github\Rogerio\p");
 
-            ShowMessage(null);
-            string baseDir= StaticObjects.Parameters.EditParagraphsRepositoryFolder;
-            string summaryFile= Path.Combine(baseDir, "SUMMARY.md");
+            //Export_SimpleQuery export= new Export_SimpleQuery();
+            //string queryDataPtBr = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"query\qsd_ptbr.zip");
+            //string idxDataPtBr = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"query\idx_ptbr.zip");
 
+            //Tuple<string, string> tuple= export.Import(queryDataPtBr, idxDataPtBr);
 
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("# Índice remissivo\n\n");
-            for (short paperNo = 0; paperNo < 197; paperNo++)
-            {
-                PrintSummaryParagraphs(StaticObjects.Parameters.EditParagraphsRepositoryFolder, sb, paperNo);
-            }
-            File.WriteAllText(summaryFile, sb.ToString());
-            ShowMessage("Sumário gerado");
+            //// Test strings
+            //string text1 = "Eterno Sustentador";
+            //string text2 = "sustentador Eterno";
+            //string text3 = "Eterno";
+            //string text4 = "Sustentador";
+            //string text5 = "eterno sustentador";
+            //string text6 = "ETERNO SUSTENTADOR";
+            //string text7 = "Outra palavra";
+            //string text8 = "Sustentador de algo";
+            //string text9 = "Algo Eterno";
+            //string text10 = "Sustentador Sustentador";
+            //string text11 = "Eterno Eterno";
+
+            ////StaticObjects.FireSendMessage("--- Case Sensitive ---");
+            ////// 1 - both words mandatory case sensitive
+            ////Regex regex1 = new Regex("Eterno.*Sustentador|Sustentador.*Eterno");
+            ////TestRegex(text1, regex1, "1 - Ambos obrigatórios (case sensitive)");
+            ////TestRegex(text2, regex1, "1 - Ambos obrigatórios (case sensitive)");
+            ////TestRegex(text3, regex1, "1 - Ambos obrigatórios (case sensitive)");
+            ////TestRegex(text4, regex1, "1 - Ambos obrigatórios (case sensitive)");
+            ////TestRegex(text5, regex1, "1 - Ambos obrigatórios (case sensitive)");
+            ////TestRegex(text6, regex1, "1 - Ambos obrigatórios (case sensitive)");
+            ////TestRegex(text7, regex1, "1 - Ambos obrigatórios (case sensitive)");
+
+            //StaticObjects.FireSendMessage("\n--- Case Insensitive ---");
+            //// 2 - both words mandatory case insensitive
+            //Regex regex2 = new Regex("eterno.*sustentador|sustentador.*eterno", RegexOptions.IgnoreCase);
+            //TestRegexMatches(tuple.Item1, regex2, "2 - Ambos obrigatórios (case insensitive)");
+
+            ////StaticObjects.FireSendMessage("\n--- One or Other (Optional) ---");
+            ////// 3 - one or other word, optional
+            ////Regex regex3 = new Regex("Eterno|Sustentador", RegexOptions.IgnoreCase);
+            ////TestRegex(text1, regex3, "3 - Um ou outro (opcional)");
+            ////TestRegex(text2, regex3, "3 - Um ou outro (opcional)");
+            ////TestRegex(text3, regex3, "3 - Um ou outro (opcional)");
+            ////TestRegex(text4, regex3, "3 - Um ou outro (opcional)");
+            ////TestRegex(text5, regex3, "3 - Um ou outro (opcional)");
+            ////TestRegex(text6, regex3, "3 - Um ou outro (opcional)");
+            ////TestRegex(text7, regex3, "3 - Um ou outro (opcional)");
+
+            ////StaticObjects.FireSendMessage("\n--- Sustentador occurs and Eterno not ---");
+            ////// 4 - sustentador occurs and Eterno not
+            ////Regex regex4 = new Regex("^(?!.*Eterno).*Sustentador.*$", RegexOptions.IgnoreCase);
+            ////TestRegex(text1, regex4, "4 - Sustentador ocorre e Eterno não");
+            ////TestRegex(text2, regex4, "4 - Sustentador ocorre e Eterno não");
+            ////TestRegex(text3, regex4, "4 - Sustentador ocorre e Eterno não");
+            ////TestRegex(text4, regex4, "4 - Sustentador ocorre e Eterno não");
+            ////TestRegex(text5, regex4, "4 - Sustentador ocorre e Eterno não");
+            ////TestRegex(text6, regex4, "4 - Sustentador ocorre e Eterno não");
+            ////TestRegex(text7, regex4, "4 - Sustentador ocorre e Eterno não");
+            ////TestRegex(text8, regex4, "4 - Sustentador ocorre e Eterno não");
+            ////TestRegex(text9, regex4, "4 - Sustentador ocorre e Eterno não");
+            ////TestRegex(text10, regex4, "4 - Sustentador ocorre e Eterno não");
+            ////TestRegex(text11, regex4, "4 - Sustentador ocorre e Eterno não");
+
         }
+
+
 
         private void btEditSearch_Click(object sender, EventArgs e)
         {

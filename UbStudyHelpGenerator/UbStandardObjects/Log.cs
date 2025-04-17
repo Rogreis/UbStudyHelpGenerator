@@ -41,7 +41,7 @@ namespace UbStandardObjects
 
 		protected void FireShowMessage(string message, bool isError = false, bool isFatal = false)
         {
-			StaticObjects.FireSendMessage(message, isError, isFatal);
+			StaticObjects.FireShowMessage(message, isError, isFatal);
 		}
 
 	}

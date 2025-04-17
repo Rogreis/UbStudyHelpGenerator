@@ -324,6 +324,27 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             sb.AppendLine(" ");
         }
 
+        private void PrintModalText(StringBuilder sb)
+        {
+            sb.AppendLine("    <div class=\"modal fade\" id=\"modalText\" tabindex=\"-1\"> ");
+            sb.AppendLine("        <div class=\"modal-dialog modal-dialog-centered modal-dialog-scrollable\" style=\"max-width: 80vw; max-height: 80vh;\"> ");
+            sb.AppendLine("            <div class=\"modal-content\"> ");
+            sb.AppendLine("                <div class=\"modal-header bg-primary\"> ");
+            sb.AppendLine("                    <h5 class=\"modal-title text-white\"  style=\"color: gold;\" id=\"tableModalLabel\">Parágrafo</h5> ");
+            sb.AppendLine("                    <button type=\"button\" class=\"btn-close\" data-bs-dismiss=\"modal\" aria-label=\"Fechar\"></button> ");
+            sb.AppendLine("                </div> ");
+            sb.AppendLine("                <div class=\"modal-body\" style=\"overflow-y: auto;\"> ");
+            sb.AppendLine("                    <div id=\"divParagrafo\" class=\"table-responsive\"> ");
+            sb.AppendLine("                    </div> ");
+            sb.AppendLine("                </div> ");
+            sb.AppendLine("                <div class=\"modal-footer\"> ");
+            sb.AppendLine("                    <button type=\"button\" class=\"btn btn-primary \" data-bs-dismiss=\"modal\">Fechar</button> ");
+            sb.AppendLine("                </div> ");
+            sb.AppendLine("            </div> ");
+            sb.AppendLine("        </div> ");
+            sb.AppendLine("    </div> ");
+        }
+
         /// <summary>
         /// Used for pages withou a modal
         /// </summary>
@@ -351,6 +372,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             pageData.BodyFunction(sb, pageData);
             pageData.ModalBodyFunction(sb, pageData);
             PrintModalColors(sb);
+            PrintModalText(sb);
             sb.AppendLine("<script src=\"js/combotrack.js\"></script> "); // For combobox track
             sb.AppendLine("</body>");
             sb.AppendLine("</html>");

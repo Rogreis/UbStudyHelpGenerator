@@ -61,7 +61,7 @@ namespace UBT_Tools_WorkLib
 
         private void FireShowMessage(string message)
         {
-            StaticObjects.FireSendMessage(message);
+            StaticObjects.FireShowMessage(message);
         }
 
         private void FireShowPaperNumber(short paperNo)

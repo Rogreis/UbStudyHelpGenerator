@@ -38,8 +38,11 @@ namespace UbStudyHelpGenerator.UbStandardObjects
 
         public static event dlShowMessage ShowMessage= null;
         public static event dlShowExceptionMessage ShowExceptionMessage = null;
+        public static event ShowStatusMessage ShowStatusMessage = null;
+        public static event ShowPaperNumber ShowPaperNumber = null;
 
-        public static void FireSendMessage(string message, bool isError = false, bool isFatal = false)
+
+        public static void FireShowMessage(string message, bool isError = false, bool isFatal = false)
         {
             ShowMessage?.Invoke(message, isError, isFatal);
         }
@@ -48,6 +51,17 @@ namespace UbStudyHelpGenerator.UbStandardObjects
         {
             ShowExceptionMessage?.Invoke(message, ex, isFatal);
         }
+
+        public static void FireShowStatusMessage(string message)
+        {
+            ShowStatusMessage?.Invoke(message);
+        }
+
+        public static void FireShowPaperNumber(short paperNo)
+        {
+            ShowPaperNumber?.Invoke(paperNo);
+        }
+
 
         #endregion
 

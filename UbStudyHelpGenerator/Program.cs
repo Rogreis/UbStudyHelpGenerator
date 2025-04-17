@@ -1,11 +1,7 @@
 ﻿using System;
 using System.IO;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows.Forms;
-using UbStudyHelpGenerator.Classes;
 using UbStudyHelpGenerator.UbStandardObjects;
-using UbStudyHelpGenerator.UbStandardObjects.Objects;
 using static System.Environment;
 
 namespace UbStudyHelpGenerator

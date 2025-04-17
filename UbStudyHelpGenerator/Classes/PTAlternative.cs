@@ -10499,7 +10499,7 @@ namespace UbStudyHelpGenerator.Classes
         #region events
         private void FireShowMessage(string message)
         {
-            StaticObjects.FireSendMessage(message);
+            StaticObjects.FireShowMessage(message);
         }
 
         private void FireShowStatusMessage(string message)
@@ -10519,7 +10519,7 @@ namespace UbStudyHelpGenerator.Classes
 
         private void HtmlGenerator_ShowMessage(string message, bool isError = false, bool isFatal = false)
         {
-            StaticObjects.FireSendMessage(message, isError, isFatal);
+            StaticObjects.FireShowMessage(message, isError, isFatal);
         }
         #endregion
 

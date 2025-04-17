@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.ImportExport.Models;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 using UBT_WebSite.Classes;
 
@@ -260,7 +261,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
                 TextRight = title3;
             }
 
-            public virtual void SetData(Paragraph englishParagraph, Paragraph ptAlternative, string htmlHelpTranslation, string htmlCompare)
+            public virtual void SetData(Paragraph englishParagraph, Paragraph ptAlternative)
             {
                 EnglishParagraph = englishParagraph;
                 PtAlternativeParagraph = ptAlternative;

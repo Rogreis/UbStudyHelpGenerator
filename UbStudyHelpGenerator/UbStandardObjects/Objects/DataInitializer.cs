@@ -75,7 +75,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 {
                     if (trans1.Hash != trans2.Hash)
                     {
-                        StaticObjects.FireSendMessage($"{trans1.Description} has new edition");
+                        StaticObjects.FireShowMessage($"{trans1.Description} has new edition");
                     }
                 }
                 return true;
@@ -215,17 +215,17 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 // Verify respository existence
                 if (!GitHelper.IsValid(StaticObjects.Parameters.TUB_Files_RepositoryFolder))
                 {
-                    StaticObjects.FireSendMessage("TUB_Files_RepositoryFolder is not a repository");
+                    StaticObjects.FireShowMessage("TUB_Files_RepositoryFolder is not a repository");
                     ret= false;
                 }
                 if (!GitHelper.IsValid(StaticObjects.Parameters.EditParagraphsRepositoryFolder))
                 {
-                    StaticObjects.FireSendMessage("TUB_Files_RepositoryFolder is not a repository");
+                    StaticObjects.FireShowMessage("TUB_Files_RepositoryFolder is not a repository");
                     ret = false;
                 }
                 if (!GitHelper.IsValid(StaticObjects.Parameters.EditBookRepositoryFolder))
                 {
-                    StaticObjects.FireSendMessage("EditBookRepositoryFolder is not a repository");
+                    StaticObjects.FireShowMessage("EditBookRepositoryFolder is not a repository");
                     ret = false;
                 }
                 return ret;
@@ -248,29 +248,29 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 StaticObjects.Book = new Book();
 
 
-                StaticObjects.FireSendMessage("Getting translations list");
+                StaticObjects.FireShowMessage("Getting translations list");
                 if (!InicializeTranslations(dataFiles))
                 {
-                    StaticObjects.FireSendMessage("InicializeTranslations failed");
+                    StaticObjects.FireShowMessage("InicializeTranslations failed");
                     return false;
                 }
 
                 if (!InitTranslation(dataFiles, StaticObjects.Parameters.EnglishTranslationId, ref StaticObjects.Book.EnglishTranslation))
                 {
-                    StaticObjects.FireSendMessage($"InitTranslation failed for {StaticObjects.Book.EnglishTranslation}");
+                    StaticObjects.FireShowMessage($"InitTranslation failed for {StaticObjects.Book.EnglishTranslation}");
                     return false;
                 }
 
                 if (!InitTranslation(dataFiles, StaticObjects.Parameters.WorkTranslationId, ref StaticObjects.Book.WorkTranslation))
                 {
-                    StaticObjects.FireSendMessage($"InitTranslation failed for {StaticObjects.Book.WorkTranslation}");
+                    StaticObjects.FireShowMessage($"InitTranslation failed for {StaticObjects.Book.WorkTranslation}");
                     return false;
                 }
 
                 Translation trans= null;
                 if (!InitTranslation(dataFiles, StaticObjects.Parameters.EditTranslationId, ref trans))
                 {
-                    StaticObjects.FireSendMessage($"InitTranslation failed for {StaticObjects.Book.EditTranslation}");
+                    StaticObjects.FireShowMessage($"InitTranslation failed for {StaticObjects.Book.EditTranslation}");
                     return false;
                 }
 
@@ -292,10 +292,10 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 
                 GetDataFiles dataFiles = new GetDataFiles();
                 StaticObjects.Book = new Book();
-                StaticObjects.FireSendMessage("Getting translations list");
+                StaticObjects.FireShowMessage("Getting translations list");
                 if (!ReInicializeTranslations(dataFiles))
                 {
-                    StaticObjects.FireSendMessage("InicializeTranslations failed");
+                    StaticObjects.FireShowMessage("InicializeTranslations failed");
                     return false;
                 }
                 return true;

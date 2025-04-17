@@ -1,14 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml.Linq;
-using System.Xml;
-using System.Globalization;
 using System.Text.Json.Serialization;
-using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
-using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace UbStudyHelpGenerator.UbStandardObjects.Objects
 {
@@ -35,7 +27,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
         SectionTitle = 2,
         NormalParagraph = 3,
         IdentedParagraph = 4,
-        Divider= 5
+        Divider= 5,
+        PartIntroduction = 6
     }
 
 
@@ -94,20 +87,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
             }
         }
 
-        [JsonIgnore]
-        public TOC_Entry Entry
-        {
-            get
-            {
-                if (entry == null)  
-                {
-                    entry = new TOC_Entry(TranslationId, Paper, Section, ParagraphNo, Page, Line);
-                    entry.Text = Text;
-                }
-                return entry;
-            }
-        }
-
 
         [JsonIgnore]
         public string Identification
@@ -117,6 +96,21 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Objects
                 return string.Format("{0}:{1}-{2} ({3}.{4})", Paper, Section, ParagraphNo, Page, Line); ;
             }
         }
+
+        [JsonIgnore]
+        public TOC_Entry Entry
+        {
+            get
+            {
+                if (entry == null)
+                {
+                    entry = new TOC_Entry(TranslationId, Paper, Section, ParagraphNo, Page, Line);
+                    entry.Text = Text;
+                }
+                return entry;
+            }
+        }
+
 
         [JsonIgnore]
         public string ID
