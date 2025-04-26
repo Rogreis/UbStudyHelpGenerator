@@ -70,9 +70,6 @@ namespace UbStudyHelpGenerator.HtmlFormatters
         protected int ParagraphPadding = 10;
         protected int CellPadding = 15;
 
-        public event dlShowMessage ShowMessage = null;
-
-
         public HtmlFormat_Abstract(Parameters parameters)
         {
             Param = parameters;

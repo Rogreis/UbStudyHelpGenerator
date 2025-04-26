@@ -78,10 +78,10 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
                     Paragraph = 0,
                     Text = part.Text,
                     Status = 4,
-                    Format = (short)ParagraphHtmlType.PartIntroduction
+                    Format = part.Format
                 };
-                col.DeleteMany(x => x.Paper == paragraphIntro.Paper &&
-                                    x.Pk_seq == paragraphIntro.Section);
+                col.DeleteMany(x => x.Paper == part.Paper &&
+                                    x.Pk_seq == part.pk_seq);
                 col.Insert(paragraphIntro);
             }
         }
@@ -111,23 +111,23 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
             return IsSeparator(par.Paper, par.Section, par.Paragraph);
         }
 
-        protected void IsSeparatorParagraph(ParagraphExport par, List<ParagraphExport> paragraphList, ref short pk_seq)
-        {
-            if (IsSeparator(par)) return;
+        //protected void IsSeparatorParagraph(ParagraphExport par, List<ParagraphExport> paragraphList, ref short pk_seq)
+        //{
+        //    if (IsSeparator(par)) return;
 
-            // Add and special separator paragraph
-            pk_seq++;
-            paragraphList.Add(new ParagraphExport()
-            {
-                Pk_seq = pk_seq,
-                Paper = par.Paper,
-                Section = 0,
-                Paragraph = 0,
-                Text = "* * * * *",
-                Status = 4,
-                Format = (short)ParagraphHtmlType.Divider
-            });
-        }
+        //    // Add and special separator paragraph
+        //    pk_seq++;
+        //    paragraphList.Add(new ParagraphExport()
+        //    {
+        //        Pk_seq = pk_seq,
+        //        Paper = par.Paper,
+        //        Section = 0,
+        //        Paragraph = 0,
+        //        Text = "* * * * *",
+        //        Status = 4,
+        //        Format = (short)ParagraphHtmlType.Divider
+        //    });
+        //}
 
         /// <summary>
         /// Get a paragraph specific note

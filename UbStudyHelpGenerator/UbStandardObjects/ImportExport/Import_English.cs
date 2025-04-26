@@ -2,10 +2,13 @@
 using Markdig.Parsers;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web.UI.WebControls;
+using UbStudyHelpGenerator.UbStandardObjects.Helpers;
 using UbStudyHelpGenerator.UbStandardObjects.ImportExport.Models;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
@@ -14,12 +17,24 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
     internal class Import_English : Import_0base
     {
 
-        protected List<ParagraphSpecial> parts = new List<ParagraphSpecial>
+        protected List<ParagraphSpecial> PartsIntroductionForEnglish = new List<ParagraphSpecial>
         {
-            new ParagraphSpecial {Paper = 1, pk_seq = -1, Text = "PART I<br /><br />The Central and Superuniverses<br /><br />Sponsored by a Uversa Corps of Superuniverse Personalities acting by authority of the Orvonton Ancients of Days." },
-            new ParagraphSpecial {Paper = 32, pk_seq = -1, Text = "PART II<br /><br />The Local Universe<br /><br />Sponsored by a Nebadon Corps of Local Universe Personalities acting by authority of Gabriel of Salvington."},
-            new ParagraphSpecial {Paper = 57, pk_seq = -1, Text = "PART III<br /><br />The History of Urantia<br /><br />These papers were sponsored by a Corps of Local Universe Personalities acting by authority of Gabriel of Salvington."},
-            new ParagraphSpecial {Paper = 120, pk_seq = -1, Text = "PART IV<br /><br />This group of papers was sponsored by a commission of twelve Urantia midwayers acting under the supervision of a Melchizedek revelatory director.<br />The basis of this narrative was supplied by a secondary midwayer who was onetime assigned to the superhuman watchcare of the Apostle Andrew."}
+            new ParagraphSpecial {Paper = 1, pk_seq = -3, Text = "PART I", Format= (short)ParagraphExportHtmlType.BookTitle },
+            new ParagraphSpecial {Paper = 1, pk_seq = -2, Text = "The Central and Superuniverses", Format= (short)ParagraphExportHtmlType.BookTitle },
+            new ParagraphSpecial {Paper = 1, pk_seq = -1, Text = "<p>Sponsored by a Uversa Corps of Superuniverse Personalities acting by authority of the Orvonton Ancients of Days.</p>" },
+
+            new ParagraphSpecial {Paper = 32, pk_seq = -3, Text = "PART II", Format =(short) ParagraphExportHtmlType.BookTitle},
+            new ParagraphSpecial {Paper = 32, pk_seq = -2, Text = "The Local Universe", Format =(short) ParagraphExportHtmlType.BookTitle},
+            new ParagraphSpecial {Paper = 32, pk_seq = -1, Text = "<p>Sponsored by a Nebadon Corps of Local Universe Personalities acting by authority of Gabriel of Salvington.</p>"},
+
+            new ParagraphSpecial {Paper = 57, pk_seq = -3, Text = "PART III", Format =(short) ParagraphExportHtmlType.BookTitle},
+            new ParagraphSpecial {Paper = 57, pk_seq = -2, Text = "The History of Urantia", Format =(short) ParagraphExportHtmlType.BookTitle},
+            new ParagraphSpecial {Paper = 57, pk_seq = -1, Text = "<p>These papers were sponsored by a Corps of Local Universe Personalities acting by authority of Gabriel of Salvington.</p>"},
+
+            new ParagraphSpecial {Paper = 120, pk_seq = -3, Text = "PART IV", Format =(short) ParagraphExportHtmlType.BookTitle},
+            new ParagraphSpecial {Paper = 120, pk_seq = -2, Text = "The Life and Teachings of Jesus", Format =(short) ParagraphExportHtmlType.BookTitle},
+            new ParagraphSpecial {Paper = 120, pk_seq = -1, Text = "<p>This group of papers was sponsored by a commission of twelve Urantia midwayers acting under the supervision of a Melchizedek revelatory director.</p>" +
+                                                                   "<p>The basis of this narrative was supplied by a secondary midwayer who was onetime assigned to the superhuman watchcare of the Apostle Andrew.</p>"}
         };
 
 
@@ -99,38 +114,29 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
 
         /// <summary>
         /// Coordinate the filling of the English book (all papers)
+        /// Pk_seq starts on 0 (zero)
         /// </summary>
         /// <param name="pathBase">Path in the markdown file location with the full Eenglish text imported form UF</param>
         protected override void FillBook(LiteDatabase db, string pathBase)
         {
             var regex = new Regex(@"^<a name=""U(\d{1,3})_(\d{1,3})_(\d{1,3})""></a>(.*)");
-            var starRegex = new Regex(@"\*(.*?)\*");
             if (!ResetCollection<ParagraphExport>(db, BookEnglish.TranslationLanguage)) return;
 
             short currentPaper = -1;
             short pk_seq = 0;
             List<ParagraphExport> paragraphList = new List<ParagraphExport>();
             List<Note> notes = null;
-            //int counter = 0;
             bool isSeparator = false;
             foreach (string line in File.ReadAllLines(pathBase, Encoding.UTF8))
             {
-                //counter++;
-                //if (counter < 6900) continue;
-                //if (counter > 7000) break;
                 if (string.IsNullOrEmpty(line)) continue;
 
                 ParseLine(line, out var nameAttr, out var rest, out var page, out var lineNo, ref isSeparator);
                 var (paper, section, paragraph) = ParseUString(nameAttr);
                 if (paper < 0) continue;
 
-                if (!isSeparator) rest = HtmlToUtf8(starRegex.Replace(rest, "", 1).Trim());
-                //if (!(section == 0 && paragraph == 0))
-                //{
-                //    StaticObjects.FireShowMessage($"{paper}:{section}-{paragraph} «{page}-{lineNo}» {rest.Substring(0, Math.Min(100, rest.Length))}");
-                //}
-                //else 
-                //    StaticObjects.FireShowMessage($"{paper}:{section}-{paragraph}  {rest}");
+                if (!isSeparator) rest = WebUtility.HtmlDecode(MarkdownHelper.ToHtml(rest).Trim());
+
 
                 if (paper != currentPaper)
                 {
@@ -144,7 +150,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
                         paragraphList = new List<ParagraphExport>();
                     }
                 }
-                pk_seq++;
 
 
                 Note note = GetNote(notes, paper, section, paragraph);
@@ -158,34 +163,10 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
                     Line = lineNo,
                     Text = rest,
                     Status = 4,
-                    Format = (isSeparator? (short)ParagraphExportHtmlType.Divider : note.Format) 
+                    Format = (isSeparator? (short)ParagraphExportHtmlType.Separator : note.Format) 
                 };
                 paragraphList.Add(par);
-
-
-                //    var match = regex.Match(line);
-                //    if (match.Success)
-                //    {
-                //        // Valida se os números estão no intervalo de 0 a 197
-                //        if (int.TryParse(match.Groups[1].Value, out int n1) &&
-                //            int.TryParse(match.Groups[2].Value, out int n2) &&
-                //            int.TryParse(match.Groups[3].Value, out int n3) &&
-                //            n1 <= 197 && n2 <= 197 && n3 <= 197)
-                //        {
-                //            // Remove o primeiro trecho entre * e *
-                //            string content = match.Groups[4].Value.Trim();
-                //            content = HtmlToUtf8(starRegex.Replace(content, "", 1).Trim());
-                //            short paper = Convert.ToInt16(n1);
-                //            short section = Convert.ToInt16(n2);
-                //            short paragraph = Convert.ToInt16(n3);
-
-                //            if (content.Contains("* * *"))
-                //            {
-                //                content = content.Replace("**", "*");
-                //            }
-
-                //        }
-                //    }
+                pk_seq++;
             }
             LiteDbStore(db, BookEnglish.TranslationLanguage, currentPaper, paragraphList);
             StaticObjects.FireShowPaperNumber(currentPaper);
@@ -198,7 +179,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
             using (var db = new LiteDatabase(pathDatabase))
             {
                 FillBook(db, pathBase);
-                AddPartIntroduction(db, parts, BookEnglish.TranslationLanguage);
+                AddPartIntroduction(db, PartsIntroductionForEnglish, BookEnglish.TranslationLanguage);
             }
         }
 

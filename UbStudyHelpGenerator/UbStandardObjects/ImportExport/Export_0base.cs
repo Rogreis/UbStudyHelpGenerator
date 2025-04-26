@@ -12,7 +12,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
     public abstract class Export_0base : _0CommonBase
     {
 
-        private bool Initialized = false;
+        protected int CountErrors = 0;
 
         private void AddToZip(ZipArchive archive, string qsData)
         {
@@ -63,15 +63,6 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
             if (File.Exists(pathFile))
                 File.Delete(pathFile);
         }
-
-        protected List<ParagraphExport> GetPaper(LiteDatabase db, string collectionName, short paper)
-        {
-            var col = db.GetCollection<ParagraphExport>(collectionName);
-            return col.Find(x => x.Paper == paper)
-                           .OrderBy(x => x.Pk_seq)
-                           .ToList();
-        }
-
 
         protected abstract void FillPaper(LiteDatabase db, string destyinationFolder, short paperNo);
 

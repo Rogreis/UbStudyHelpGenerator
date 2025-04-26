@@ -48,8 +48,9 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             sb.AppendLine(" <link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" rel=\"stylesheet\">  ");
             sb.AppendLine(" <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js\"></script>  ");
             sb.AppendLine("  ");
+            sb.AppendLine("    <!-- Mermaid JS --> ");
+            sb.AppendLine("    <script src=\"https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js\"></script> ");
             sb.AppendLine("  ");
-
 
             // Lato font from google
             sb.AppendLine("  ");

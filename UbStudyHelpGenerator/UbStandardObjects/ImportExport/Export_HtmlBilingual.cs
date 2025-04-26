@@ -18,6 +18,44 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
         {
         }
 
+        protected string IdentLink(ParagraphExport par)
+        { 
+            return $"<a href=\"#\" onclick=\"event.preventDefault(); generateUrlAndOpen('{par.Ident}');\" class=\"{par.CssClass}\" target=\"_blank\"><small>{par.Reference}</small></a>"; 
+        }
+
+
+        private string FullTextLink(ParagraphExport par)
+        {
+            return $"<a href=\"#\" onclick=\"event.preventDefault(); generateUrlAndOpen('{par.Ident}');\" class=\"{par.CssClass}\" target=\"_blank\">{par.Text}</a>";
+        }
+
+        private string HtmlText(ParagraphExport par)
+        {
+            ParagraphExportHtmlType parFormat = (ParagraphExportHtmlType)par.Format;
+            switch (parFormat)
+            {
+                case ParagraphExportHtmlType.BookTitle:
+                    return $"<h2>{par.Text}</h2>";
+                case ParagraphExportHtmlType.PaperTitle:
+                    return $"<h3>{FullTextLink(par)}</h3>";
+                case ParagraphExportHtmlType.SectionTitle:
+                    return $"<h4>{FullTextLink(par)}</h4>";
+                case ParagraphExportHtmlType.NormalParagraph:
+                    return $"{IdentLink(par)}  {par.Text}";
+                case ParagraphExportHtmlType.IdentedParagraph:
+                    return $"<bloquote>{IdentLink(par)}  {par.Text}</bloquote>";
+                case ParagraphExportHtmlType.Separator:
+                    return $"<h3>{par.Reference}  {par.Text}</h3>";
+                case ParagraphExportHtmlType.PartIntroduction:
+                    return $"<h5>{par.Text}</h5>";
+                    
+            }
+
+            CountErrors++;
+            StaticObjects.FireShowMessage($"**** ERROR {CountErrors}: Format not set for  {par}.");
+            return "*** Format not set ***";
+        }
+
 
         public void PrintHeader(StringBuilder sb, string englishTitle, string ptBrTitle)
         {
@@ -36,11 +74,11 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
             sb.AppendLine("<tr>");
 
             sb.AppendLine($"<td>");
-            sb.AppendLine($"   <div id=\"{english.HtmlId(true)}\" class=\"{english.CssClass}\">{english.Anchor(true)}  {english.HtmlText()}</div>");
+            sb.AppendLine($"   <div id=\"{english.HtmlId(true)}\" class=\"{english.CssClass}\">{english.Anchor(true)}  {HtmlText(english)}</div>");
             sb.AppendLine($"</td>");
 
             sb.AppendLine($"<td>");
-            sb.AppendLine($"   <div id=\"{ptBr.HtmlId(false)}\" class=\"{ptBr.CssClass}\">{ptBr.HtmlText()}</div>");
+            sb.AppendLine($"   <div id=\"{ptBr.HtmlId(false)}\" class=\"{ptBr.CssClass}\">{HtmlText(ptBr)}</div>");
             sb.AppendLine($"</td>");
 
             sb.AppendLine("</tr>");
@@ -76,7 +114,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
             }
             catch (Exception ex)
             {
-                StaticObjects.FireShowMessage($"*** ERROR creating papaer {paperNo}: {ex.Message}");
+                CountErrors++;
+                StaticObjects.FireShowMessage($"*** ERROR {CountErrors} creating papaer {paperNo}: {ex.Message}");
             }
         }
 
@@ -90,8 +129,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
             // Both must have same number os records
             if (listEnglish.Count == 0 || listPtBr.Count == 0 || listEnglish.Count != listPtBr.Count)
             {
-                StaticObjects.FireShowMessage($"**** ERROR: English/PtBr with different number of paragraphs for paper {paperNo}.");
-                //throw new Exception("");
+                CountErrors++;
+                StaticObjects.FireShowMessage($"**** ERROR {CountErrors}: English/PtBr with different number of paragraphs for paper {paperNo}.");
             }
             GernerateHtmlPage(listEnglish, listPtBr, destinationFolder, paperNo);
         }
@@ -103,12 +142,13 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
         /// <param name="pathDatabase">LiteDb file location</param>
         public override void Run(string destinationFolder, string pathDatabase)
         {
+            CountErrors = 0;
             using (var db = new LiteDatabase(pathDatabase))
             {
                 for (short i = 0; i < 197; i++)
                     FillPaper(db, destinationFolder, i);
             }
-            StaticObjects.FireShowMessage("Finished.");
+            StaticObjects.FireShowMessage($"Finished with {CountErrors} errors.");
         }
 
     }

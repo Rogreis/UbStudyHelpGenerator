@@ -325,6 +325,7 @@
     <Compile Include="UbStandardObjects\ImportExport\Export_0base.cs" />
     <Compile Include="UbStandardObjects\ImportExport\Export_Excel.cs" />
     <Compile Include="UbStandardObjects\ImportExport\Export_HtmlBilingual.cs" />
+    <Compile Include="UbStandardObjects\ImportExport\Export_HtmlTocTable.cs" />
     <Compile Include="UbStandardObjects\ImportExport\Export_SemanticQuery.cs" />
     <Compile Include="UbStandardObjects\ImportExport\Export_SimpleQuery.cs" />
     <Compile Include="UbStandardObjects\ImportExport\Import_0base.cs" />

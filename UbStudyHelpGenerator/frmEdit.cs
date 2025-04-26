@@ -112,12 +112,7 @@ namespace UbStudyHelpGenerator
             {
                 return string.Empty;
             }
-            // Replace bold (**text**) with <strong>text</strong>
-            string html = Regex.Replace(markdown, @"\*\*(.+?)\*\*", "<strong>$1</strong>");
-            // Replace italic (*text*) with <em>text</em>
-            html = Regex.Replace(html, @"\*(.+?)\*", "<em>$1</em>");
-            // Handle line breaks (\n) to <br>
-            html = html.Replace("\n", "<br>");
+            string html = MarkdownHelper.ToHtml(markdown);
             if (createPage)
                 return GenerateHtmlPage(html);
             else return html;

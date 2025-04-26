@@ -25,21 +25,21 @@ namespace UbStudyHelpGenerator.PtBr
         }
         #endregion
 
-        protected int GetIso8601WeekOfYear(DateTime time)
-        {
-            DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
-            if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
-            {
-                time = time.AddDays(3);
-            }
-            return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
-        }
+        //protected int GetIso8601WeekOfYear(DateTime time)
+        //{
+        //    DayOfWeek day = CultureInfo.InvariantCulture.Calendar.GetDayOfWeek(time);
+        //    if (day >= DayOfWeek.Monday && day <= DayOfWeek.Wednesday)
+        //    {
+        //        time = time.AddDays(3);
+        //    }
+        //    return CultureInfo.InvariantCulture.Calendar.GetWeekOfYear(time, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+        //}
 
-        protected int WeekDay()
-        {
-            DateTime currentDate = DateTime.Now;
-            return GetIso8601WeekOfYear(currentDate);
-        }
+        //protected int WeekDay()
+        //{
+        //    DateTime currentDate = DateTime.Now;
+        //    return GetIso8601WeekOfYear(currentDate);
+        //}
 
         protected void PrintPaper(Translation englishTranslation, Translation translatioRight, short paperNoToPrint)
         {

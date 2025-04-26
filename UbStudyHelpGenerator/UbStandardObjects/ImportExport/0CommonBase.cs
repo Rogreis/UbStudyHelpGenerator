@@ -1,4 +1,5 @@
-﻿using System;
+﻿using LiteDB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
@@ -16,9 +17,12 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
         protected BookExport BookEnglish = new BookExport("en");
         protected BookExport BookPtBr = new BookExport("pt_br");
 
-        protected string HtmlToUtf8(string input)
+        protected List<ParagraphExport> GetPaper(LiteDatabase db, string collectionName, short paper)
         {
-            return WebUtility.HtmlDecode(input);
+            var col = db.GetCollection<ParagraphExport>(collectionName);
+            return col.Find(x => x.Paper == paper)
+                           .OrderBy(x => x.Pk_seq)
+                           .ToList();
         }
 
 

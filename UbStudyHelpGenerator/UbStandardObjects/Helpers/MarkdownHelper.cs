@@ -1,11 +1,8 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
+﻿using Markdig;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Web;
 
 namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
 {
@@ -121,6 +118,25 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             }
             return null;
         }
+
+        public static string ToHtml(string markdown)
+        {             // Convert markdown to HTML
+
+            if (string.IsNullOrEmpty(markdown))
+            {
+                return string.Empty;
+            }
+            // Replace bold (**text**) with <strong>text</strong>
+            string html = Regex.Replace(markdown, @"\*\*(.+?)\*\*", "<strong>$1</strong>");
+            // Replace italic (*text*) with <em>text</em>
+            html = Regex.Replace(html, @"\*(.+?)\*", "<em>$1</em>");
+            // Handle line breaks (\n) to <br>
+            html = html.Replace("\n", "<br>");
+            return html;
+        }
+
+
+
     }
 }
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using LiteDB;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -769,19 +771,19 @@ namespace UbStudyHelpGenerator
                 ShowMessage("Tabela de conteúdo gerada");
             }
 
-            if (chGerarTexto.Checked)
-            {
-                if (MessageBox.Show($"Are you sure to generate all pages for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
-                            "Confirmation",
-                            MessageBoxButtons.YesNo,
-                            MessageBoxIcon.Question) == DialogResult.No)
-                {
-                    return;
-                }
-                ShowMessage("Gerando rogreis.github.io pages");
-                ExportAllPapers();
-                ShowMessage("Finished");
-            }
+            //if (chGerarTexto.Checked)
+            //{
+            //    if (MessageBox.Show($"Are you sure to generate all pages for rogreis.github.io into {StaticObjects.Parameters.EditBookRepositoryFolder}?",
+            //                "Confirmation",
+            //                MessageBoxButtons.YesNo,
+            //                MessageBoxIcon.Question) == DialogResult.No)
+            //    {
+            //        return;
+            //    }
+            //    ShowMessage("Gerando rogreis.github.io pages");
+            //    ExportAllPapers();
+            //    ShowMessage("Finished");
+            //}
             Process.Start("chrome.exe", "localhost");
 
         }
@@ -1935,72 +1937,16 @@ namespace UbStudyHelpGenerator
 
         private void button1_Click(object sender, EventArgs e)
         {
+            tabControlMain.Enabled = true;
+            tabControlMain.SelectedTab = tabPageEditTranslation;
             ShowMessage(null);
             StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
             StaticObjects.Parameters.EditBookRepositoryFolder = txEditBookRepositoryFolder.Text;
-            StaticObjects.Parameters.EditParagraphsRepositoryFolder = txTranslationRepositoryFolder.Text;
-            ProcessMarkdownFiles(@"C:\Trabalho\Github\Rogerio\p");
+            ShowMessage($"Repositório para o texto em páginas html: {StaticObjects.Parameters.EditBookRepositoryFolder}");
+            ShowMessage($"Repositório com o texto PT-BR: {StaticObjects.Parameters.EditParagraphsRepositoryFolder}");
 
-            //Export_SimpleQuery export= new Export_SimpleQuery();
-            //string queryDataPtBr = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"query\qsd_ptbr.zip");
-            //string idxDataPtBr = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"query\idx_ptbr.zip");
-
-            //Tuple<string, string> tuple= export.Import(queryDataPtBr, idxDataPtBr);
-
-            //// Test strings
-            //string text1 = "Eterno Sustentador";
-            //string text2 = "sustentador Eterno";
-            //string text3 = "Eterno";
-            //string text4 = "Sustentador";
-            //string text5 = "eterno sustentador";
-            //string text6 = "ETERNO SUSTENTADOR";
-            //string text7 = "Outra palavra";
-            //string text8 = "Sustentador de algo";
-            //string text9 = "Algo Eterno";
-            //string text10 = "Sustentador Sustentador";
-            //string text11 = "Eterno Eterno";
-
-            ////StaticObjects.FireSendMessage("--- Case Sensitive ---");
-            ////// 1 - both words mandatory case sensitive
-            ////Regex regex1 = new Regex("Eterno.*Sustentador|Sustentador.*Eterno");
-            ////TestRegex(text1, regex1, "1 - Ambos obrigatórios (case sensitive)");
-            ////TestRegex(text2, regex1, "1 - Ambos obrigatórios (case sensitive)");
-            ////TestRegex(text3, regex1, "1 - Ambos obrigatórios (case sensitive)");
-            ////TestRegex(text4, regex1, "1 - Ambos obrigatórios (case sensitive)");
-            ////TestRegex(text5, regex1, "1 - Ambos obrigatórios (case sensitive)");
-            ////TestRegex(text6, regex1, "1 - Ambos obrigatórios (case sensitive)");
-            ////TestRegex(text7, regex1, "1 - Ambos obrigatórios (case sensitive)");
-
-            //StaticObjects.FireSendMessage("\n--- Case Insensitive ---");
-            //// 2 - both words mandatory case insensitive
-            //Regex regex2 = new Regex("eterno.*sustentador|sustentador.*eterno", RegexOptions.IgnoreCase);
-            //TestRegexMatches(tuple.Item1, regex2, "2 - Ambos obrigatórios (case insensitive)");
-
-            ////StaticObjects.FireSendMessage("\n--- One or Other (Optional) ---");
-            ////// 3 - one or other word, optional
-            ////Regex regex3 = new Regex("Eterno|Sustentador", RegexOptions.IgnoreCase);
-            ////TestRegex(text1, regex3, "3 - Um ou outro (opcional)");
-            ////TestRegex(text2, regex3, "3 - Um ou outro (opcional)");
-            ////TestRegex(text3, regex3, "3 - Um ou outro (opcional)");
-            ////TestRegex(text4, regex3, "3 - Um ou outro (opcional)");
-            ////TestRegex(text5, regex3, "3 - Um ou outro (opcional)");
-            ////TestRegex(text6, regex3, "3 - Um ou outro (opcional)");
-            ////TestRegex(text7, regex3, "3 - Um ou outro (opcional)");
-
-            ////StaticObjects.FireSendMessage("\n--- Sustentador occurs and Eterno not ---");
-            ////// 4 - sustentador occurs and Eterno not
-            ////Regex regex4 = new Regex("^(?!.*Eterno).*Sustentador.*$", RegexOptions.IgnoreCase);
-            ////TestRegex(text1, regex4, "4 - Sustentador ocorre e Eterno não");
-            ////TestRegex(text2, regex4, "4 - Sustentador ocorre e Eterno não");
-            ////TestRegex(text3, regex4, "4 - Sustentador ocorre e Eterno não");
-            ////TestRegex(text4, regex4, "4 - Sustentador ocorre e Eterno não");
-            ////TestRegex(text5, regex4, "4 - Sustentador ocorre e Eterno não");
-            ////TestRegex(text6, regex4, "4 - Sustentador ocorre e Eterno não");
-            ////TestRegex(text7, regex4, "4 - Sustentador ocorre e Eterno não");
-            ////TestRegex(text8, regex4, "4 - Sustentador ocorre e Eterno não");
-            ////TestRegex(text9, regex4, "4 - Sustentador ocorre e Eterno não");
-            ////TestRegex(text10, regex4, "4 - Sustentador ocorre e Eterno não");
-            ////TestRegex(text11, regex4, "4 - Sustentador ocorre e Eterno não");
+            Export_HtmlTocTable toc = new Export_HtmlTocTable();
+            toc.Run("pt_br", ubDatabasePath);
 
         }
 

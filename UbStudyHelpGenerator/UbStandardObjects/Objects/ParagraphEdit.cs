@@ -1,7 +1,9 @@
-﻿using System;
+﻿using Markdig;
+using System;
 using System.IO;
 using System.Text.RegularExpressions;
 using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.Helpers;
 using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 namespace UbStandardObjects.Objects
@@ -84,20 +86,25 @@ namespace UbStandardObjects.Objects
         /// <returns></returns>
         public static string MarkdownToHtml(string markDownText)
         {
-            int position = 0;
-            bool openItalics = true;
+            //int position = 0;
+            //bool openItalics = true;
 
-            string newText = markDownText;
-            var regex = new Regex(Regex.Escape("*"));
-            while (position >= 0)
+            string newText = MarkdownHelper.ToHtml(markDownText);
+            if (newText == String.Empty)
             {
-                position = newText.IndexOf('*');
-                if (position >= 0)
-                {
-                    newText = regex.Replace(newText, openItalics ? "<em>" : "</em>", 1);
-                    openItalics = !openItalics;
-                }
+                return newText;
             }
+
+            //var regex = new Regex(Regex.Escape("*"));
+            //while (position >= 0)
+            //{
+            //    position = newText.IndexOf('*');
+            //    if (position >= 0)
+            //    {
+            //        newText = regex.Replace(newText, openItalics ? "<em>" : "</em>", 1);
+            //        openItalics = !openItalics;
+            //    }
+            //}
             return newText;
         }
 

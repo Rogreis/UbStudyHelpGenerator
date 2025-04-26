@@ -1,9 +1,12 @@
-﻿using Microsoft.Office.Interop.Word;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.Office.Interop.Word;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Web.UI.HtmlControls;
 using UbStudyHelpGenerator.Classes;
 
 
@@ -31,7 +34,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             Line,
             Image,
             Comment,
-            Link
+            Link,
+            Mermaid
         }
 
         private string ReadNextLine()
@@ -57,6 +61,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             if (line.StartsWith(">")) return LineType.Blockquote;
             if (line.StartsWith("*")) return LineType.UnorderedList;
             if (line.StartsWith("|")) return LineType.Table;
+            if (line.StartsWith("```mermaid")) return LineType.Mermaid;
+
             if (line.StartsWith("---")) return LineType.Line;
             if (line.StartsWith("<li>") || line.StartsWith("<ul>") || line.StartsWith("</ul>")) return LineType.Link;
             if (line.Contains("<img")) return LineType.Image;
@@ -244,6 +250,28 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             if (line != null) PushLine(line); // Put the line back for later processing
         }
 
+
+        private void ProcessMermaid(StringBuilder sb, string line)
+        {
+
+            sb.AppendLine("        <div class=\"row justify-content-center\"> ");
+            sb.AppendLine("            <div class=\"col-md-8\"> ");
+            sb.AppendLine("                <!-- Mermaid Graph --> ");
+            sb.AppendLine("                <div class=\"mermaid\"> ");
+            sb.AppendLine(" ");
+
+            line = ReadNextLine();
+            while (line != null && !line.StartsWith("```"))
+            {
+                sb.AppendLine($"      {line}");
+                line = ReadNextLine();
+            }
+
+            sb.AppendLine("            </div> ");
+            sb.AppendLine("        </div> ");
+        }
+
+
         private void ConvertFile(string[] markdownLines, string htmlFilePath)
         {
             string pattern = @"(<img src="")[^""]*\\([^""]*"")";
@@ -275,6 +303,9 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
                             break;
                         case LineType.Table:
                             ProcessTable(sb, line);
+                            break;
+                        case LineType.Mermaid:
+                            ProcessMermaid(sb, line);
                             break;
                         case LineType.Normal:
                             sb.AppendLine(ItalicBoldLinksImages(Paragraph(line)));
