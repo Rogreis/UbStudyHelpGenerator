@@ -100,6 +100,8 @@ namespace UbStudyHelpGenerator.UbStandardObjects
         /// </summary>
         public string EditBookRepositoryFolder { get; set; } = null;
 
+        public string ArticlesRepositoryFolder { get; set; } = null;
+
         public float FontSize { get; set; } = 10;
 
         public string FontFamily { get; set; } = "Georgia,Verdana,Arial,Helvetica";

@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UbStudyHelpGenerator.UbStandardObjects.ImportExport.Models;
-using UbStudyHelpGenerator.UbStandardObjects.Objects;
 
 namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
 {
@@ -167,7 +166,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
             }
 
             sb.AppendLine($"{ident++}<li id=\"{TreeviewHtmlID(par)}\"><span class=\"{NonExpandableLi}\"><a class=\"{CssClassHtml_A}\" href=\"{TreeviewHtmlLink(par)}\">{par.Title}</a></span>");
-            sb.AppendLine($"{ident++}<ul class=\"nested\"> ");
+            sb.AppendLine($"{ident++}<ul class=\"{CssClass_UL_Element}\"> ");
         }
 
         private void CloseTreeviewNodes(StringBuilder sb, ParagraphExport par, ref SpaceString ident)

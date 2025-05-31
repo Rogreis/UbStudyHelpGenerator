@@ -1,13 +1,11 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using DocumentFormat.OpenXml.Wordprocessing;
-using Microsoft.Office.Interop.Word;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Web.UI.HtmlControls;
 using UbStudyHelpGenerator.Classes;
+using System.Text.Json;
+
 
 
 namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
@@ -20,6 +18,11 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
     {
         private static string[] _markdownLines; // Store the lines for easier access
         private static int _lineIndex; // Keep track of the current line
+        private string CssClass_UL_Element = "nested";
+        // private string ExpandableLi = "caret expandable"; kept here for documentation
+        private string NonExpandableLi = "caret";
+        private string ExpandableLi = "caret active";
+        private string CssClassHtml_A = "liIndex";
 
         private enum LineType
         {
@@ -35,7 +38,21 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             Image,
             Comment,
             Link,
-            Mermaid
+            Mermaid,
+            ArticleLinkOpen
+        }
+
+        /// <summary>
+        /// Convert a string to a slug (URL-friendly format)
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        private static string Slugify(string text)
+        {
+            text = text.ToLowerInvariant();
+            text = Regex.Replace(text, @"[^\w\s-]", "");  // remove punctuation
+            text = Regex.Replace(text, @"[\s_]+", "-");   // replace spaces/underscores with dashes
+            return text.Trim('-');
         }
 
         private string ReadNextLine()
@@ -61,22 +78,88 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             if (line.StartsWith(">")) return LineType.Blockquote;
             if (line.StartsWith("*")) return LineType.UnorderedList;
             if (line.StartsWith("|")) return LineType.Table;
-            if (line.StartsWith("```mermaid")) return LineType.Mermaid;
+            if (line.Contains("<articles>")) return LineType.ArticleLinkOpen;
+            if (line.Contains("```mermaid") || line.StartsWith("<pre class=\"mermaid\">")) return LineType.Mermaid;
 
             if (line.StartsWith("---")) return LineType.Line;
             if (line.StartsWith("<li>") || line.StartsWith("<ul>") || line.StartsWith("</ul>")) return LineType.Link;
-            if (line.Contains("<img")) return LineType.Image;
+            if (line.Contains("```img")) return LineType.Image;
             if (Regex.IsMatch(line, @"^\d+\.(?!\s*\\)")) return LineType.OrderedList;
             if (line.StartsWith("<")) return LineType.Blockquote;
 
             return LineType.Normal;
         }
 
-
         private string Paragraph(string line)
         {
             return $"<p>{line}</p>";
         }
+
+
+        #region Image
+
+        private class ImageInfo
+        {
+            public string src { get; set; }
+            public string title { get; set; }
+            public string ident { get; set; }
+        }
+
+        private class ImageRoot
+        {
+            public ImageInfo Imagem { get; set; }
+        }
+
+
+        /// <summary>
+        /// Process an image block in the markdown file.
+        /// </summary>
+        /// <param name="sb"></param>
+        /// <param name="lineREad"></param>
+        private void ProcessImage(StringBuilder sb)
+        {
+            StringBuilder jsonBuilder = new StringBuilder();
+            string nextLine = ReadNextLine();
+            while (!nextLine.StartsWith("```"))
+            {
+                if (!string.IsNullOrWhiteSpace(nextLine))
+                    jsonBuilder.AppendLine(nextLine);
+                nextLine = ReadNextLine();
+            }
+            // Work only with next 2 lines more
+            nextLine = ReadNextLine();
+            if (string.IsNullOrWhiteSpace(nextLine))
+            {
+                jsonBuilder.AppendLine(nextLine);
+                nextLine = ReadNextLine();
+                if (!nextLine.TrimStart().StartsWith("!["))
+                {
+                    PushLine(nextLine); // Put the line back for later processing
+                }
+            }
+
+
+            ImageRoot imageRoot = null;
+            if (jsonBuilder.Length > 0)
+            {
+                try
+                {
+                    // Deserialize the JSON string into the RootObject
+                    imageRoot = JsonSerializer.Deserialize<ImageRoot>(jsonBuilder.ToString());
+                    sb.AppendLine($"<img src=\"{imageRoot.Imagem.src}\" class=\"img-thumbnail\" alt=\"{imageRoot.Imagem.title}\">");
+                    sb.AppendLine($"<p><sub>{imageRoot.Imagem.ident}</sub></p> ");
+                }
+                catch
+                {
+                    sb.AppendLine("ERRO: bloco de imagem inválido");
+                    return;
+                }
+            }
+        }
+
+
+        #endregion
+
 
         /// <summary>
         /// Works only with the first blockquote level (articles don't have nested blockquotes)
@@ -103,6 +186,50 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             blockquoteContent.AppendLine("");
             if (nextLine != null) PushLine(nextLine); // Put the line back for later processing
         }
+
+        private void ProcessArticle(StringBuilder sb)
+        {
+            string title = "", sumario = "", link = "";
+            string nextLine = ReadNextLine();
+            sb.AppendLine("<table class=\"table table-dark table-hover\"> ");
+            sb.AppendLine("    <thead> ");
+            sb.AppendLine("      <tr> ");
+            sb.AppendLine("        <th>Link</th> ");
+            sb.AppendLine("        <th>Description</th> ");
+            sb.AppendLine("      </tr> ");
+            sb.AppendLine("    </thead> ");
+
+
+            while (!nextLine.Contains("</articles>"))
+            {
+                if (nextLine.Contains("<article>"))
+                {
+                }
+                else if (nextLine.Contains("Título:"))
+                {
+                    title = nextLine.Replace("Título:", "").Trim();
+                }
+                else if (nextLine.Contains("Sumário:"))
+                {
+                    sumario = nextLine.Replace("Sumário:", "").Trim();
+                }
+                else if (nextLine.Contains("Link:"))
+                {
+                    link = nextLine.Replace("Link:", "").Trim();
+                }
+                else if (nextLine.Contains("</article>"))
+                {
+                    sb.AppendLine("      <tr>");
+                    sb.AppendLine($"        <td><a href=\"javascript:loadArticle('{link}')\">{title}</a></td>");
+                    sb.AppendLine($"        <td>{sumario}</td>");
+                    sb.AppendLine("      </tr>");
+                }
+                nextLine = ReadNextLine();
+            }
+            sb.AppendLine("</table>");
+            sb.AppendLine("");
+        }
+
 
         private string ItalicBoldLinksImages(string line)
         {
@@ -134,7 +261,9 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             else if (line.StartsWith("###")) level = 3;
             else if (line.StartsWith("##")) level = 2;
             else level = 1;
-            return $"<h{level}>{line.Substring(level).Trim()}</h{level}>";
+            string title = line.Substring(level).Trim();
+            string jumpLines = level == 2 ? "<br /><br /><br />" : (level == 3 ? "<br />" : "");
+            return $"{jumpLines}<h{level} id=\"{Slugify(title)}\">{title}</h{level}>"; ;
         }
 
         private string OrderedListLine(string line)
@@ -154,9 +283,9 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             sb.AppendLine("<ol>");
             sb.AppendLine($"   {OrderedListLine(line)}");
             string nextLine = ReadNextLine();
-            while (nextLine != null && GetLineType(nextLine) ==  LineType.OrderedList)
+            while (nextLine != null && GetLineType(nextLine) == LineType.OrderedList)
             {
-                nextLine= ItalicBoldLinksImages(nextLine);
+                nextLine = ItalicBoldLinksImages(nextLine);
                 sb.AppendLine($"   {OrderedListLine(nextLine)}");
                 nextLine = ReadNextLine();
             }
@@ -200,7 +329,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
         {
             string[] colValues = line.Split(new char[] { '|' }, StringSplitOptions.RemoveEmptyEntries);
 
-            List<string> celValues= new List<string>(colValues);
+            List<string> celValues = new List<string>(colValues);
             while (celValues.Count < alignments.Count) celValues.Add(""); // Add empty cells to match alignments
 
             string tagColumn = isHEader ? "th" : "td";
@@ -209,7 +338,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             foreach (string value in celValues)
             {
                 string stylename = _currentIndex < alignments.Count ? alignments[_currentIndex++] : " style=\"text-align:right; vertical-align: top;\"";
-                string cellValue= string.IsNullOrEmpty(value.Trim()) ? "&nbsp;" : ItalicBoldLinksImages(value.Trim());
+                string cellValue = string.IsNullOrEmpty(value.Trim()) ? "&nbsp;" : ItalicBoldLinksImages(value.Trim());
                 htmlTable.AppendLine($"      <{tagColumn} {stylename}>{cellValue}</{tagColumn}>");
             }
             htmlTable.AppendLine("   </tr>");
@@ -253,22 +382,29 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
 
         private void ProcessMermaid(StringBuilder sb, string line)
         {
+            sb.AppendLine("<figure> ");
+            sb.AppendLine("   <div class=\"col-md-8\">  ");
+            sb.AppendLine("      <div class=\"mermaid\">  ");
 
-            sb.AppendLine("        <div class=\"row justify-content-center\"> ");
-            sb.AppendLine("            <div class=\"col-md-8\"> ");
-            sb.AppendLine("                <!-- Mermaid Graph --> ");
-            sb.AppendLine("                <div class=\"mermaid\"> ");
-            sb.AppendLine(" ");
+            string caption = "";
 
             line = ReadNextLine();
-            while (line != null && !line.StartsWith("```"))
+            while (line != null && !(line.StartsWith("```") || line.StartsWith("</pre>")))
             {
-                sb.AppendLine($"      {line}");
+                if (line.StartsWith("%%"))
+                {
+                    caption = line.Substring(2).Trim();
+                }
+                else
+                    sb.AppendLine($"      {line}");
                 line = ReadNextLine();
             }
-
-            sb.AppendLine("            </div> ");
-            sb.AppendLine("        </div> ");
+            sb.AppendLine("      </div>  ");
+            sb.AppendLine("   </div>  ");
+            sb.AppendLine("<figcaption style=\"font-size: 0.8em;  margin-top: 5px; margin-left: 50px;\"> ");
+            sb.AppendLine($"{caption}");
+            sb.AppendLine("</figcaption> ");
+            sb.AppendLine("</figure> ");
         }
 
 
@@ -317,11 +453,15 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
                             sb.AppendLine("<hr />");
                             break;
                         case LineType.Image:
-                            line = Regex.Replace(line, pattern, replacement);
-                            sb.AppendLine(line);
+                            //line = Regex.Replace(line, pattern, replacement);
+                            //sb.AppendLine(line);
+                            ProcessImage(sb);
                             break;
                         case LineType.Link:
                             sb.AppendLine(line);
+                            break;
+                        case LineType.ArticleLinkOpen:
+                            ProcessArticle(sb);
                             break;
                         case LineType.Comment:
                             // Comment are just ignored lines
@@ -339,33 +479,79 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
             {
                 EventsControl.FireShowMessage($"An error occurred: {ex.Message}");
             }
-
         }
 
-        public void Process(string basePath)
+        #region Articles Index
+        //private List<ArticleIndexEntry> ExtractArticleTitleFromTextFile(string input)
+        //{
+        //    if (string.IsNullOrEmpty(input))
+        //    {
+        //        return new List<ArticleIndexEntry>();
+        //    }
+
+        //    List<ArticleIndexEntry> artigos = new List<ArticleIndexEntry>();
+
+        //    // Usando Regex para encontrar blocos de texto formatados como artigos.
+        //    // Isso é mais robusto para lidar com variações na formatação, como espaços extras.
+        //    string pattern = @"Título:\s*(.+)\s*Sumário:\s*(.+)\s*Link:\s*(.+)";
+        //    MatchCollection matches = Regex.Matches(input, pattern, RegexOptions.Multiline);
+
+        //    foreach (Match match in matches)
+        //    {
+        //        ArticleIndexEntry artigo = new ArticleIndexEntry
+        //        {
+        //            Titulo = match.Groups[1].Value.Trim(),
+        //            Sumario = match.Groups[2].Value.Trim(),
+        //            Link = match.Groups[3].Value.Trim()
+        //        };
+        //        artigos.Add(artigo);
+        //    }
+
+        //    return artigos;
+        //}
+
+
+        #endregion
+
+
+        public void Process(string sourceMarkdownFilesPath, string destinationHtmlFilesPath)
         {
-            //string markdownFilePath = @"C:\Trabalho\Github\Rogerio\b\articles\teste.md";
-            //string htmlFilePath = @"C:\Trabalho\Github\Rogerio\b\articles\teste.html";
-            //ConvertFile(markdownFilePath, htmlFilePath);
+            destinationHtmlFilesPath = Path.Combine(destinationHtmlFilesPath, "articles");
 
+            // (1) Copy all files from source to destination, first deleting all files in destination
+            FolderCreator.CopyAll(sourceMarkdownFilesPath, destinationHtmlFilesPath);
+            StaticObjects.FireShowMessage("Files copied.");
+
+
+            // (3) Convert all markdown file to be html
             MarkdownHelper markdownHelper = new MarkdownHelper();
-
-            string pathHtmlFiles = Path.Combine(basePath, @"articles");
-            foreach (string markdownFilePath in Directory.GetFiles(pathHtmlFiles, "*.md"))
+            //string pathHtmlFiles = Path.Combine(destinationHtmlFilesPath, @"articles");
+            foreach (string markdownFilePath in Directory.GetFiles(destinationHtmlFilesPath, "*.md", SearchOption.AllDirectories))
             {
-                string htmlFilePath = markdownFilePath.Replace(".md", ".html");
-                if (markdownFilePath.EndsWith("moral.md"))
-                {
-                    string[] markdownupdated = markdownHelper.CreateToc(markdownFilePath);
-                    ConvertFile(markdownupdated, htmlFilePath);
-                }
-                else
-                {
-                    string[] lines = File.ReadAllLines(markdownFilePath);
-                    ConvertFile(lines, htmlFilePath);
-                }
-            }
-        }
+                StaticObjects.FireShowMessage($"Processing file: {markdownFilePath}");
 
+                string fileNameWithoutExtension = "", foldersPathRelativeToRoot = "";
+                FolderCreator.ExtractFileInfo(markdownFilePath,
+                                              destinationHtmlFilesPath,
+                                              out fileNameWithoutExtension,
+                                              out foldersPathRelativeToRoot);
+
+                string pathHtmlFileDestination = Path.Combine(destinationHtmlFilesPath, Path.Combine(foldersPathRelativeToRoot, fileNameWithoutExtension + ".html"));
+
+                string[] lines = File.ReadAllLines(markdownFilePath);
+                ConvertFile(lines, pathHtmlFileDestination);
+                Articles_Indexes articles_Indexes = new Articles_Indexes();
+                articles_Indexes.Run(markdownFilePath, pathHtmlFileDestination);
+            }
+
+            // (4) Deleta all markdown files in the destination folder
+            foreach (string markdownFilePath in Directory.GetFiles(destinationHtmlFilesPath, "*.md", SearchOption.AllDirectories))
+            {
+                StaticObjects.FireShowMessage($"Deleting file: {markdownFilePath}");
+                File.Delete(markdownFilePath);
+            }
+
+
+        }
     }
 }

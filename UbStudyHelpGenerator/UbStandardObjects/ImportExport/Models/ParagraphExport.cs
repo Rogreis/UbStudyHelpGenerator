@@ -74,7 +74,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport.Models
             }
         }
 
-
+            
         public string CssClass
         {
             get
@@ -101,7 +101,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport.Models
                         }
                         break;
                 }
-                return CssClassesDivSize + "parNormal";
+                return CssClassesDivSize + "parNormal"; 
             }
         }
 

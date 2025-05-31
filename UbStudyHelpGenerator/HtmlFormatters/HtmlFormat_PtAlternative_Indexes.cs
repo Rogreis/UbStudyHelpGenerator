@@ -68,6 +68,9 @@ namespace UbStudyHelpGenerator.HtmlFormatters
             sb.AppendLine(" <link href=\"css/tub_pt_br.css\"  rel=\"stylesheet\">");
             sb.AppendLine(" <link href=\"css/combotrack.css\" rel=\"stylesheet\">");
 
+            if (pageData.Name == PageIndexTocStudyName)
+                sb.AppendLine(" <link href=\"css/treeview.css\" rel=\"stylesheet\">");
+
             string cssFile = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, "css/" + pageData.Name + ".css");
             if (File.Exists(cssFile))
                 sb.AppendLine($" <link href=\"css/{pageData.Name}.css\" rel=\"stylesheet\">");

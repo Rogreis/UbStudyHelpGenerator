@@ -37,12 +37,16 @@ namespace UbStudyHelpGenerator
             this.txRepositoryOutputFolder = new System.Windows.Forms.TextBox();
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.btGeraLinkExterno = new System.Windows.Forms.Button();
             this.txBoxLinkForArticles = new System.Windows.Forms.TextBox();
             this.txEntryForLink = new System.Windows.Forms.TextBox();
             this.btGeraLink = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.btArticlesFolder = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txEditArticlesRepositoryFolder = new System.Windows.Forms.TextBox();
             this.btEditBookRepositoryFolder = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.txEditBookRepositoryFolder = new System.Windows.Forms.TextBox();
@@ -53,6 +57,11 @@ namespace UbStudyHelpGenerator
             this.comboBoxTranslations = new System.Windows.Forms.ComboBox();
             this.tabControlMain = new System.Windows.Forms.TabControl();
             this.tabPageEdit = new System.Windows.Forms.TabPage();
+            this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.button2 = new System.Windows.Forms.Button();
+            this.label14 = new System.Windows.Forms.Label();
+            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.listBoxEditSearchResults = new System.Windows.Forms.ListBox();
             this.comboBoxGrepCommands = new System.Windows.Forms.ComboBox();
@@ -78,6 +87,7 @@ namespace UbStudyHelpGenerator
             this.tabPageEditTranslation = new System.Windows.Forms.TabPage();
             this.splitContainerPtAlternative = new System.Windows.Forms.SplitContainer();
             this.groupBoxAmandonWeb = new System.Windows.Forms.GroupBox();
+            this.chGerarTexto = new System.Windows.Forms.CheckBox();
             this.btPaperShow = new System.Windows.Forms.Button();
             this.numericUpDownPaper = new System.Windows.Forms.NumericUpDown();
             this.btAmadonWebGenerator = new System.Windows.Forms.Button();
@@ -147,7 +157,6 @@ namespace UbStudyHelpGenerator
             this.btMoral = new System.Windows.Forms.Button();
             this.btyParamonyImport = new System.Windows.Forms.Button();
             this.txGeralMessages = new System.Windows.Forms.TextBox();
-            this.chGerarTexto = new System.Windows.Forms.CheckBox();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).BeginInit();
             this.splitContainerMain.Panel1.SuspendLayout();
@@ -157,6 +166,8 @@ namespace UbStudyHelpGenerator
             this.groupBox3.SuspendLayout();
             this.tabControlMain.SuspendLayout();
             this.tabPageEdit.SuspendLayout();
+            this.groupBox6.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.groupBoxStatus.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownStatusPaperNo)).BeginInit();
@@ -282,20 +293,33 @@ namespace UbStudyHelpGenerator
             // 
             // groupBox5
             // 
+            this.groupBox5.Controls.Add(this.btGeraLinkExterno);
             this.groupBox5.Controls.Add(this.txBoxLinkForArticles);
             this.groupBox5.Controls.Add(this.txEntryForLink);
             this.groupBox5.Controls.Add(this.btGeraLink);
-            this.groupBox5.Location = new System.Drawing.Point(759, 75);
+            this.groupBox5.Location = new System.Drawing.Point(759, 45);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(209, 70);
+            this.groupBox5.Size = new System.Drawing.Size(209, 100);
             this.groupBox5.TabIndex = 52;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Link para artigos";
             // 
+            // btGeraLinkExterno
+            // 
+            this.btGeraLinkExterno.BackColor = System.Drawing.Color.PeachPuff;
+            this.btGeraLinkExterno.Location = new System.Drawing.Point(116, 43);
+            this.btGeraLinkExterno.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btGeraLinkExterno.Name = "btGeraLinkExterno";
+            this.btGeraLinkExterno.Size = new System.Drawing.Size(78, 27);
+            this.btGeraLinkExterno.TabIndex = 55;
+            this.btGeraLinkExterno.Text = "Gera Link";
+            this.btGeraLinkExterno.UseVisualStyleBackColor = false;
+            this.btGeraLinkExterno.Click += new System.EventHandler(this.btGeraLinkExterno_Click);
+            // 
             // txBoxLinkForArticles
             // 
             this.txBoxLinkForArticles.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.txBoxLinkForArticles.Location = new System.Drawing.Point(3, 47);
+            this.txBoxLinkForArticles.Location = new System.Drawing.Point(3, 77);
             this.txBoxLinkForArticles.Name = "txBoxLinkForArticles";
             this.txBoxLinkForArticles.Size = new System.Drawing.Size(203, 20);
             this.txBoxLinkForArticles.TabIndex = 54;
@@ -310,18 +334,18 @@ namespace UbStudyHelpGenerator
             // btGeraLink
             // 
             this.btGeraLink.BackColor = System.Drawing.Color.PeachPuff;
-            this.btGeraLink.Location = new System.Drawing.Point(116, 16);
+            this.btGeraLink.Location = new System.Drawing.Point(10, 44);
             this.btGeraLink.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btGeraLink.Name = "btGeraLink";
-            this.btGeraLink.Size = new System.Drawing.Size(56, 27);
+            this.btGeraLink.Size = new System.Drawing.Size(100, 27);
             this.btGeraLink.TabIndex = 51;
-            this.btGeraLink.Text = "Gera";
+            this.btGeraLink.Text = "Gera p/Artigo";
             this.btGeraLink.UseVisualStyleBackColor = false;
             this.btGeraLink.Click += new System.EventHandler(this.btGeraLink_Click);
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(770, 21);
+            this.button1.Location = new System.Drawing.Point(769, 16);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(162, 23);
             this.button1.TabIndex = 33;
@@ -341,6 +365,9 @@ namespace UbStudyHelpGenerator
             // 
             // groupBox3
             // 
+            this.groupBox3.Controls.Add(this.btArticlesFolder);
+            this.groupBox3.Controls.Add(this.label3);
+            this.groupBox3.Controls.Add(this.txEditArticlesRepositoryFolder);
             this.groupBox3.Controls.Add(this.label4);
             this.groupBox3.Controls.Add(this.txRepositoryOutputFolder);
             this.groupBox3.Controls.Add(this.btEditBookRepositoryFolder);
@@ -350,17 +377,47 @@ namespace UbStudyHelpGenerator
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.txTranslationRepositoryFolder);
             this.groupBox3.Controls.Add(this.btEditTranslationRepositoryFolder);
-            this.groupBox3.Location = new System.Drawing.Point(12, 51);
+            this.groupBox3.Location = new System.Drawing.Point(12, 44);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(741, 100);
+            this.groupBox3.Size = new System.Drawing.Size(741, 113);
             this.groupBox3.TabIndex = 30;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Repositórios";
             // 
+            // btArticlesFolder
+            // 
+            this.btArticlesFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btArticlesFolder.Location = new System.Drawing.Point(685, 86);
+            this.btArticlesFolder.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.btArticlesFolder.Name = "btArticlesFolder";
+            this.btArticlesFolder.Size = new System.Drawing.Size(44, 25);
+            this.btArticlesFolder.TabIndex = 17;
+            this.btArticlesFolder.Text = "...";
+            this.btArticlesFolder.UseVisualStyleBackColor = true;
+            this.btArticlesFolder.Click += new System.EventHandler(this.btArticlesFolder_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(5, 91);
+            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(41, 13);
+            this.label3.TabIndex = 16;
+            this.label3.Text = "Articles";
+            // 
+            // txEditArticlesRepositoryFolder
+            // 
+            this.txEditArticlesRepositoryFolder.Location = new System.Drawing.Point(72, 87);
+            this.txEditArticlesRepositoryFolder.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.txEditArticlesRepositoryFolder.Name = "txEditArticlesRepositoryFolder";
+            this.txEditArticlesRepositoryFolder.Size = new System.Drawing.Size(609, 20);
+            this.txEditArticlesRepositoryFolder.TabIndex = 15;
+            // 
             // btEditBookRepositoryFolder
             // 
             this.btEditBookRepositoryFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btEditBookRepositoryFolder.Location = new System.Drawing.Point(685, 73);
+            this.btEditBookRepositoryFolder.Location = new System.Drawing.Point(685, 64);
             this.btEditBookRepositoryFolder.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btEditBookRepositoryFolder.Name = "btEditBookRepositoryFolder";
             this.btEditBookRepositoryFolder.Size = new System.Drawing.Size(44, 25);
@@ -372,7 +429,7 @@ namespace UbStudyHelpGenerator
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(5, 78);
+            this.label6.Location = new System.Drawing.Point(5, 69);
             this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(32, 13);
@@ -381,7 +438,7 @@ namespace UbStudyHelpGenerator
             // 
             // txEditBookRepositoryFolder
             // 
-            this.txEditBookRepositoryFolder.Location = new System.Drawing.Point(72, 74);
+            this.txEditBookRepositoryFolder.Location = new System.Drawing.Point(72, 65);
             this.txEditBookRepositoryFolder.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.txEditBookRepositoryFolder.Name = "txEditBookRepositoryFolder";
             this.txEditBookRepositoryFolder.Size = new System.Drawing.Size(609, 20);
@@ -390,7 +447,7 @@ namespace UbStudyHelpGenerator
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(5, 49);
+            this.label5.Location = new System.Drawing.Point(5, 44);
             this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(25, 13);
@@ -399,7 +456,7 @@ namespace UbStudyHelpGenerator
             // 
             // txTranslationRepositoryFolder
             // 
-            this.txTranslationRepositoryFolder.Location = new System.Drawing.Point(72, 46);
+            this.txTranslationRepositoryFolder.Location = new System.Drawing.Point(72, 41);
             this.txTranslationRepositoryFolder.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.txTranslationRepositoryFolder.Name = "txTranslationRepositoryFolder";
             this.txTranslationRepositoryFolder.Size = new System.Drawing.Size(609, 20);
@@ -408,7 +465,7 @@ namespace UbStudyHelpGenerator
             // btEditTranslationRepositoryFolder
             // 
             this.btEditTranslationRepositoryFolder.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btEditTranslationRepositoryFolder.Location = new System.Drawing.Point(685, 42);
+            this.btEditTranslationRepositoryFolder.Location = new System.Drawing.Point(685, 37);
             this.btEditTranslationRepositoryFolder.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.btEditTranslationRepositoryFolder.Name = "btEditTranslationRepositoryFolder";
             this.btEditTranslationRepositoryFolder.Size = new System.Drawing.Size(44, 25);
@@ -460,6 +517,7 @@ namespace UbStudyHelpGenerator
             // 
             // tabPageEdit
             // 
+            this.tabPageEdit.Controls.Add(this.groupBox6);
             this.tabPageEdit.Controls.Add(this.groupBox4);
             this.tabPageEdit.Controls.Add(this.btEditVerDocumento);
             this.tabPageEdit.Controls.Add(this.comboBoxEntries);
@@ -482,6 +540,68 @@ namespace UbStudyHelpGenerator
             this.tabPageEdit.Tag = "Edit";
             this.tabPageEdit.Text = "Edit";
             this.tabPageEdit.UseVisualStyleBackColor = true;
+            // 
+            // groupBox6
+            // 
+            this.groupBox6.Controls.Add(this.textBox1);
+            this.groupBox6.Controls.Add(this.button2);
+            this.groupBox6.Controls.Add(this.label14);
+            this.groupBox6.Controls.Add(this.numericUpDown2);
+            this.groupBox6.Location = new System.Drawing.Point(645, 138);
+            this.groupBox6.Name = "groupBox6";
+            this.groupBox6.Size = new System.Drawing.Size(239, 223);
+            this.groupBox6.TabIndex = 52;
+            this.groupBox6.TabStop = false;
+            this.groupBox6.Text = "Status";
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(10, 60);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.textBox1.Multiline = true;
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(210, 106);
+            this.textBox1.TabIndex = 27;
+            // 
+            // button2
+            // 
+            this.button2.BackColor = System.Drawing.Color.PeachPuff;
+            this.button2.Location = new System.Drawing.Point(5, 182);
+            this.button2.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(90, 35);
+            this.button2.TabIndex = 10;
+            this.button2.Text = "Generate";
+            this.button2.UseVisualStyleBackColor = false;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(7, 30);
+            this.label14.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(36, 13);
+            this.label14.TabIndex = 25;
+            this.label14.Text = "Figura";
+            // 
+            // numericUpDown2
+            // 
+            this.numericUpDown2.Location = new System.Drawing.Point(68, 26);
+            this.numericUpDown2.Maximum = new decimal(new int[] {
+            196,
+            0,
+            0,
+            0});
+            this.numericUpDown2.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            -2147483648});
+            this.numericUpDown2.Name = "numericUpDown2";
+            this.numericUpDown2.Size = new System.Drawing.Size(58, 20);
+            this.numericUpDown2.TabIndex = 26;
+            this.numericUpDown2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // groupBox4
             // 
@@ -857,6 +977,16 @@ namespace UbStudyHelpGenerator
             this.groupBoxAmandonWeb.TabStop = false;
             this.groupBoxAmandonWeb.Text = "Amadon Web";
             // 
+            // chGerarTexto
+            // 
+            this.chGerarTexto.AutoSize = true;
+            this.chGerarTexto.Location = new System.Drawing.Point(5, 61);
+            this.chGerarTexto.Name = "chGerarTexto";
+            this.chGerarTexto.Size = new System.Drawing.Size(82, 17);
+            this.chGerarTexto.TabIndex = 31;
+            this.chGerarTexto.Text = "Gerar Texto";
+            this.chGerarTexto.UseVisualStyleBackColor = true;
+            // 
             // btPaperShow
             // 
             this.btPaperShow.BackColor = System.Drawing.Color.Chartreuse;
@@ -1120,7 +1250,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromSqlServer.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageFromSqlServer.Name = "tabPageFromSqlServer";
             this.tabPageFromSqlServer.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPageFromSqlServer.Size = new System.Drawing.Size(981, 482);
+            this.tabPageFromSqlServer.Size = new System.Drawing.Size(981, 470);
             this.tabPageFromSqlServer.TabIndex = 1;
             this.tabPageFromSqlServer.Tag = "Sql";
             this.tabPageFromSqlServer.Text = "From Sql Server";
@@ -1147,7 +1277,7 @@ namespace UbStudyHelpGenerator
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.textBoxFromSqlServer);
-            this.splitContainer1.Size = new System.Drawing.Size(977, 476);
+            this.splitContainer1.Size = new System.Drawing.Size(977, 464);
             this.splitContainer1.SplitterDistance = 163;
             this.splitContainer1.SplitterWidth = 3;
             this.splitContainer1.TabIndex = 1;
@@ -1226,7 +1356,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromSqlServer.Multiline = true;
             this.textBoxFromSqlServer.Name = "textBoxFromSqlServer";
             this.textBoxFromSqlServer.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromSqlServer.Size = new System.Drawing.Size(977, 310);
+            this.textBoxFromSqlServer.Size = new System.Drawing.Size(977, 298);
             this.textBoxFromSqlServer.TabIndex = 0;
             // 
             // tabPageFromHtml
@@ -1236,7 +1366,7 @@ namespace UbStudyHelpGenerator
             this.tabPageFromHtml.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageFromHtml.Name = "tabPageFromHtml";
             this.tabPageFromHtml.Padding = new System.Windows.Forms.Padding(2, 3, 2, 3);
-            this.tabPageFromHtml.Size = new System.Drawing.Size(981, 482);
+            this.tabPageFromHtml.Size = new System.Drawing.Size(981, 470);
             this.tabPageFromHtml.TabIndex = 0;
             this.tabPageFromHtml.Tag = "Html";
             this.tabPageFromHtml.Text = "Spanish HTML";
@@ -1263,7 +1393,7 @@ namespace UbStudyHelpGenerator
             // splitContainerFromHtml.Panel2
             // 
             this.splitContainerFromHtml.Panel2.Controls.Add(this.textBoxFromHtml);
-            this.splitContainerFromHtml.Size = new System.Drawing.Size(977, 476);
+            this.splitContainerFromHtml.Size = new System.Drawing.Size(977, 464);
             this.splitContainerFromHtml.SplitterDistance = 163;
             this.splitContainerFromHtml.SplitterWidth = 3;
             this.splitContainerFromHtml.TabIndex = 0;
@@ -1342,7 +1472,7 @@ namespace UbStudyHelpGenerator
             this.textBoxFromHtml.Multiline = true;
             this.textBoxFromHtml.Name = "textBoxFromHtml";
             this.textBoxFromHtml.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxFromHtml.Size = new System.Drawing.Size(977, 310);
+            this.textBoxFromHtml.Size = new System.Drawing.Size(977, 298);
             this.textBoxFromHtml.TabIndex = 0;
             // 
             // tabPageUbIndex
@@ -1351,7 +1481,7 @@ namespace UbStudyHelpGenerator
             this.tabPageUbIndex.Location = new System.Drawing.Point(4, 22);
             this.tabPageUbIndex.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
             this.tabPageUbIndex.Name = "tabPageUbIndex";
-            this.tabPageUbIndex.Size = new System.Drawing.Size(981, 482);
+            this.tabPageUbIndex.Size = new System.Drawing.Size(981, 470);
             this.tabPageUbIndex.TabIndex = 2;
             this.tabPageUbIndex.Tag = "Index";
             this.tabPageUbIndex.Text = "Generate UB Index";
@@ -1376,7 +1506,7 @@ namespace UbStudyHelpGenerator
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.Controls.Add(this.txUbIndexMessages);
-            this.splitContainer2.Size = new System.Drawing.Size(981, 482);
+            this.splitContainer2.Size = new System.Drawing.Size(981, 470);
             this.splitContainer2.SplitterDistance = 215;
             this.splitContainer2.SplitterWidth = 3;
             this.splitContainer2.TabIndex = 1;
@@ -1478,7 +1608,7 @@ namespace UbStudyHelpGenerator
             this.txUbIndexMessages.Multiline = true;
             this.txUbIndexMessages.Name = "txUbIndexMessages";
             this.txUbIndexMessages.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txUbIndexMessages.Size = new System.Drawing.Size(981, 264);
+            this.txUbIndexMessages.Size = new System.Drawing.Size(981, 252);
             this.txUbIndexMessages.TabIndex = 0;
             // 
             // tabPageTranslations
@@ -1487,7 +1617,7 @@ namespace UbStudyHelpGenerator
             this.tabPageTranslations.Location = new System.Drawing.Point(4, 22);
             this.tabPageTranslations.Margin = new System.Windows.Forms.Padding(2);
             this.tabPageTranslations.Name = "tabPageTranslations";
-            this.tabPageTranslations.Size = new System.Drawing.Size(981, 482);
+            this.tabPageTranslations.Size = new System.Drawing.Size(981, 470);
             this.tabPageTranslations.TabIndex = 4;
             this.tabPageTranslations.Tag = "Translations";
             this.tabPageTranslations.Text = "Translations";
@@ -1513,7 +1643,7 @@ namespace UbStudyHelpGenerator
             // splitContainerTranslations.Panel2
             // 
             this.splitContainerTranslations.Panel2.Controls.Add(this.textBoxTranslations);
-            this.splitContainerTranslations.Size = new System.Drawing.Size(981, 482);
+            this.splitContainerTranslations.Size = new System.Drawing.Size(981, 470);
             this.splitContainerTranslations.SplitterDistance = 256;
             this.splitContainerTranslations.SplitterWidth = 3;
             this.splitContainerTranslations.TabIndex = 0;
@@ -1719,7 +1849,7 @@ namespace UbStudyHelpGenerator
             this.textBoxTranslations.Multiline = true;
             this.textBoxTranslations.Name = "textBoxTranslations";
             this.textBoxTranslations.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBoxTranslations.Size = new System.Drawing.Size(722, 482);
+            this.textBoxTranslations.Size = new System.Drawing.Size(722, 470);
             this.textBoxTranslations.TabIndex = 2;
             // 
             // tabPageGeneric
@@ -1727,7 +1857,7 @@ namespace UbStudyHelpGenerator
             this.tabPageGeneric.Controls.Add(this.splitContainerParamony);
             this.tabPageGeneric.Location = new System.Drawing.Point(4, 22);
             this.tabPageGeneric.Name = "tabPageGeneric";
-            this.tabPageGeneric.Size = new System.Drawing.Size(981, 482);
+            this.tabPageGeneric.Size = new System.Drawing.Size(981, 470);
             this.tabPageGeneric.TabIndex = 5;
             this.tabPageGeneric.Tag = "geral";
             this.tabPageGeneric.Text = "Generic";
@@ -1749,7 +1879,7 @@ namespace UbStudyHelpGenerator
             // splitContainerParamony.Panel2
             // 
             this.splitContainerParamony.Panel2.Controls.Add(this.txGeralMessages);
-            this.splitContainerParamony.Size = new System.Drawing.Size(981, 482);
+            this.splitContainerParamony.Size = new System.Drawing.Size(981, 470);
             this.splitContainerParamony.SplitterDistance = 183;
             this.splitContainerParamony.TabIndex = 0;
             // 
@@ -1795,18 +1925,8 @@ namespace UbStudyHelpGenerator
             this.txGeralMessages.Location = new System.Drawing.Point(0, 0);
             this.txGeralMessages.Multiline = true;
             this.txGeralMessages.Name = "txGeralMessages";
-            this.txGeralMessages.Size = new System.Drawing.Size(794, 482);
+            this.txGeralMessages.Size = new System.Drawing.Size(794, 470);
             this.txGeralMessages.TabIndex = 0;
-            // 
-            // chGerarTexto
-            // 
-            this.chGerarTexto.AutoSize = true;
-            this.chGerarTexto.Location = new System.Drawing.Point(5, 61);
-            this.chGerarTexto.Name = "chGerarTexto";
-            this.chGerarTexto.Size = new System.Drawing.Size(82, 17);
-            this.chGerarTexto.TabIndex = 31;
-            this.chGerarTexto.Text = "Gerar Texto";
-            this.chGerarTexto.UseVisualStyleBackColor = true;
             // 
             // frmMain
             // 
@@ -1834,6 +1954,9 @@ namespace UbStudyHelpGenerator
             this.tabControlMain.ResumeLayout(false);
             this.tabPageEdit.ResumeLayout(false);
             this.tabPageEdit.PerformLayout();
+            this.groupBox6.ResumeLayout(false);
+            this.groupBox6.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBoxStatus.ResumeLayout(false);
@@ -2011,6 +2134,15 @@ namespace UbStudyHelpGenerator
         private System.Windows.Forms.NumericUpDown numericUpDownPaper;
         private System.Windows.Forms.Button btPaperShow;
         private System.Windows.Forms.CheckBox chGerarTexto;
+        private System.Windows.Forms.Button btArticlesFolder;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.TextBox txEditArticlesRepositoryFolder;
+        private System.Windows.Forms.Button btGeraLinkExterno;
+        private System.Windows.Forms.GroupBox groupBox6;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.NumericUpDown numericUpDown2;
     }
 }
 

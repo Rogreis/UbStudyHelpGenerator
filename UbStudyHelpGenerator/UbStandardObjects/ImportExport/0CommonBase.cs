@@ -9,6 +9,10 @@ using UbStudyHelpGenerator.UbStandardObjects.ImportExport.Models;
 
 namespace UbStudyHelpGenerator.UbStandardObjects.ImportExport
 {
+    /// <summary>
+    /// Base class for import and export classes using LiteDB
+    /// <see href="https://www.litedb.org/docs/"/>
+    /// </summary>
     public abstract class _0CommonBase
     {
         /// <summary>

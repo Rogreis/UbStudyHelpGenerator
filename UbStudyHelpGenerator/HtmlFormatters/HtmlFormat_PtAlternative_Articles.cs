@@ -1,36 +1,24 @@
-﻿//using Markdig;
-//using Markdig.Syntax;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using UbStudyHelpGenerator.UbStandardObjects;
+using UbStudyHelpGenerator.UbStandardObjects.ImportExport.Models;
 
 namespace UbStudyHelpGenerator.HtmlFormatters
 {
     internal class HtmlFormat_PtAlternative_Articles
     {
-        private class Artigo
-        {
-            public string Titulo { get; set; }
-            public string Sumario { get; set; }
-            public string Link { get; set; }
 
-            public override string ToString()
-            {
-                return $"Título: {Titulo}\nSumário: {Sumario}\nLink: {Link}\n";
-            }
-        }
-
-        private List<Artigo> ExtrairArtigos(string input)
+        private List<ArticleIndexEntry> ExtractArticleTitleFromTextFile(string input)
         {
             if (string.IsNullOrEmpty(input))
             {
-                return new List<Artigo>();
+                return new List<ArticleIndexEntry>();
             }
 
-            List<Artigo> artigos = new List<Artigo>();
+            List<ArticleIndexEntry> artigos = new List<ArticleIndexEntry>();
 
             // Usando Regex para encontrar blocos de texto formatados como artigos.
             // Isso é mais robusto para lidar com variações na formatação, como espaços extras.
@@ -39,7 +27,7 @@ namespace UbStudyHelpGenerator.HtmlFormatters
 
             foreach (Match match in matches)
             {
-                Artigo artigo = new Artigo
+                ArticleIndexEntry artigo = new ArticleIndexEntry
                 {
                     Titulo = match.Groups[1].Value.Trim(),
                     Sumario = match.Groups[2].Value.Trim(),
@@ -53,15 +41,15 @@ namespace UbStudyHelpGenerator.HtmlFormatters
 
         public void ArticlesIndex(StringBuilder sb)
         {
-            string filePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"articles/articles.txt");
-            string articleMarkdown = File.ReadAllText(filePath);
-            List<Artigo> artigos = ExtrairArtigos(articleMarkdown);
-            foreach (Artigo artigo in artigos)
-            {
-                sb.AppendLine($"<a href=\"javascript:loadArticle('{artigo.Link}')\"><h4>{artigo.Titulo}</h4></a>  ");
-                sb.AppendLine($"<div>{artigo.Sumario}");
-                sb.AppendLine("</div><br /><br />");
-            }
+            //string filePath = Path.Combine(StaticObjects.Parameters.EditBookRepositoryFolder, @"articles/articles.txt");
+            //string articleMarkdown = File.ReadAllText(filePath);
+            //List<ArticleIndexEntry> artigos = ExtractArticleTitleFromTextFile(articleMarkdown);
+            //foreach (ArticleIndexEntry artigo in artigos)
+            //{
+            //    sb.AppendLine($"<a href=\"javascript:loadArticle('{artigo.Link}')\"><h4>{artigo.Titulo}</h4></a>  ");
+            //    sb.AppendLine($"<div>{artigo.Sumario}");
+            //    sb.AppendLine("</div><br /><br />");
+            //}
         }
     }
 }

@@ -18,7 +18,7 @@ namespace UbStudyHelpGenerator.UbStandardObjects.Helpers
         /// </summary>
         /// <param name="markdownFilePath">The path to the markdown file.</param>
         /// <returns>The markdown content with the table of contents inserted and headers converted to anchors.</returns>
-        public string[] GenerateTableOfContents(string markdownFilePath)
+        private string[] GenerateTableOfContents(string markdownFilePath)
         {
             if (!File.Exists(markdownFilePath))
             {
